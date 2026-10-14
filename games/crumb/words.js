@@ -11,7 +11,7 @@
  const labels={food:'Something to eat',nesting:'Building materials',scary:'Things to hide from',distasteful:'Absolutely not',playful:'Playthings',command:'Words it understands',unknown:'Still a mystery'};
  const aliases={nap:'sleep','wake up':'wake','come here':'come','go home':'home'};
  function normalize(text){return String(text).normalize('NFKC').toLowerCase().trim().replace(/^[\s.!?,;:]+|[\s.!?,;:]+$/g,'').replace(/\s+/g,' ');}
- const personal={priscilla:'love',peter:'love',jonathan:'love',jessica:'love',mac:'love',mack:'love','riley-l':'fury',lippyslippers:'fury',babystein:'love',baron:'roll',danny:'loveDance',angelface:'loveDance',kiddoface:'loveDance',stasia:'loveDance',anastasia:'loveDance'};
+ const personal={priscilla:'love',peter:'love',jonathan:'love',jessica:'love',mac:'love',mack:'love','riley-l':'fury',lippyslippers:'fury',process:'fury',babystein:'love',baron:'roll',danny:'loveDance',angelface:'loveDance',kiddoface:'loveDance',stasia:'loveDance',anastasia:'loveDance'};
  function classify(text){const word=normalize(text);if(Object.hasOwn(personal,word))return{kind:'personal',word,action:personal[word]};for(const [kind,words]of Object.entries(groups))if(words.includes(word))return{kind,word,action:aliases[word]||word};return{kind:'unknown',word,action:null};}
  root.CrumbWords={classify,normalize,labels,total:Object.values(groups).reduce((a,v)=>a+v.length,0)+Object.keys(personal).length};
 })(globalThis);
