@@ -5,7 +5,7 @@
 </style></head><body><main><header><h1>crumb.</h1><p>A small creature. Particular tastes.</p></header><button id="journalToggle" type="button">Field notes<span id="journalCount">Nothing discovered yet</span></button><div id="vitals"><span id="hunger">A little peckish</span><span id="mood">Curious</span></div><dialog id="journal"><button id="closeJournal">Close ×</button><h2>Crumb’s peculiarities</h2><p>Only things you have actually seen it react to appear here. Try food, objects, sounds—or something you might say to a creature.</p><div id="discoveries"></div><p id="storageNote"></p></dialog><canvas id="room" tabindex="0" aria-label="Crumb’s room. Drag cards and toys with a mouse or touch. For keyboard control, focus the scene; use left and right to select an item, Enter or Space to pick it up or drop it, arrow keys to move it, and Escape to release it."></canvas><p id="controlHint">Keyboard: Left/Right select · Enter/Space pick up or drop · arrows move · Esc releases</p><p id="message" role="status">Try a word. Watch what it does.</p><form id="feed"><input id="word" aria-label="A word for Crumb" placeholder="What might a tiny creature like?" maxlength="24" autocomplete="off"><button>Give it</button></form><footer><span>Some words matter to it. You’ll have to find out which.</span><div><button id="scatter" type="button">Make a little mess</button><button id="fresh" type="button">Fresh nest</button></div></footer></main><script src="words.js"></script><script>
 'use strict';
 const canvas=document.getElementById('room'),ctx=canvas.getContext('2d'),message=document.getElementById('message'),input=document.getElementById('word');let W=1000,H=700,last=0,clock=0,drag=null,pointer={x:-1000,y:-1000},target=null,phase='idle',timer=0,carry=null,treasures=[],nextId=1,saveOK=true,hunger=.35,joy=0,discoveries={},effects=[],command=null,personalScattered=false,nestAfterLove=null,wander=null,wanderPause=2,idleWalking=false,twin=null,splitProgress=0,backgroundCanvas=null;
-const creature={x:300,y:380,facing:1,walk:0,blink:0};const nest=()=>({x:W*.73,y:H*.53});const say=s=>message.textContent=s;const width=t=>Math.min(270,28+t.length*9);
+const creature={x:300,y:380,facing:1,walk:0,blink:0};const nest=()=>({x:W*.73,y:H*.53});const say=s=>message.textContent=window.crumbTranslate?window.crumbTranslate(s):s;const width=t=>Math.min(270,28+t.length*9);
 const specialWords={april:'rain',mitosis:'mitosis',success:'celebrate','tj maxx':'nervous',tjmaxx:'nervous',alex:'disco','a-lox':'disco',jason:'pizza'};
 function resize(){const oldW=W,oldH=H;W=canvas.clientWidth;H=canvas.clientHeight;backgroundCanvas=null;const dpr=Math.min(2,devicePixelRatio||1);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);creature.x*=W/oldW;creature.y*=H/oldH;wander=null;if(twin){twin.x*=W/oldW;twin.y*=H/oldH;twin.goal=null;}for(const t of treasures){t.x*=W/oldW;t.y*=H/oldH;}if(drag)drag=null;}
 function home(t){const n=nest(),i=Math.max(0,treasures.filter(v=>v.settled).indexOf(t));return {x:n.x+Math.sin(t.id*3.7)*Math.min(W*.09,75),y:n.y-8-Math.floor(i/3)*21};}
@@ -378,6 +378,157 @@ if(m.includes('kicks the soccer ball'))voice('ball');
 else if(m.includes('reward')&&(/unlocked|yours|choose|earned/.test(m)))voice('reward');
 else if(m.includes('ruined')||m.includes('architectural emergency'))voice('angry');
 }).observe(status,{childList:true,characterData:true,subtree:true});
+})();
+</script>
+
+<style>
+#crumbSettingsButton{position:absolute;right:5%;top:30px;z-index:4;background:#f8f3e8;color:#465448;border:1px solid #b7aa91}
+#crumbLocaleGate,#crumbSettings{border:1px solid #b7aa91;border-radius:20px;background:#faf6eb;color:#403e37;box-shadow:0 18px 60px #322b2080;width:min(520px,92vw);padding:22px;font:15px system-ui,sans-serif}
+#crumbLocaleGate::backdrop,#crumbSettings::backdrop{background:#25251f99;backdrop-filter:blur(3px)}
+#crumbLocaleGate h2,#crumbSettings h2{font:26px Georgia,serif;margin:0 0 8px}
+#crumbLocaleGate p,#crumbSettings p{color:#746e60;line-height:1.5}
+.crumbLangGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}
+.crumbLangGrid button{display:flex;align-items:center;gap:10px;justify-content:flex-start;background:#eee6d7;color:#403e37;border:1px solid #c9bda9;padding:14px;border-radius:13px;font:15px system-ui,sans-serif}
+.crumbLangGrid button:hover,.crumbLangGrid button:focus-visible{outline:2px solid #69785c;background:#e6e9db}
+.crumbFlag{font-size:27px}
+#crumbSettings label{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid #e2d9ca}
+#crumbSettings select{margin-left:auto;padding:9px;border:1px solid #b7aa91;border-radius:9px;background:#fffaf0;color:#403e37}
+#crumbSettings .crumbSettingsActions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+#crumbSettings .crumbSettingsActions button{background:#465448}
+#crumbSettings .crumbSettingsActions button.secondary{background:#e5dbc8;color:#403e37}
+#crumbSettings .crumbSettingsActions button.danger{background:#8b3c35}
+#crumbSettings .crumbClose{float:right;background:#e5dbc8;color:#403e37}
+#crumbSettingsButton{font-size:12px;padding:9px 12px}
+@media(max-width:600px){#crumbSettingsButton{top:63px;right:5%;font-size:11px;padding:8px}}
+</style>
+<button id="crumbSettingsButton" type="button" aria-haspopup="dialog">⚙️ Settings</button>
+<dialog id="crumbLocaleGate" aria-labelledby="crumbLocaleTitle">
+<h2 id="crumbLocaleTitle">Choose your language</h2><p id="crumbLocaleIntro">Pick a language to begin. You can change it later in Settings.</p>
+<div class="crumbLangGrid" id="crumbLocaleChoices"></div>
+</dialog>
+<dialog id="crumbSettings" aria-labelledby="crumbSettingsTitle">
+<button class="crumbClose" id="crumbSettingsClose" type="button">Close ×</button>
+<h2 id="crumbSettingsTitle">Settings</h2>
+<label><span id="crumbLanguageLabel">Language</span><select id="crumbLanguageSelect"></select></label>
+<label><span id="crumbSoundLabel">Crumb sounds</span><button id="crumbSoundSetting" type="button">🔇 Sound off</button></label>
+<label><input id="crumbKeyboardToggle" type="checkbox" checked><span id="crumbKeyboardLabel">Show keyboard controls</span></label>
+<p id="crumbKeyboardHelp">Focus the room, use Left/Right to select, Enter or Space to pick up or drop, arrow keys to move, and Escape to release.</p>
+<div class="crumbSettingsActions"><button class="danger" id="crumbReset" type="button">Reset all progress</button><button class="secondary" id="crumbSettingsDone" type="button">Done</button></div>
+<p id="crumbResetHelp">Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.</p>
+</dialog>
+<script>
+(()=>{
+'use strict';
+const languages={
+en:{name:'English',flag:'🇺🇸'},
+de:{name:'Deutsch',flag:'🇩🇪'},
+fr:{name:'Français',flag:'🇫🇷'},
+es:{name:'Español',flag:'🇪🇸'}
+};
+const keys=[
+'Choose your language','Pick a language to begin. You can change it later in Settings.','Settings','Close ×','Language','Crumb sounds','Show keyboard controls','Focus the room, use Left/Right to select, Enter or Space to pick up or drop, arrow keys to move, and Escape to release.','Reset all progress','Done','Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.',
+'A small creature. Particular tastes.','Field notes','Nothing discovered yet','A little peckish','Curious','Crumb’s peculiarities','Only things you have actually seen it react to appear here. Try food, objects, sounds—or something you might say to a creature.','Close ×','Keyboard: Left/Right select · Enter/Space pick up or drop · arrows move · Esc releases','Try a word. Watch what it does.','A word for Crumb','What might a tiny creature like?','Give it','Some words matter to it. You’ll have to find out which.','Make a little mess','Fresh nest','🎁 Rewards','Confirm permanent choice','Cancel','Each milestone gives one item choice. That choice is permanent; the other items at that milestone stay locked. Tap owned wearables to equip them and toys to place or put away. Discover recognized words to unlock rewards.',
+'Nothing discovered yet','Blank pages. A very opinionated subject. Start experimenting.','Special reactions','Names Crumb loves','Storage is unavailable. These discoveries will last for this visit.',
+'Comfortably fed','Furious','Delighted','Overflowing with love','Alarmed','Offended','Playful','Asleep','Two Crumbs. Neither accepts responsibility.',
+'A lot to consider. Let it finish investigating first.','The desk is rather full. Let it finish first.','Crumb is considering your offering.','Two is quite enough Crumb for one desk.','Oh. Yes. Awake. Completely awake.','Something for you? Let it choose.','There is nothing to fetch yet.','It seems to understand that.','The desk is rather full. Try a command, or start a fresh nest.','Oh. No. Absolutely not.','A clean desk. A fresh start. Crumb has plans.','There must be a nest before there can be a mess.','An architectural emergency.','Wait. It has a response.','It feels that settles the matter.','A friend. A very good thing to keep close.','Here. As requested.','A performance of considerable artistic merit.','Its patience has limits.','No, no. It belongs over here.','That smells extremely promising.','It has made its position on this quite clear.','Oh! This is a different sort of useful.','Crumb is completely baffled by that one.','Please admire the craftsmanship.','The nest is still here. What else does it respond to?','No reward chosen. The milestone is still available.','🎁 New reward choice! Open Rewards and pick your favorite.','Selected ','Item released.','There are no cards or toys to move yet.','Crumb kicks the soccer ball!','Crumb watches the ball intently.','You moved one of Crumb’s treasures.','Crumb gives the teddy a careful little cuddle.','Crumb peeks into the dollhouse. Who lives here?','Crumb investigates its toy.','Crumb can wear it.','It belongs in Crumb’s world.',' is now in Crumb’s world.',' · Owned',' · Not chosen',' · Confirm below',' · Choose permanently',' words · 🔒 Mystery reward','❔ Mystery reward','✓ Reward collected · permanent','— Choose one · permanent','Choose ',' permanently? The other choices at this milestone will stay locked.','recognized unique ','word','words','The choice is permanent.','Turn on','Turn off'
+];
+const de=[
+'Sprache wählen','Wähle eine Sprache, um zu beginnen. Du kannst sie später in den Einstellungen ändern.','Einstellungen','Schließen ×','Sprache','Crumbs Laute','Tastatursteuerung anzeigen','Fokussiere den Raum: Links/Rechts wählt aus, Enter oder Leertaste nimmt auf oder legt ab, Pfeiltasten bewegen, Escape lässt los.','Gesamten Fortschritt zurücksetzen','Fertig','Dadurch werden Crumbs Entdeckungen, Belohnungen, Spielzeuge und Toneinstellung aus diesem Browser gelöscht.',
+'Ein kleines Wesen. Ein eigener Geschmack.','Notizen','Noch nichts entdeckt','Ein bisschen hungrig','Neugierig','Crumbs Eigenheiten','Hier erscheinen nur Dinge, auf die es wirklich reagiert hat. Probiere Essen, Gegenstände, Geräusche – oder Worte an ein kleines Wesen.','Schließen ×','Tastatur: Links/Rechts auswählen · Enter/Leertaste aufnehmen oder ablegen · Pfeile bewegen · Esc loslassen','Gib ein Wort ein. Beobachte, was es tut.','Ein Wort für Crumb','Was könnte einem winzigen Wesen gefallen?','Gib es ihm','Manche Wörter bedeuten ihm etwas. Finde heraus, welche.','Ein bisschen Unordnung machen','Frisches Nest','🎁 Belohnungen','Dauerhafte Wahl bestätigen','Abbrechen','Bei jedem Meilenstein kannst du einen Gegenstand wählen. Diese Wahl bleibt bestehen; die anderen Gegenstände bleiben gesperrt. Tippe getragene Kleidung an, um sie anzuziehen, und Spielzeug, um es hinzustellen oder wegzuräumen. Entdecke erkannte Wörter, um Belohnungen freizuschalten.',
+'Noch nichts entdeckt','Leere Seiten. Ein sehr eigenwilliges Wesen. Fang an zu experimentieren.','Besondere Reaktionen','Namen, die Crumb liebt','Der Speicher ist nicht verfügbar. Diese Entdeckungen bleiben nur für diesen Besuch erhalten.',
+'Gut gefüttert','Wütend','Begeistert','Voller Liebe','Alarmiert','Beleidigt','Verspielt','Schläft','Zwei Crumbs. Keiner übernimmt die Verantwortung.',
+'Ganz schön viel. Lass es erst fertig nachsehen.','Der Tisch ist ziemlich voll. Lass es erst fertig machen.','Crumb denkt über dein Angebot nach.','Zwei Crumbs sind genug für einen Tisch.','Oh. Ja. Wach. Vollkommen wach.','Etwas für dich? Lass es wählen.','Es gibt noch nichts zu holen.','Es scheint das zu verstehen.','Der Tisch ist ziemlich voll. Gib einen Befehl oder beginne ein frisches Nest.','Oh. Nein. Auf keinen Fall.','Ein sauberer Tisch. Ein Neuanfang. Crumb hat Pläne.','Erst ein Nest, dann kann es Unordnung geben.','Ein architektonischer Notfall.','Warte. Es reagiert.','Damit ist die Sache wohl erledigt.','Ein Freund. Etwas sehr Gutes, das man nah bei sich behält.','Hier. Wie gewünscht.','Eine Darbietung von beachtlicher künstlerischer Qualität.','Seine Geduld hat Grenzen.','Nein, nein. Das gehört hierher.','Das riecht äußerst vielversprechend.','Es hat seine Meinung dazu klargemacht.','Oh! Das ist eine andere Art von nützlich.','Crumb ist völlig ratlos.','Bewundere bitte die Handwerkskunst.','Das Nest ist noch da. Worauf reagiert es noch?','Keine Belohnung gewählt. Der Meilenstein bleibt verfügbar.','🎁 Neue Belohnung! Öffne Belohnungen und wähle deinen Favoriten.','Ausgewählt ','Gegenstand abgelegt.','Es gibt noch keine Karten oder Spielzeuge zum Bewegen.','Crumb schießt den Fußball!','Crumb beobachtet den Ball ganz genau.','Du hast einen Schatz von Crumb bewegt.','Crumb kuschelt vorsichtig mit dem Teddybären.','Crumb späht ins Puppenhaus. Wer wohnt hier?','Crumb untersucht sein Spielzeug.','Crumb kann es tragen.','Es gehört in Crumbs Welt.',' ist jetzt in Crumbs Welt.',' · Im Besitz',' · Nicht gewählt',' · Unten bestätigen',' · Dauerhaft wählen',' Wörter · 🔒 Geheimnisvolle Belohnung','❔ Geheimnisvolle Belohnung','✓ Belohnung erhalten · dauerhaft','— Eine auswählen · dauerhaft','Wähle ',' dauerhaft? Die anderen Optionen dieses Meilensteins bleiben gesperrt.','erkannte einzigartige ','Wort','Wörter','Die Wahl ist dauerhaft.','Einschalten','Ausschalten'
+];
+const fr=[
+'Choisissez votre langue','Choisissez une langue pour commencer. Vous pourrez la modifier plus tard dans les paramètres.','Paramètres','Fermer ×','Langue','Sons de Crumb','Afficher les commandes clavier','Cliquez dans la pièce : gauche/droite pour choisir, Entrée ou Espace pour prendre ou déposer, flèches pour déplacer, Échap pour lâcher.','Réinitialiser toute la progression','Terminé','Cela supprimera de ce navigateur les découvertes, récompenses, jouets et réglages audio de Crumb.',
+'Une petite créature. Des goûts bien à elle.','Carnet','Aucune découverte','Un peu affamé','Curieux','Les petites manies de Crumb','Seules les choses auxquelles Crumb a réagi apparaissent ici. Essayez de la nourriture, des objets, des sons — ou des mots à lui dire.','Fermer ×','Clavier : gauche/droite choisir · Entrée/Espace prendre ou déposer · flèches déplacer · Échap lâcher','Essayez un mot. Regardez sa réaction.','Un mot pour Crumb','Qu’est-ce qui pourrait plaire à une toute petite créature ?','Donner','Certains mots comptent pour lui. À vous de les découvrir.','Mettre un peu de bazar','Nouveau nid','🎁 Récompenses','Confirmer le choix définitif','Annuler','Chaque étape permet de choisir un objet. Ce choix est définitif ; les autres restent verrouillés. Touchez les vêtements possédés pour les porter, et les jouets pour les placer ou les ranger. Découvrez des mots reconnus pour débloquer des récompenses.',
+'Aucune découverte','Pages blanches. Un sujet très exigeant. À vous d’expérimenter.','Réactions spéciales','Les noms que Crumb adore','Le stockage est indisponible. Ces découvertes ne dureront que pendant cette visite.',
+'Bien rassasié','Furieux','Ravi','Plein d’amour','Alarmé','Vexé','Joueur','Endormi','Deux Crumbs. Aucun n’assume.',
+'Beaucoup à considérer. Laissez-le finir d’examiner.','Le bureau est bien rempli. Laissez-le finir d’abord.','Crumb réfléchit à votre offrande.','Deux Crumbs, c’est bien assez pour un bureau.','Oh. Oui. Réveillé. Tout à fait réveillé.','Quelque chose pour vous ? Laissez-le choisir.','Il n’y a encore rien à rapporter.','Il semble comprendre.','Le bureau est plein. Donnez un ordre ou refaites le nid.','Oh. Non. Certainement pas.','Un bureau propre. Un nouveau départ. Crumb a des projets.','Il faut un nid avant de mettre le bazar.','Une urgence architecturale.','Attendez. Il réagit.','Il considère l’affaire réglée.','Un ami. Quelque chose de précieux à garder près de soi.','Voilà, comme demandé.','Une performance d’une grande valeur artistique.','Sa patience a des limites.','Non, non. Ça va ici.','Ça sent extrêmement bon.','Il a clairement exprimé son avis.','Oh ! Voilà une autre utilité.','Crumb est complètement perplexe.','Admirez le travail, s’il vous plaît.','Le nid est toujours là. À quoi d’autre réagit-il ?','Aucune récompense choisie. Cette étape reste disponible.','🎁 Nouvelle récompense ! Ouvrez Récompenses et choisissez votre préférée.','Choisi ','Objet lâché.','Il n’y a encore aucune carte ni aucun jouet à déplacer.','Crumb donne un coup de pied au ballon !','Crumb observe le ballon avec attention.','Vous avez déplacé un trésor de Crumb.','Crumb fait un petit câlin prudent à l’ours en peluche.','Crumb regarde dans la maison de poupée. Qui habite ici ?','Crumb examine son jouet.','Crumb peut le porter.','Il a sa place dans le monde de Crumb.',' est maintenant dans le monde de Crumb.',' · Possédé',' · Non choisi',' · Confirmer ci-dessous',' · Choisir définitivement',' mots · 🔒 Récompense mystère','❔ Récompense mystère','✓ Récompense obtenue · définitive','— Choisir un objet · définitif','Choisir ',' définitivement ? Les autres options de cette étape resteront verrouillées.','mots uniques reconnus','mot','mots','Le choix est définitif.','Activer','Désactiver'
+];
+const es=[
+'Elige tu idioma','Elige un idioma para comenzar. Puedes cambiarlo después en Ajustes.','Ajustes','Cerrar ×','Idioma','Sonidos de Crumb','Mostrar controles de teclado','Enfoca la habitación: izquierda/derecha para elegir, Intro o espacio para tomar o soltar, flechas para mover y Esc para soltar.','Restablecer todo el progreso','Listo','Esto eliminará de este navegador los descubrimientos, premios, juguetes y ajustes de sonido de Crumb.',
+'Una criatura pequeña. Gustos muy suyos.','Notas','Aún no has descubierto nada','Un poco hambriento','Curioso','Las peculiaridades de Crumb','Aquí solo aparecen las cosas a las que Crumb ha reaccionado. Prueba comida, objetos, sonidos o palabras para una criatura.','Cerrar ×','Teclado: izquierda/derecha elegir · Intro/espacio tomar o soltar · flechas mover · Esc soltar','Prueba una palabra. Mira qué hace.','Una palabra para Crumb','¿Qué le gustaría a una criatura pequeñita?','Dárselo','Algunas palabras significan mucho. Tendrás que descubrir cuáles.','Un poco de desorden','Nido nuevo','🎁 Premios','Confirmar elección permanente','Cancelar','Cada hito te permite elegir un objeto. La elección es permanente; los demás quedan bloqueados. Toca la ropa que tienes para ponértela y los juguetes para colocarlos o guardarlos. Descubre palabras reconocidas para desbloquear premios.',
+'Aún no has descubierto nada','Páginas en blanco. Un sujeto muy exigente. Empieza a experimentar.','Reacciones especiales','Nombres que Crumb quiere','El almacenamiento no está disponible. Estos descubrimientos solo durarán durante esta visita.',
+'Bien alimentado','Furioso','Encantado','Rebosante de amor','Alarmado','Ofendido','Juguetón','Dormido','Dos Crumbs. Ninguno se hace responsable.',
+'Hay mucho que considerar. Deja que termine de investigar.','El escritorio está lleno. Deja que termine primero.','Crumb está considerando tu ofrenda.','Dos Crumbs son suficientes para un escritorio.','Oh. Sí. Despierto. Completamente despierto.','¿Algo para ti? Deja que elija.','Todavía no hay nada que traer.','Parece que lo entiende.','El escritorio está lleno. Dale una orden o empieza un nido nuevo.','Oh. No. De ninguna manera.','Un escritorio limpio. Un nuevo comienzo. Crumb tiene planes.','Primero hace falta un nido para hacer un desastre.','Una emergencia arquitectónica.','Espera. Tiene una reacción.','Parece que ya está decidido.','Un amigo. Algo muy bueno para tener cerca.','Aquí tienes, como pediste.','Una actuación de considerable mérito artístico.','Su paciencia tiene límites.','No, no. Va aquí.','Eso huele muy prometedor.','Ha dejado muy clara su opinión.','¡Oh! Esto sirve para otra cosa.','Crumb no entiende nada de eso.','Admira el trabajo artesanal, por favor.','El nido sigue aquí. ¿A qué más reacciona?','No elegiste un premio. El hito sigue disponible.','🎁 ¡Nuevo premio! Abre Premios y elige tu favorito.','Seleccionado ','Objeto soltado.','Todavía no hay tarjetas ni juguetes que mover.','¡Crumb patea el balón de fútbol!','Crumb observa el balón con atención.','Has movido uno de los tesoros de Crumb.','Crumb le da un pequeño y cuidadoso abrazo al osito.','Crumb mira dentro de la casa de muñecas. ¿Quién vive ahí?','Crumb investiga su juguete.','Crumb puede ponérselo.','Pertenece al mundo de Crumb.',' ahora está en el mundo de Crumb.',' · En posesión',' · No elegido',' · Confirma abajo',' · Elegir permanentemente',' palabras · 🔒 Premio misterioso','❔ Premio misterioso','✓ Premio obtenido · permanente','— Elige uno · permanente','¿Elegir ',' permanentemente? Las otras opciones de este hito quedarán bloqueadas.','palabras únicas reconocidas','palabra','palabras','La elección es permanente.','Activar','Desactivar'
+];
+const dict={en:Object.fromEntries(keys.map(k=>[k,k]))};
+for(const [code,values] of Object.entries({de,fr,es}))dict[code]=Object.fromEntries(keys.map((k,i)=>[k,values[i]??k]));
+let lang=localStorage.getItem('crumb.language.v1')||'';
+const tr=(text)=>{
+ if(!text||!dict[lang])return text;
+ const raw=String(text),trim=raw.trim();
+ if(dict[lang][trim])return raw.replace(trim,dict[lang][trim]);
+ const patterns=[
+ [/^(\d+) word discovered$/,(m,n)=>n+' Wort entdeckt'],
+ [/^(\d+) words discovered$/,(m,n)=>n+' Wörter entdeckt'],
+ [/^(\d+) palabras descubiertas$/,(m,n)=>n+' palabras descubiertas'],
+ [/^(\d+) mots découverts$/,(m,n)=>n+' mots découverts'],
+ [/^(\d+) Wörter entdeckt$/,(m,n)=>n+' Wörter entdeckt'],
+ [/^(\d+) recognized unique word$/,(m,n)=>n+' erkannte einzigartige Wörter'],
+ [/^(\d+) recognized unique words$/,(m,n)=>n+' erkannte einzigartige Wörter'],
+ [/^(\d+) palabras únicas reconocidas$/,(m,n)=>n+' palabras únicas reconocidas'],
+ [/^(\d+) mots uniques reconnus$/,(m,n)=>n+' mots uniques reconnus'],
+ [/^(\d+) words · (.+)$/,(m,n,r)=>n+' Wörter · '+r],
+ [/^(\d+) mots · (.+)$/,(m,n,r)=>n+' mots · '+r],
+ [/^(\d+) palabras · (.+)$/,(m,n,r)=>n+' palabras · '+r]
+ ];
+ for(const [re,fn] of patterns){const m=trim.match(re);if(m){const translated=fn(...m);if(lang==='de'||lang==='fr'||lang==='es')return raw.replace(trim,translated);}}
+ return text;
+};
+window.crumbTranslate=tr;
+const langLabel=code=>languages[code].flag+' '+languages[code].name;
+const byId=id=>document.getElementById(id);
+function translateTree(root=document.body){
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ for(const n of nodes){const p=n.parentElement;if(!p||/^(SCRIPT|STYLE|TEXTAREA|INPUT|OPTION)$/.test(p.tagName)||p.closest('#crumbLocaleChoices'))continue;const v=tr(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v;}
+ const attrs=['placeholder','aria-label','title'];
+ root.querySelectorAll?.('[placeholder],[aria-label],[title]').forEach(el=>attrs.forEach(a=>{const v=el.getAttribute(a);if(v){const x=tr(v);if(x!==v)el.setAttribute(a,x);}}));
+}
+function applyLanguage(){
+ document.documentElement.lang=lang||'en';
+ translateTree();
+ byId('crumbLocaleTitle').textContent=tr('Choose your language');
+ byId('crumbLocaleIntro').textContent=tr('Pick a language to begin. You can change it later in Settings.');
+ byId('crumbSettingsTitle').textContent=tr('Settings');
+ byId('crumbSettingsClose').textContent=tr('Close ×');
+ byId('crumbLanguageLabel').textContent=tr('Language');
+ byId('crumbSoundLabel').textContent=tr('Crumb sounds');
+ byId('crumbKeyboardLabel').textContent=tr('Show keyboard controls');
+ byId('crumbKeyboardHelp').textContent=tr('Focus the room, use Left/Right to select, Enter or Space to pick up or drop, arrow keys to move, and Escape to release.');
+ byId('crumbReset').textContent=tr('Reset all progress');
+ byId('crumbSettingsDone').textContent=tr('Done');
+ byId('crumbResetHelp').textContent=tr('Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.');
+ byId('crumbSettingsButton').textContent='⚙️ '+tr('Settings');
+ const sound=byId('crumbSound');if(sound)byId('crumbSoundSetting').textContent=tr(sound.textContent);
+ const hint=byId('controlHint');if(hint)hint.hidden=!byId('crumbKeyboardToggle').checked;
+ translateTree(byId('journal'));translateTree(byId('sandboxPanel'));
+}
+function renderLangButtons(){
+ const grid=byId('crumbLocaleChoices'),select=byId('crumbLanguageSelect');grid.replaceChildren();select.replaceChildren();
+ for(const [code,l] of Object.entries(languages)){
+  const b=document.createElement('button');b.type='button';b.dataset.lang=code;b.innerHTML='<span class="crumbFlag">'+l.flag+'</span><span>'+l.name+'</span>';b.onclick=()=>choose(code);grid.appendChild(b);
+  const o=document.createElement('option');o.value=code;o.textContent=l.flag+' '+l.name;select.appendChild(o);
+ }
+}
+function choose(code){lang=languages[code]?code:'en';try{localStorage.setItem('crumb.language.v1',lang);}catch{}byId('crumbLanguageSelect').value=lang;applyLanguage();byId('crumbLocaleGate').close();}
+renderLangButtons();
+byId('crumbSettingsButton').onclick=()=>{byId('crumbLanguageSelect').value=lang||'en';applyLanguage();byId('crumbSettings').showModal();};
+byId('crumbSettingsClose').onclick=byId('crumbSettingsDone').onclick=()=>byId('crumbSettings').close();
+byId('crumbLanguageSelect').onchange=e=>choose(e.target.value);
+byId('crumbSoundSetting').onclick=()=>{byId('crumbSound').click();applyLanguage();};
+byId('crumbKeyboardToggle').onchange=()=>{const hint=byId('controlHint');if(hint)hint.hidden=!byId('crumbKeyboardToggle').checked;try{localStorage.setItem('crumb.keyboardhint.v1',byId('crumbKeyboardToggle').checked?'on':'off');}catch{}};
+try{byId('crumbKeyboardToggle').checked=localStorage.getItem('crumb.keyboardhint.v1')!=='off';}catch{}
+byId('crumbReset').onclick=()=>{if(!confirm(tr('Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.')+'\\n\\n'+tr('Reset all progress')+'?'))return;for(const k of ['crumb.language.v1','crumb.save.v1','crumb.discoveries.v1','crumb.rewards.v1','crumb.audio.v1','crumb.keyboardhint.v1'])try{localStorage.removeItem(k);}catch{}location.reload();};
+const observeIds=['message','journalCount','discoveries','storageNote','sandboxStatus','sandboxConfirmText','sandboxItems'];
+const mo=new MutationObserver(records=>{for(const r of records){const el=r.target.nodeType===1?r.target:r.target.parentElement;if(el&&!el.closest('#crumbLocaleChoices'))translateTree(el);}});
+for(const id of observeIds){const el=byId(id);if(el)mo.observe(el,{subtree:true,childList:true,characterData:true});}
+if(typeof window.refreshJournal==='function'){const prior=window.refreshJournal;window.refreshJournal=function(){prior();translateTree(byId('journal'));};}
+if(typeof window.renderPanel==='function'){const prior=window.renderPanel;window.renderPanel=function(){prior();translateTree(byId('sandboxPanel'));};}
+const gate=byId('crumbLocaleGate');
+if(lang){byId('crumbLanguageSelect').value=lang;applyLanguage();}else gate.showModal();
 })();
 </script>
 </body></html>
