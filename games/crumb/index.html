@@ -317,9 +317,9 @@ enabled=!enabled;try{localStorage.setItem(key,enabled?'on':'off');}catch(e){}
 label();if(enabled){audioContext();sound('happy');}
 });
 label();
-const originalSay=say;
-say=function(msg){
-originalSay(msg);
+// The original game declares say with const; observe its status text instead of reassigning it.
+const status=document.getElementById('message')||message;
+function reactToMessage(msg){
 if(!enabled)return;
 const text=String(msg).toLowerCase();
 if(text.includes('unlocked')||text.includes('reward choice')||text.includes('is yours!'))sound('reward');
@@ -330,6 +330,9 @@ else if(text.includes('dance floor')||text.includes('performance'))sound('dance'
 else if(text.includes('absolutely not')||text.includes('checking for witnesses'))sound('scared');
 else if(text.includes('champion')||text.includes('delighted')||text.includes('love'))sound('happy');
 else if(text.includes('considering your offering'))sound('curious');
-};
+}
+if(status){
+new MutationObserver(()=>reactToMessage(status.textContent)).observe(status,{childList:true,characterData:true,subtree:true});
+}
 })();
 </script></body></html>
