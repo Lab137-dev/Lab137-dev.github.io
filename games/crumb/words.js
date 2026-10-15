@@ -36,7 +36,7 @@ for(const [language,list] of Object.entries(localized)){
  for(const entry of list.split(';')){
   const pair=entry.trim().split(':');if(pair.length<2)continue;
   const alias=normalize(pair[0]),canonical=normalize(pair.slice(1).join(':'));
-  if(alias&&canonical&&alias!==canonical)localizedAliases[alias]={canonical,language};
+  if(alias&&canonical&&alias!==canonical){const known=localizedAliases[alias];if(known&&known.canonical===canonical&&known.language!==language)known.language=null;else if(!known)localizedAliases[alias]={canonical,language};else if(known.canonical!==canonical)localizedAliases[alias]={canonical,language:null};}
  }
 }
 const baseVariants={...variants,crumbs:'crumb',berries:'berry',oats:'oat',seeds:'seed',twigs:'twig',leaves:'leaf',feathers:'feather',scraps:'scrap',pickles:'pickle',bubbles:'bubble',sticks:'stick',branches:'branch',pebbles:'pebble',stones:'stone',acorns:'acorn',shells:'shell',bombs:'bomb',hatred:'hate',bullying:'bully',mack:'mac',friends:'friend',stasia:'anastasia'};
