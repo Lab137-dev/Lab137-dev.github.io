@@ -85,4 +85,100 @@ const n=nest();ctx.save();ctx.translate(n.x,n.y+8);ctx.fillStyle='#64523818';ctx
 // A forgotten spool gives the little world a human scale.
 ctx.save();ctx.translate(W*.10,H*.46);ctx.rotate(-.12);ctx.fillStyle='#a8926b';ctx.fillRect(-12,-25,24,35);ctx.fillStyle='#d6c7a8';ctx.beginPath();ctx.ellipse(0,-25,20,7,0,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(0,10,20,7,0,0,7);ctx.fill();ctx.strokeStyle='#d7c9a6';ctx.lineWidth=1;for(let i=0;i<8;i++){ctx.beginPath();ctx.moveTo(-12,-20+i*4);ctx.lineTo(12,-20+i*4);ctx.stroke();}ctx.restore();for(const t of treasures)if(t!==carry&&t!==drag)drawWord(t);const size=twin?1-(splitProgress*.26):1;drawCreature(creature,size);if(twin)drawCreature(twin,size);if(carry)drawWord(carry);if(drag)drawWord(drag);for(const e of effects){ctx.save();ctx.globalAlpha=Math.min(1,e.life);ctx.fillStyle='#7e7056';ctx.textAlign='center';ctx.font='20px Georgia';ctx.fillText(e.symbol,e.x,e.y);ctx.restore();}}
 function frame(now){const dt=last?Math.min(.04,(now-last)/1000):0;last=now;update(dt);draw();requestAnimationFrame(frame);}requestAnimationFrame(frame);if(treasures.length)say('The nest is still here. What else does it respond to?');
+</script>
+<style>
+#sandboxToggle{position:absolute;right:5%;top:102px;z-index:3;background:#f8f3e8;color:#465448;border:1px solid #b7aa91}
+#sandboxPanel{position:absolute;right:5%;top:150px;z-index:5;width:min(320px,90vw);max-height:58vh;overflow:auto;background:#f8f1e4f5;border:1px solid #b7aa91;border-radius:15px;padding:14px;box-shadow:0 12px 35px #473b2b33;font:13px system-ui,sans-serif}
+#sandboxPanel[hidden]{display:none}#sandboxPanel h3{margin:6px 0 12px;font-size:16px}#sandboxItems{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+#sandboxItems button{background:#e5dbc8;color:#4b493e;border:1px solid #c4b79f;padding:9px 5px;font-size:12px}#sandboxItems button:disabled{opacity:.5;cursor:default}#sandboxItems button.active{outline:2px solid #536c54}
+#sandboxStatus{margin:8px 0 12px;color:#665e4e;line-height:1.5}
+@media(max-width:600px){#sandboxToggle{top:95px;right:5%;font-size:11px;padding:8px}#sandboxPanel{top:135px;max-height:48vh}}
+</style>
+<button id="sandboxToggle" type="button">🎁 Rewards</button>
+<section id="sandboxPanel" hidden aria-label="Crumb's rewards"><h3>Crumb's little treasures</h3><div id="sandboxStatus"></div><div id="sandboxItems"></div><p>Tap a wearable to dress Crumb. Tap furniture to place or remove it. Discover new words to unlock more.</p></section>
+<script>
+(function(){
+'use strict';
+const catalog=[
+{id:'bow',name:'Little bow',emoji:'🎀',at:5,type:'wear'},
+{id:'hat',name:'Tall hat',emoji:'🎩',at:10,type:'wear'},
+{id:'box',name:'Hideaway box',emoji:'📦',at:15,type:'world'},
+{id:'ball',name:'Bouncy ball',emoji:'⚽',at:20,type:'world'},
+{id:'shoes',name:'Tiny shoes',emoji:'👟',at:30,type:'wear'},
+{id:'plant',name:'Potted plant',emoji:'🪴',at:40,type:'world'},
+{id:'crown',name:'Royal crown',emoji:'👑',at:55,type:'wear'},
+{id:'pillow',name:'Sleepy pillow',emoji:'🛏️',at:70,type:'world'},
+{id:'glasses',name:'Fancy glasses',emoji:'🕶️',at:90,type:'wear'},
+{id:'duck',name:'Rubber duck',emoji:'🦆',at:110,type:'world'}];
+const key='crumb.sandbox.v1';
+let state={words:[],wear:null,placed:[]};
+try{const s=JSON.parse(localStorage.getItem(key)||'{}');if(Array.isArray(s.words))state.words=s.words.filter(x=>typeof x==='string').slice(0,10000);if(typeof s.wear==='string')state.wear=s.wear;if(Array.isArray(s.placed))state.placed=s.placed.filter(x=>typeof x==='string');}catch(e){}
+const persist=()=>{try{localStorage.setItem(key,JSON.stringify(state));}catch(e){}};
+const panel=document.getElementById('sandboxPanel'),items=document.getElementById('sandboxItems'),status=document.getElementById('sandboxStatus');
+document.getElementById('sandboxToggle').onclick=()=>{panel.hidden=!panel.hidden;renderPanel();};
+function renderPanel(){
+status.textContent=state.words.length+' unique words discovered · '+catalog.filter(x=>state.words.length>=x.at).length+'/'+catalog.length+' rewards unlocked';
+items.replaceChildren();
+catalog.forEach(item=>{
+const unlocked=state.words.length>=item.at;
+const btn=document.createElement('button');
+btn.type='button';btn.disabled=!unlocked;
+btn.textContent=item.emoji+' '+item.name+(unlocked?'':' · '+item.at+' words 🔒');
+btn.className=(item.type==='wear'?state.wear===item.id:state.placed.includes(item.id))?'active':'';
+btn.onclick=()=>{
+if(item.type==='wear')state.wear=state.wear===item.id?null:item.id;
+else state.placed=state.placed.includes(item.id)?state.placed.filter(x=>x!==item.id):[...state.placed,item.id];
+persist();renderPanel();say(item.name+(item.type==='wear'?' is now in Crumb’s wardrobe.':' has changed the little world.'));
+};items.appendChild(btn);
+});
+}
+const originalGive=giveWord;
+giveWord=function(word,reactNow=false){
+const accepted=originalGive(word,reactNow);
+if(accepted&&!reactNow){
+const normalized=CrumbWords.normalize(String(word).trim());
+if(normalized&&!state.words.includes(normalized)){
+state.words.push(normalized);persist();renderPanel();
+const reward=catalog.find(x=>x.at===state.words.length);
+if(reward)setTimeout(()=>say('🎁 Unlocked: '+reward.name+'! Open Rewards to try it.'),300);
+}}
+return accepted;
+};
+function drawObject(item,x,y){
+ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
+ctx.font=Math.max(30,Math.min(55,W*.055))+'px system-ui';
+ctx.fillText(item.emoji,x,y);ctx.restore();
+}
+const baseDraw=draw;
+draw=function(){
+baseDraw();
+const world=state.placed.map(id=>catalog.find(x=>x.id===id)).filter(Boolean);
+world.forEach((item,i)=>{
+const x=W*(.15+(i%4)*.19),y=H*(.73+Math.floor(i/4)*.09);
+drawObject(item,x,y);
+});
+const wear=catalog.find(x=>x.id===state.wear);
+if(wear){
+const bob=Math.sin(creature.walk)*2;
+ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
+ctx.font='32px system-ui';
+ctx.fillText(wear.emoji,creature.x,creature.y-51+bob);
+ctx.restore();
+}
+};
+let playClock=0;
+const baseUpdate=update;
+update=function(dt){
+baseUpdate(dt);
+if(phase!=='idle'||target||drag||carry||!state.placed.length){playClock=0;return;}
+playClock+=dt;
+if(playClock>12){
+playClock=0;
+const id=state.placed[Math.floor(Math.random()*state.placed.length)];
+const lines={box:'Crumb peeks into its cardboard hideaway.',ball:'Crumb gives the ball an enthusiastic nudge.',plant:'Crumb inspects the leaves suspiciously.',pillow:'Crumb considers a very short nap.',duck:'Crumb and the duck have reached an understanding.'};
+if(lines[id])say(lines[id]);
+}
+};
+renderPanel();
+})();
 </script></body></html>
