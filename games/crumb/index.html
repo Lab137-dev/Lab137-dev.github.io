@@ -188,6 +188,27 @@ if(tiers.includes(state.words.length))setTimeout(()=>say('🎁 New reward choice
 }}
 return accepted;
 };
+const objectPositions={};let toyDrag=null,ballMotion={vx:0,vy:0},ballPlay=0;
+function worldPosition(id,i){return objectPositions[id]||{x:W*(.15+(i%4)*.19),y:H*(.73+Math.floor(i/4)*.09)};}
+canvas.addEventListener('pointerdown',e=>{
+if(drag)return;
+const p=pos(e),ids=state.placed.filter(id=>catalog.some(item=>item.id===id&&item.type==='world'));
+for(let i=ids.length-1;i>=0;i--){
+const xy=worldPosition(ids[i],i);
+if(Math.hypot(p.x-xy.x,p.y-xy.y)<38){
+toyDrag={id:ids[i],pointerId:e.pointerId};
+objectPositions[ids[i]]={...xy};canvas.setPointerCapture(e.pointerId);
+say(ids[i]==='ball'?'Crumb watches the ball intently.':'You moved one of Crumb’s treasures.');
+break;
+}}
+});
+canvas.addEventListener('pointermove',e=>{
+if(!toyDrag)return;
+const p=pos(e),o=objectPositions[toyDrag.id];
+o.x=Math.max(35,Math.min(W-35,p.x));o.y=Math.max(H*.43,Math.min(H*.82,p.y));
+});
+function stopToyDrag(){if(toyDrag){toyDrag=null;ballMotion.vx=0;ballMotion.vy=0;}}
+canvas.addEventListener('pointerup',stopToyDrag);canvas.addEventListener('pointercancel',stopToyDrag);
 function drawObject(item,x,y){
 ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
 ctx.font=Math.max(30,Math.min(55,W*.055))+'px system-ui';
@@ -198,7 +219,7 @@ draw=function(){
 baseDraw();
 const world=state.placed.map(id=>catalog.find(x=>x.id===id)).filter(Boolean);
 world.forEach((item,i)=>{
-const x=W*(.15+(i%4)*.19),y=H*(.73+Math.floor(i/4)*.09);
+const {x,y}=worldPosition(item.id,i);
 drawObject(item,x,y);
 });
 const wear=catalog.find(x=>x.id===state.wear);
@@ -206,7 +227,7 @@ if(wear){
 const bob=Math.sin(creature.walk)*2;
 ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
 ctx.font='32px system-ui';
-ctx.fillText(wear.emoji,creature.x,creature.y-51+bob);
+ctx.fillText(wear.emoji,creature.x,creature.y-(wear.id==='hat'?76:wear.id==='cap'?65:62)+bob);
 ctx.restore();
 }
 };
@@ -214,12 +235,27 @@ let playClock=0;
 const baseUpdate=update;
 update=function(dt){
 baseUpdate(dt);
+const ballIndex=state.placed.indexOf('ball');
+if(ballIndex>=0&&!toyDrag){
+const b=objectPositions.ball||(objectPositions.ball=worldPosition('ball',ballIndex));
+if(Math.abs(ballMotion.vx)+Math.abs(ballMotion.vy)>.5){
+b.x=Math.max(35,Math.min(W-35,b.x+ballMotion.vx*dt));b.y=Math.max(H*.44,Math.min(H*.82,b.y+ballMotion.vy*dt));
+if(b.x<=35||b.x>=W-35)ballMotion.vx*=-.6;if(b.y<=H*.44||b.y>=H*.82)ballMotion.vy*=-.6;
+const damping=Math.exp(-2.4*dt);ballMotion.vx*=damping;ballMotion.vy*=damping;
+}
+if(phase==='idle'&&!target&&!drag&&!carry){
+ballPlay+=dt;
+if(ballPlay>7&&Math.hypot(creature.x-b.x,creature.y-b.y)<135){
+ballPlay=0;const dx=b.x-creature.x,dy=b.y-creature.y,d=Math.max(1,Math.hypot(dx,dy));
+ballMotion.vx=dx/d*155;ballMotion.vy=dy/d*95;say('Crumb kicks the soccer ball!');
+}}
+}
 if(phase!=='idle'||target||drag||carry||!state.placed.length){playClock=0;return;}
 playClock+=dt;
 if(playClock>12){
 playClock=0;
 const id=state.placed[Math.floor(Math.random()*state.placed.length)];
-const lines={box:'Crumb peeks into its cardboard hideaway.',ball:'Crumb gives the ball an enthusiastic nudge.',plant:'Crumb inspects the leaves suspiciously.',pillow:'Crumb considers a very short nap.',duck:'Crumb and the duck have reached an understanding.'};
+const lines={box:'Crumb peeks into its cardboard hideaway.',plant:'Crumb inspects the leaves suspiciously.',pillow:'Crumb considers a very short nap.',duck:'Crumb and the duck have reached an understanding.'};
 if(lines[id])say(lines[id]);
 }
 };
