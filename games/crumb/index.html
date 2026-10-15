@@ -39,7 +39,7 @@ function burst(symbol,count=5){for(let i=0;i<count;i++)effects.push({symbol,x:cr
 function roamingPoint(){return{x:W*(.15+Math.random()*.68),y:H*(.47+Math.random()*.18)};}
 function updateTwin(dt){if(!twin)return;twin.age+=dt;if(phase==='special'&&command==='mitosis'){splitProgress=Math.min(1,timer/2.5);twin.x=creature.x+Math.sin(splitProgress*Math.PI/2)*Math.min(80,W*.22);twin.y=creature.y;return;}if(twin.age>22){const dx=creature.x-twin.x,dy=creature.y-twin.y,d=Math.hypot(dx,dy);if(d<5){twin=null;splitProgress=0;burst('✦',3);return;}const step=Math.min(d,90*dt);twin.x+=dx/d*step;twin.y+=dy/d*step;twin.walk+=step*.1;return;}if(phase==='command'&&command==='sleep')return;twin.pause-=dt;if(!twin.goal&&twin.pause<=0)twin.goal=roamingPoint();if(twin.goal){const dx=twin.goal.x-twin.x,dy=twin.goal.y-twin.y,d=Math.hypot(dx,dy);if(d<3){twin.goal=null;twin.pause=1+Math.random()*2;}else{const step=Math.min(d,42*dt);twin.x+=dx/d*step;twin.y+=dy/d*step;twin.walk+=step*.1;}}}
 function update(dt){idleWalking=false;updateTwin(dt);clock+=dt;timer+=dt;hunger=Math.min(1,hunger+dt*.0015);joy=Math.max(0,joy-dt*.008);for(const e of effects){e.x+=e.vx*dt;e.y+=e.vy*dt;e.life-=dt;}effects=effects.filter(e=>e.life>0);for(const t of treasures){t.age=(t.age||0)+dt;}treasures=treasures.filter(t=>!(t.processed&&!t.settled&&t!==target&&t!==drag&&t.age>35));
-document.getElementById('hunger').textContent=hunger>.75?'Quite hungry':hunger>.4?'A little peckish':'Comfortably fed';document.getElementById('mood').textContent=phase==='personal'?(command==='fury'?'Furious':command==='roll'?'Delighted':'Overflowing with love'):phase==='fright'?'Alarmed':phase==='sneeze'?'Offended':phase==='play'||joy>.3?'Playful':phase==='command'&&command==='sleep'?'Asleep':phase==='eat'?'Delighted':'Curious';
+document.getElementById('hunger').textContent=hunger>.75?'Quite hungry':hunger>.4?'A little peckish':'Comfortably fed';document.getElementById('mood').textContent=window.crumbTranslate(phase==='personal'?(command==='fury'?'Furious':command==='roll'?'Delighted':'Overflowing with love'):phase==='fright'?'Alarmed':phase==='sneeze'?'Offended':phase==='play'||joy>.3?'Playful':phase==='command'&&command==='sleep'?'Asleep':phase==='eat'?'Delighted':'Curious');
 if(phase==='special'){
 if(command==='mitosis'){if(!twin)twin={x:creature.x,y:creature.y,facing:-1,walk:0,age:0,pause:1,goal:null};if(timer>3.5){splitProgress=1;phase='proud';command=null;timer=0;say('Two Crumbs. Neither accepts responsibility.');}return;}
 if(command==='celebrate'&&Math.floor(timer*4)!==Math.floor((timer-dt)*4))burst('★',3);
@@ -459,6 +459,14 @@ let lang=localStorage.getItem('crumb.language.v1')||'';
 const tr=(text)=>{
  if(!text||!dict[lang])return text;
  const raw=String(text),trim=raw.trim();
+ const status=trim.match(/^(\\d+) recognized unique (?:word|words) · (\\d+) items owned\\.$/);
+ if(status&&lang!=='en'){const d=dict[lang].status||dict[lang].status;return d.replace('{n}',status[1]).replace('{owned}',status[2]);}
+ const tier=trim.match(/^(\\d+) words · 🔒 Mystery reward$/);
+ if(tier&&lang!=='en')return lang==='de'?tier[1]+' Wörter · 🔒 Geheimnisvolle Belohnung':lang==='fr'?tier[1]+' mots · 🔒 Récompense mystère':tier[1]+' palabras · 🔒 Premio misterioso';
+ const choose=trim.match(/^Choose (.+) permanently\\? The other choices at this milestone will stay locked\\.$/);
+ if(choose&&lang!=='en')return (lang==='de'?'Wähle ':lang==='fr'?'Choisir ':'¿Elegir ')+choose[1]+(lang==='de'?' dauerhaft? Die anderen Optionen dieses Meilensteins bleiben gesperrt.':lang==='fr'?' définitivement ? Les autres options de cette étape resteront verrouillées.':' permanentemente? Las otras opciones de este hito quedarán bloqueadas.');
+ const suffixes={de:{' · Owned':' · Im Besitz',' · Not chosen':' · Nicht gewählt',' · Confirm below':' · Unten bestätigen',' · Choose permanently':' · Dauerhaft wählen'},fr:{' · Owned':' · Possédé',' · Not chosen':' · Non choisi',' · Confirm below':' · Confirmer ci-dessous',' · Choose permanently':' · Choisir définitivement'},es:{' · Owned':' · En posesión',' · Not chosen':' · No elegido',' · Confirm below':' · Confirma abajo',' · Choose permanently':' · Elegir permanentemente'}};
+ if(suffixes[lang])for(const [a,b] of Object.entries(suffixes[lang]))if(trim.endsWith(a))return raw.replace(a,b);
  if(dict[lang][trim])return raw.replace(trim,dict[lang][trim]);
  const patterns=[
  [/^(\d+) word discovered$/,(m,n)=>n+' Wort entdeckt'],
@@ -477,6 +485,13 @@ const tr=(text)=>{
  for(const [re,fn] of patterns){const m=trim.match(re);if(m){const translated=fn(...m);if(lang==='de'||lang==='fr'||lang==='es')return raw.replace(trim,translated);}}
  return text;
 };
+
+// Short dynamic interface lines and the category names in Field Notes.
+for(const [code,values] of Object.entries({
+ de:{'🔊 Sound on':'🔊 Ton an','🔇 Sound off':'🔇 Ton aus',food:'Etwas zu essen',nesting:'Nistmaterial',scary:'Dinge zum Verstecken',distasteful:'Auf keinen Fall',playful:'Spielzeug',command:'Wörter, die es versteht',status:'{n} erkannte einzigartige Wörter · {owned} Gegenstände im Besitz.'},
+ fr:{'🔊 Sound on':'🔊 Son activé','🔇 Sound off':'🔇 Son désactivé',food:'À manger',nesting:'Matériaux pour le nid',scary:'De quoi se cacher',distasteful:'Surtout pas',playful:'Jouets',command:'Mots compris',status:'{n} mots uniques reconnus · {owned} objets possédés.'},
+ es:{'🔊 Sound on':'🔊 Sonido activado','🔇 Sound off':'🔇 Sonido desactivado',food:'Algo para comer',nesting:'Materiales para el nido',scary:'Cosas que dan miedo',distasteful:'Ni hablar',playful:'Juguetes',command:'Palabras que entiende',status:'{n} palabras únicas reconocidas · {owned} objetos.'}
+}))Object.assign(dict[code],values);
 window.crumbTranslate=tr;
 const langLabel=code=>languages[code].flag+' '+languages[code].name;
 const byId=id=>document.getElementById(id);
@@ -490,6 +505,8 @@ function translateTree(root=document.body){
 function applyLanguage(){
  document.documentElement.lang=lang||'en';
  translateTree();
+ if(window.CrumbWords?.labels){const labels={de:{food:'Etwas zu essen',nesting:'Nistmaterial',scary:'Dinge zum Verstecken',distasteful:'Auf keinen Fall',playful:'Spielzeug',command:'Wörter, die es versteht'},fr:{food:'À manger',nesting:'Matériaux pour le nid',scary:'De quoi se cacher',distasteful:'Surtout pas',playful:'Jouets',command:'Mots compris'},es:{food:'Algo para comer',nesting:'Materiales para el nido',scary:'Cosas que dan miedo',distasteful:'Ni hablar',playful:'Juguetes',command:'Palabras que entiende'}}[lang];if(labels)Object.assign(window.CrumbWords.labels,labels);}
+
  byId('crumbLocaleTitle').textContent=tr('Choose your language');
  byId('crumbLocaleIntro').textContent=tr('Pick a language to begin. You can change it later in Settings.');
  byId('crumbSettingsTitle').textContent=tr('Settings');
@@ -521,7 +538,7 @@ byId('crumbLanguageSelect').onchange=e=>choose(e.target.value);
 byId('crumbSoundSetting').onclick=()=>{byId('crumbSound').click();applyLanguage();};
 byId('crumbKeyboardToggle').onchange=()=>{const hint=byId('controlHint');if(hint)hint.hidden=!byId('crumbKeyboardToggle').checked;try{localStorage.setItem('crumb.keyboardhint.v1',byId('crumbKeyboardToggle').checked?'on':'off');}catch{}};
 try{byId('crumbKeyboardToggle').checked=localStorage.getItem('crumb.keyboardhint.v1')!=='off';}catch{}
-byId('crumbReset').onclick=()=>{if(!confirm(tr('Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.')+'\\n\\n'+tr('Reset all progress')+'?'))return;for(const k of ['crumb.language.v1','crumb.save.v1','crumb.discoveries.v1','crumb.rewards.v1','crumb.audio.v1','crumb.keyboardhint.v1'])try{localStorage.removeItem(k);}catch{}location.reload();};
+byId('crumbReset').onclick=()=>{if(!confirm(tr('Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.')+'\\n\\n'+tr('Reset all progress')+'?'))return;for(const k of ['crumb.language.v1','crumb.nest.v1','crumb.discoveries.v1','crumb.sandbox.v1','crumb.audio.v1','crumb.keyboardhint.v1'])try{localStorage.removeItem(k);}catch{}location.reload();};
 const observeIds=['message','journalCount','discoveries','storageNote','sandboxStatus','sandboxConfirmText','sandboxItems'];
 const mo=new MutationObserver(records=>{for(const r of records){const el=r.target.nodeType===1?r.target:r.target.parentElement;if(el&&!el.closest('#crumbLocaleChoices'))translateTree(el);}});
 for(const id of observeIds){const el=byId(id);if(el)mo.observe(el,{subtree:true,childList:true,characterData:true});}
