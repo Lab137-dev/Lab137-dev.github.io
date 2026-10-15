@@ -276,63 +276,78 @@ renderPanel();
 <script>
 (function(){
 'use strict';
-// Lightweight, locally synthesized sounds. No downloads, speech or autoplay.
 const key='crumb.audio.v1',button=document.getElementById('crumbSound');
-let enabled=false,context=null,lastSound=0;
+let enabled=false,ac=null,lastVoice=0,lastPhase='',lastCommand='',ambient=0,previousStep=0,previousTime=performance.now(),lastStatus='';
 try{enabled=localStorage.getItem(key)==='on';}catch(e){}
 function label(){button.textContent=enabled?'🔊 Sound on':'🔇 Sound off';button.setAttribute('aria-pressed',String(enabled));}
-function audioContext(){
+function context(){
 if(!enabled)return null;
-if(!context){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{context=new C();}catch(e){return null;}}
-if(context.state==='suspended')context.resume().catch(()=>{});
-return context;
+if(!ac){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{ac=new C();}catch(e){return null;}}
+if(ac.state==='suspended')ac.resume().catch(()=>{});
+return ac;
 }
-function note(freq,end,duration,shape='sine',volume=.055,delay=0){
-const ac=audioContext();if(!ac)return;
-const t=ac.currentTime+delay,o=ac.createOscillator(),g=ac.createGain();
-o.type=shape;o.frequency.setValueAtTime(Math.max(30,freq),t);
-o.frequency.exponentialRampToValueAtTime(Math.max(30,end),t+duration);
-g.gain.setValueAtTime(.0001,t);
-g.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),t+.012);
-g.gain.exponentialRampToValueAtTime(.0001,t+duration);
-o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+duration+.02);
+// Layered pitched chirps with a soft breathy overtone; consistent timbre across emotions.
+function syllable(f0,f1,length,delay=0,volume=.055,rough=0){
+const c=context();if(!c)return;const t=c.currentTime+delay;
+const gain=c.createGain(),filter=c.createBiquadFilter();filter.type='lowpass';filter.frequency.value=rough?1350:2200;
+gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),t+.025);
+gain.gain.exponentialRampToValueAtTime(.0001,t+length);
+filter.connect(gain);gain.connect(c.destination);
+for(const [ratio,level,wave] of [[1,1,'triangle'],[2,.18,'sine'],[.5,rough?.19:.07,'sawtooth']]){
+const o=c.createOscillator(),g=c.createGain();o.type=wave;
+o.frequency.setValueAtTime(Math.max(35,f0*ratio),t);
+o.frequency.exponentialRampToValueAtTime(Math.max(35,f1*ratio),t+length);
+g.gain.value=level;o.connect(g);g.connect(filter);o.start(t);o.stop(t+length+.025);
 }
-function sound(kind){
-if(!enabled)return;
-const now=performance.now();if(now-lastSound<190)return;lastSound=now;
+}
+function voice(kind,force=false){
+if(!enabled)return;const now=performance.now();if(!force&&now-lastVoice<340)return;lastVoice=now;
 switch(kind){
-case 'happy':note(570,940,.17);note(720,1150,.18,'sine',.045,.13);break;
-case 'angry':note(230,85,.3,'sawtooth',.025);note(155,80,.17,'square',.012,.18);break;
-case 'sad':note(500,230,.38,'sine',.045);note(350,170,.3,'sine',.03,.27);break;
-case 'dance':for(let i=0;i<4;i++)note([440,660,550,880][i],[520,780,650,1040][i],.11,'triangle',.035,i*.14);break;
-case 'scared':note(900,340,.25,'triangle',.04);break;
-case 'ball':note(160,85,.11,'sine',.08);note(410,230,.09,'triangle',.018,.05);break;
-case 'reward':note(440,570,.13,'sine',.04);note(590,780,.13,'sine',.04,.13);note(780,1050,.25,'sine',.05,.26);break;
-case 'curious':note(390,520,.12,'sine',.025);break;
-default:note(400,510,.12,'sine',.025);
+case 'curious':syllable(330,520,.15);syllable(450,660,.14,.17,.035);break;
+case 'happy':syllable(460,690,.13);syllable(570,900,.13,.14);syllable(680,960,.18,.29,.042);break;
+case 'sad':syllable(400,255,.4,0,.045);syllable(290,175,.36,.35,.025);break;
+case 'angry':syllable(285,160,.13,0,.06,1);syllable(240,105,.16,.16,.05,1);syllable(190,85,.24,.36,.042,1);break;
+case 'offended':syllable(680,390,.12,0,.05,1);syllable(240,160,.28,.19,.032,1);break;
+case 'nervous':syllable(620,870,.09);syllable(770,510,.11,.12,.035);break;
+case 'dance':for(let i=0;i<4;i++)syllable([440,550,480,670][i],[570,710,620,850][i],.12,i*.17,.035);break;
+case 'sleep':syllable(140,100,.43,0,.018);break;
+case 'ball':syllable(220,110,.10,0,.045);syllable(420,550,.1,.10,.02);break;
+case 'reward':syllable(400,570,.14);syllable(550,760,.14,.16);syllable(690,990,.23,.32);break;
+default:syllable(350,470,.13);
 }
 }
-button.addEventListener('click',()=>{
-enabled=!enabled;try{localStorage.setItem(key,enabled?'on':'off');}catch(e){}
-label();if(enabled){audioContext();sound('happy');}
-});
+button.addEventListener('click',()=>{enabled=!enabled;try{localStorage.setItem(key,enabled?'on':'off');}catch(e){}label();if(enabled){context();voice('curious',true);}});
 label();
-// The original game declares say with const; observe its status text instead of reassigning it.
-const status=document.getElementById('message')||message;
-function reactToMessage(msg){
+// React to the creature's real animation state, not just status captions.
+const oldUpdate=update;
+update=function(dt){
+oldUpdate(dt);
 if(!enabled)return;
-const text=String(msg).toLowerCase();
-if(text.includes('unlocked')||text.includes('reward choice')||text.includes('is yours!'))sound('reward');
-else if(text.includes('kicks the soccer ball'))sound('ball');
-else if(text.includes('tiny feelings')||text.includes('hurt its'))sound('sad');
-else if(text.includes('ruined')||text.includes('loss of composure')||text.includes('architectural emergency'))sound('angry');
-else if(text.includes('dance floor')||text.includes('performance'))sound('dance');
-else if(text.includes('absolutely not')||text.includes('checking for witnesses'))sound('scared');
-else if(text.includes('champion')||text.includes('delighted')||text.includes('love'))sound('happy');
-else if(text.includes('considering your offering'))sound('curious');
+const p=phase,c=command||'';
+if(p!==lastPhase||c!==lastCommand){
+const initial=lastPhase==='';lastPhase=p;lastCommand=c;
+if(!initial){
+if(p==='special')voice(({comeback:'sad',fury:'angry',nervous:'nervous',disco:'dance',celebrate:'happy',rain:'offended',mitosis:'curious'})[c]||'curious');
+else if(p==='personal')voice(c==='fury'?'angry':'happy');
+else if(p==='fright'||p==='sneeze')voice('offended');
+else if(p==='eat'||p==='play')voice('happy');
+else if(p==='command'&&(c==='dance'||c==='spin'))voice('dance');
+else if(p==='command'&&c==='sleep')voice('sleep');
 }
-if(status){
-new MutationObserver(()=>reactToMessage(status.textContent)).observe(status,{childList:true,characterData:true,subtree:true});
 }
+if(p==='special'&&c==='disco'&&timer>1&&Math.floor(timer*1.2)!==Math.floor((timer-dt)*1.2))voice('dance');
+if(p==='personal'&&c==='fury'&&timer>1&&Math.floor(timer*1.6)!==Math.floor((timer-dt)*1.6))voice('angry');
+if(p==='command'&&c==='sleep'&&Math.floor(timer/3)!==Math.floor((timer-dt)/3))voice('sleep');
+ambient+=dt;
+if(ambient>16&&p==='idle'&&!target&&!drag&&!carry){ambient=0;if(Math.random()<.42)voice('curious');}
+};
+const status=document.getElementById('message')||message;
+if(status)new MutationObserver(()=>{
+const txt=status.textContent||'';if(txt===lastStatus)return;lastStatus=txt;
+const m=txt.toLowerCase();
+if(m.includes('kicks the soccer ball'))voice('ball');
+else if(m.includes('reward')&&(/unlocked|yours|choose|earned/.test(m)))voice('reward');
+else if(m.includes('ruined')||m.includes('architectural emergency'))voice('angry');
+}).observe(status,{childList:true,characterData:true,subtree:true});
 })();
-</script></body></html>
+</body></html>
