@@ -400,7 +400,7 @@ else if(m.includes('ruined')||m.includes('architectural emergency'))voice('angry
 .crumbLangGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}
 .crumbLangGrid button{display:flex;align-items:center;gap:10px;justify-content:flex-start;background:#eee6d7;color:#403e37;border:1px solid #c9bda9;padding:14px;border-radius:13px;font:15px system-ui,sans-serif}
 .crumbLangGrid button:hover,.crumbLangGrid button:focus-visible{outline:2px solid #69785c;background:#e6e9db}
-.crumbFlag{font-size:27px}
+.crumbFlag{display:block;width:36px;height:24px;flex:0 0 36px;border:1px solid #8c806d;border-radius:3px;box-shadow:0 1px 2px #342a2022}
 #crumbSettings label{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid #e2d9ca}
 #crumbSettings select{margin-left:auto;padding:9px;border:1px solid #b7aa91;border-radius:9px;background:#fffaf0;color:#403e37}
 #crumbSettings .crumbSettingsActions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
@@ -419,7 +419,7 @@ else if(m.includes('ruined')||m.includes('architectural emergency'))voice('angry
 <dialog id="crumbSettings" aria-labelledby="crumbSettingsTitle">
 <button class="crumbClose" id="crumbSettingsClose" type="button">Close ×</button>
 <h2 id="crumbSettingsTitle">Settings</h2>
-<label><span id="crumbLanguageLabel">Language</span><select id="crumbLanguageSelect"></select></label>
+<label><span id="crumbLanguageLabel">Language</span><span id="crumbCurrentFlag"></span><select id="crumbLanguageSelect"></select></label>
 <label><span id="crumbSoundLabel">Crumb sounds</span><button id="crumbSoundSetting" type="button">🔇 Sound off</button></label>
 <label><input id="crumbKeyboardToggle" type="checkbox" checked><span id="crumbKeyboardLabel">Show keyboard controls</span></label>
 <p id="crumbKeyboardHelp">Focus the room, use Left/Right to select, Enter or Space to pick up or drop, arrow keys to move, and Escape to release.</p>
@@ -543,6 +543,7 @@ function applyLanguage(){
  byId('crumbSettingsTitle').textContent=tr('Settings');
  byId('crumbSettingsClose').textContent=tr('Close ×');
  byId('crumbLanguageLabel').textContent=tr('Language');
+ byId('crumbCurrentFlag').innerHTML=flagSvg(lang||'en');
  byId('crumbSoundLabel').textContent=tr('Crumb sounds');
  byId('crumbKeyboardLabel').textContent=tr('Show keyboard controls');
  byId('crumbKeyboardHelp').textContent=tr('Focus the room, use Left/Right to select, Enter or Space to pick up or drop, arrow keys to move, and Escape to release.');
@@ -554,11 +555,21 @@ function applyLanguage(){
  const hint=byId('controlHint');if(hint)hint.hidden=!byId('crumbKeyboardToggle').checked;
  translateTree(byId('journal'));translateTree(byId('sandboxPanel'));
 }
+function flagSvg(code){
+ const name=languages[code]?.name||'English';
+ const flags={
+  en:'<rect width="36" height="24" fill="#fff"/><path stroke="#bd3440" stroke-width="2" d="M0 1h36M0 5h36M0 9h36M0 13h36M0 17h36M0 21h36"/><path fill="#274878" d="M0 0h16v13H0z"/><g fill="#fff"><circle cx="3" cy="3" r=".8"/><circle cx="8" cy="3" r=".8"/><circle cx="13" cy="3" r=".8"/><circle cx="5.5" cy="6.5" r=".8"/><circle cx="10.5" cy="6.5" r=".8"/><circle cx="3" cy="10" r=".8"/><circle cx="8" cy="10" r=".8"/><circle cx="13" cy="10" r=".8"/></g>',
+  de:'<rect width="36" height="8" fill="#171717"/><rect y="8" width="36" height="8" fill="#d83a35"/><rect y="16" width="36" height="8" fill="#f1c64a"/>',
+  fr:'<rect width="12" height="24" fill="#24468f"/><rect x="12" width="12" height="24" fill="#fff"/><rect x="24" width="12" height="24" fill="#d94343"/>',
+  es:'<rect width="36" height="6" fill="#c62828"/><rect y="6" width="36" height="12" fill="#f4c542"/><rect y="18" width="36" height="6" fill="#c62828"/>'
+ };
+ return '<svg class="crumbFlag" viewBox="0 0 36 24" role="img" aria-label="'+name+' flag"><title>'+name+' flag</title>'+(flags[code]||flags.en)+'</svg>';
+}
 function renderLangButtons(){
  const grid=byId('crumbLocaleChoices'),select=byId('crumbLanguageSelect');grid.replaceChildren();select.replaceChildren();
  for(const [code,l] of Object.entries(languages)){
-  const b=document.createElement('button');b.type='button';b.dataset.lang=code;b.innerHTML='<span class="crumbFlag">'+l.flag+'</span><span>'+l.name+'</span>';b.onclick=()=>choose(code);grid.appendChild(b);
-  const o=document.createElement('option');o.value=code;o.textContent=l.flag+' '+l.name;select.appendChild(o);
+  const b=document.createElement('button');b.type='button';b.dataset.lang=code;b.innerHTML=flagSvg(code)+'<span>'+l.name+'</span>';b.onclick=()=>choose(code);grid.appendChild(b);
+  const o=document.createElement('option');o.value=code;o.textContent=l.name;select.appendChild(o);
  }
 }
 function choose(code){lang=languages[code]?code:'en';try{localStorage.setItem('crumb.language.v1',lang);}catch{}byId('crumbLanguageSelect').value=lang;applyLanguage();byId('crumbLocaleGate').close();}
