@@ -134,7 +134,21 @@ const tiers=[5,10,15,20,30,40,55,70,90,110];
 const key='crumb.sandbox.v1';
 let state={words:[],wear:null,placed:[],chosen:[]};
 try{const s=JSON.parse(localStorage.getItem(key)||'{}');if(Array.isArray(s.words))state.words=s.words.filter(x=>typeof x==='string').slice(0,10000);if(typeof s.wear==='string')state.wear=s.wear;if(Array.isArray(s.placed))state.placed=s.placed.filter(x=>typeof x==='string');if(Array.isArray(s.chosen))state.chosen=s.chosen.filter(x=>typeof x==='string');else state.chosen=[s.wear,...state.placed].filter(x=>catalog.some(i=>i.id===x));}catch(e){}
+// Import older Field Notes without changing or deleting the original record.
+// A word is credited only once, even if it already exists in sandbox progress.
+try{
+const oldNotes=JSON.parse(localStorage.getItem('crumb.discoveries.v1')||'{}');
+if(oldNotes&&typeof oldNotes==='object'&&!Array.isArray(oldNotes)){
+const merged=new Set(state.words.map(w=>CrumbWords.normalize(w)).filter(Boolean));
+for(const [word,kind] of Object.entries(oldNotes)){
+const normalized=CrumbWords.normalize(word);
+if(normalized&&kind!=='unknown'&&kind!=='personal'&&CrumbWords.classify(normalized).kind===kind)merged.add(normalized);
+}
+state.words=[...merged];
+}
+}catch(e){}
 const persist=()=>{try{localStorage.setItem(key,JSON.stringify(state));}catch(e){}};
+persist();
 const panel=document.getElementById('sandboxPanel'),items=document.getElementById('sandboxItems'),status=document.getElementById('sandboxStatus');
 document.getElementById('sandboxToggle').onclick=()=>{panel.hidden=!panel.hidden;renderPanel();};
 function renderPanel(){
