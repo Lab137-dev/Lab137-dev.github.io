@@ -109,27 +109,58 @@ const catalog=[
 {id:'crown',name:'Royal crown',emoji:'👑',at:55,type:'wear'},
 {id:'pillow',name:'Sleepy pillow',emoji:'🛏️',at:70,type:'world'},
 {id:'glasses',name:'Fancy glasses',emoji:'🕶️',at:90,type:'wear'},
-{id:'duck',name:'Rubber duck',emoji:'🦆',at:110,type:'world'}];
+{id:'duck',name:'Rubber duck',emoji:'🦆',at:110,type:'world'},
+{id:'cap',name:'Baseball cap',emoji:'🧢',at:5,type:'wear'},
+{id:'flower',name:'Flower pot',emoji:'🌻',at:5,type:'world'},
+{id:'ribbon',name:'Ribbon',emoji:'🎗️',at:10,type:'wear'},
+{id:'bear',name:'Teddy bear',emoji:'🧸',at:10,type:'world'},
+{id:'gift',name:'Gift box',emoji:'🎁',at:15,type:'world'},
+{id:'scarf',name:'Cozy scarf',emoji:'🧣',at:15,type:'wear'},
+{id:'yarn',name:'Ball of yarn',emoji:'🧶',at:20,type:'world'},
+{id:'blocks',name:'Toy blocks',emoji:'🧩',at:20,type:'world'},
+{id:'boots',name:'Rain boots',emoji:'🥾',at:30,type:'wear'},
+{id:'lamp',name:'Little lamp',emoji:'💡',at:30,type:'world'},
+{id:'tree',name:'Little tree',emoji:'🌳',at:40,type:'world'},
+{id:'mask',name:'Party mask',emoji:'🎭',at:40,type:'wear'},
+{id:'castle',name:'Tiny castle',emoji:'🏰',at:55,type:'world'},
+{id:'star',name:'Star wand',emoji:'🪄',at:55,type:'wear'},
+{id:'blanket',name:'Soft blanket',emoji:'🧺',at:70,type:'world'},
+{id:'moon',name:'Moon lamp',emoji:'🌙',at:70,type:'world'},
+{id:'monocle',name:'Monocle',emoji:'🧐',at:90,type:'wear'},
+{id:'radio',name:'Tiny radio',emoji:'📻',at:90,type:'world'},
+{id:'pond',name:'Mini pond',emoji:'🪷',at:110,type:'world'},
+{id:'rocket',name:'Toy rocket',emoji:'🚀',at:110,type:'world'}];
+const tiers=[5,10,15,20,30,40,55,70,90,110];
 const key='crumb.sandbox.v1';
-let state={words:[],wear:null,placed:[]};
-try{const s=JSON.parse(localStorage.getItem(key)||'{}');if(Array.isArray(s.words))state.words=s.words.filter(x=>typeof x==='string').slice(0,10000);if(typeof s.wear==='string')state.wear=s.wear;if(Array.isArray(s.placed))state.placed=s.placed.filter(x=>typeof x==='string');}catch(e){}
+let state={words:[],wear:null,placed:[],chosen:[]};
+try{const s=JSON.parse(localStorage.getItem(key)||'{}');if(Array.isArray(s.words))state.words=s.words.filter(x=>typeof x==='string').slice(0,10000);if(typeof s.wear==='string')state.wear=s.wear;if(Array.isArray(s.placed))state.placed=s.placed.filter(x=>typeof x==='string');if(Array.isArray(s.chosen))state.chosen=s.chosen.filter(x=>typeof x==='string');else state.chosen=[s.wear,...state.placed].filter(x=>catalog.some(i=>i.id===x));}catch(e){}
 const persist=()=>{try{localStorage.setItem(key,JSON.stringify(state));}catch(e){}};
 const panel=document.getElementById('sandboxPanel'),items=document.getElementById('sandboxItems'),status=document.getElementById('sandboxStatus');
 document.getElementById('sandboxToggle').onclick=()=>{panel.hidden=!panel.hidden;renderPanel();};
 function renderPanel(){
-status.textContent=state.words.length+' unique words discovered · '+catalog.filter(x=>state.words.length>=x.at).length+'/'+catalog.length+' rewards unlocked';
+const count=state.words.length;
+status.textContent=count+' unique words · '+state.chosen.length+' rewards claimed. Choose one reward per milestone; unchosen items may appear again in future updates.';
 items.replaceChildren();
-catalog.forEach(item=>{
-const unlocked=state.words.length>=item.at;
+tiers.forEach(at=>{
+const group=document.createElement('div');group.style.gridColumn='1 / -1';
+group.style.fontWeight='bold';group.style.marginTop='9px';
+const choices=catalog.filter(x=>x.at===at);
+const selected=state.chosen.find(id=>choices.some(x=>x.id===id));
+group.textContent=at+' words '+(count<at?'🔒':selected?'✓ claimed':'— choose one!');
+items.appendChild(group);
+choices.forEach(item=>{
+const unlocked=count>=at,owned=state.chosen.includes(item.id);
 const btn=document.createElement('button');
-btn.type='button';btn.disabled=!unlocked;
-btn.textContent=item.emoji+' '+item.name+(unlocked?'':' · '+item.at+' words 🔒');
+btn.type='button';btn.disabled=!unlocked||!!selected&&!owned;
+btn.textContent=item.emoji+' '+item.name+(owned?' ✓':!unlocked?' 🔒':'');
 btn.className=(item.type==='wear'?state.wear===item.id:state.placed.includes(item.id))?'active':'';
 btn.onclick=()=>{
+if(!state.chosen.includes(item.id)){if(selected)return;state.chosen.push(item.id);}
 if(item.type==='wear')state.wear=state.wear===item.id?null:item.id;
 else state.placed=state.placed.includes(item.id)?state.placed.filter(x=>x!==item.id):[...state.placed,item.id];
-persist();renderPanel();say(item.name+(item.type==='wear'?' is now in Crumb’s wardrobe.':' has changed the little world.'));
+persist();renderPanel();say(item.name+' is yours! '+(item.type==='wear'?'Crumb can wear it.':'It belongs in Crumb’s world.'));
 };items.appendChild(btn);
+});
 });
 }
 const originalGive=giveWord;
@@ -139,8 +170,7 @@ if(accepted&&!reactNow){
 const normalized=CrumbWords.normalize(String(word).trim());
 if(normalized&&!state.words.includes(normalized)){
 state.words.push(normalized);persist();renderPanel();
-const reward=catalog.find(x=>x.at===state.words.length);
-if(reward)setTimeout(()=>say('🎁 Unlocked: '+reward.name+'! Open Rewards to try it.'),300);
+if(tiers.includes(state.words.length))setTimeout(()=>say('🎁 New reward choice! Open Rewards and pick your favorite.'),300);
 }}
 return accepted;
 };
