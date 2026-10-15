@@ -153,20 +153,21 @@ const panel=document.getElementById('sandboxPanel'),items=document.getElementByI
 document.getElementById('sandboxToggle').onclick=()=>{panel.hidden=!panel.hidden;renderPanel();};
 function renderPanel(){
 const count=state.words.length;
-status.textContent=count+' unique words · '+state.chosen.length+' rewards claimed. Choose one reward per milestone; unchosen items may appear again in future updates.';
+status.textContent=count+' unique words · '+state.chosen.length+' items owned. Tap an owned item to equip, place or put it away.';
 items.replaceChildren();
 tiers.forEach(at=>{
 const group=document.createElement('div');group.style.gridColumn='1 / -1';
 group.style.fontWeight='bold';group.style.marginTop='9px';
 const choices=catalog.filter(x=>x.at===at);
 const selected=state.chosen.find(id=>choices.some(x=>x.id===id));
-group.textContent=at+' words '+(count<at?'🔒':selected?'✓ claimed':'— choose one!');
+group.textContent=at+' words '+(count<at?'🔒 Locked':selected?'✓ Reward collected':'— Pick one reward');
 items.appendChild(group);
 choices.forEach(item=>{
 const unlocked=count>=at,owned=state.chosen.includes(item.id);
 const btn=document.createElement('button');
 btn.type='button';btn.disabled=!unlocked||!!selected&&!owned;
-btn.textContent=item.emoji+' '+item.name+(owned?' ✓':!unlocked?' 🔒':'');
+const active=item.type==='wear'?state.wear===item.id:state.placed.includes(item.id);
+btn.textContent=item.emoji+' '+item.name+(owned?(active?' · In use':' · Owned'):!unlocked?' 🔒':selected?' · Not chosen':' · Choose');
 btn.className=(item.type==='wear'?state.wear===item.id:state.placed.includes(item.id))?'active':'';
 btn.onclick=()=>{
 if(!state.chosen.includes(item.id)){if(selected)return;state.chosen.push(item.id);}
@@ -227,7 +228,12 @@ if(wear){
 const bob=Math.sin(creature.walk)*2;
 ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
 ctx.font='32px system-ui';
-ctx.fillText(wear.emoji,creature.x,creature.y-(wear.id==='hat'?76:wear.id==='cap'?65:62)+bob);
+const headwear=['hat','cap','crown','bow','flower','ribbon','mask','glasses','monocle','star'];
+const feetwear=['shoes','boots'];
+const neckwear=['scarf'];
+const offset=headwear.includes(wear.id)?(wear.id==='hat'?79:wear.id==='cap'?70:wear.id==='glasses'||wear.id==='monocle'?35:68):feetwear.includes(wear.id)?-27:neckwear.includes(wear.id)?-5:60;
+ctx.font=(neckwear.includes(wear.id)?'25px':feetwear.includes(wear.id)?'26px':'32px')+' system-ui';
+ctx.fillText(wear.emoji,creature.x,creature.y-offset+bob);
 ctx.restore();
 }
 };
