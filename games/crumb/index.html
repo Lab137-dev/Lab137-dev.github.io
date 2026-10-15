@@ -463,18 +463,19 @@ const tr=(text)=>{
  if(!Object.hasOwn(dict[lang]||{},source)){
   outer:for(const code of ['de','fr','es'])for(const [english,localized] of Object.entries(dict[code]))if(localized===source){source=english;break outer;}
  }
- if(lang==='de'){const m=source.match(/^(\\d+) erkannte einzigartige Wörter · (\\d+) Gegenstände im Besitz\\.$/);if(m)source=m[1]+' recognized unique words · '+m[2]+' items owned.';}
- if(lang==='fr'){const m=source.match(/^(\\d+) mots uniques reconnus · (\\d+) objets possédés\\.$/);if(m)source=m[1]+' recognized unique words · '+m[2]+' items owned.';}
- if(lang==='es'){const m=source.match(/^(\\d+) palabras únicas reconocidas · (\\d+) objetos\\.$/);if(m)source=m[1]+' recognized unique words · '+m[2]+' items owned.';}
- if(lang==='de'){const m=source.match(/^(\\d+) Wörter · 🔒 Geheimnisvolle Belohnung$/);if(m)source=m[1]+' words · 🔒 Mystery reward';}
- if(lang==='fr'){const m=source.match(/^(\\d+) mots · 🔒 Récompense mystère$/);if(m)source=m[1]+' words · 🔒 Mystery reward';}
- if(lang==='es'){const m=source.match(/^(\\d+) palabras · 🔒 Premio misterioso$/);if(m)source=m[1]+' words · 🔒 Mystery reward';}
- const status=source.match(/^(\\d+) recognized unique (?:word|words) · (\\d+) items owned\\.$/);
+ if(lang==='de'){const m=source.match(/^(\d+) erkannte einzigartige Wörter · (\d+) Gegenstände im Besitz\.$/);if(m)source=m[1]+' recognized unique words · '+m[2]+' items owned.';}
+ if(lang==='fr'){const m=source.match(/^(\d+) mots uniques reconnus · (\d+) objets possédés\.$/);if(m)source=m[1]+' recognized unique words · '+m[2]+' items owned.';}
+ if(lang==='es'){const m=source.match(/^(\d+) palabras únicas reconocidas · (\d+) objetos\.$/);if(m)source=m[1]+' recognized unique words · '+m[2]+' items owned.';}
+ if(lang==='de'){const m=source.match(/^(\d+) Wörter · 🔒 Geheimnisvolle Belohnung$/);if(m)source=m[1]+' words · 🔒 Mystery reward';}
+ if(lang==='fr'){const m=source.match(/^(\d+) mots · 🔒 Récompense mystère$/);if(m)source=m[1]+' words · 🔒 Mystery reward';}
+ if(lang==='es'){const m=source.match(/^(\d+) palabras · 🔒 Premio misterioso$/);if(m)source=m[1]+' words · 🔒 Mystery reward';}
+ const status=source.match(/^(\d+) recognized unique (?:word|words) · (\d+) items owned\.$/);
  if(status&&lang!=='en'){const d=dict[lang].status||dict[lang].status;return d.replace('{n}',status[1]).replace('{owned}',status[2]);}
- const tier=trim.match(/^(\\d+) words · 🔒 Mystery reward$/);
+ const tier=source.match(/^(\d+) words · 🔒 Mystery reward$/);
  if(tier&&lang!=='en')return lang==='de'?tier[1]+' Wörter · 🔒 Geheimnisvolle Belohnung':lang==='fr'?tier[1]+' mots · 🔒 Récompense mystère':tier[1]+' palabras · 🔒 Premio misterioso';
- const choose=trim.match(/^Choose (.+) permanently\\? The other choices at this milestone will stay locked\\.$/);
+ const choose=source.match(/^Choose (.+) permanently\? The other choices at this milestone will stay locked\.$/);
  if(choose&&lang!=='en')return (lang==='de'?'Wähle ':lang==='fr'?'Choisir ':'¿Elegir ')+choose[1]+(lang==='de'?' dauerhaft? Die anderen Optionen dieses Meilensteins bleiben gesperrt.':lang==='fr'?' définitivement ? Les autres options de cette étape resteront verrouillées.':' permanentemente? Las otras opciones de este hito quedarán bloqueadas.');
+ if(lang==='de'&&source.endsWith(' · Im Besitz'))source=source.slice(0,-' · Im Besitz'.length)+' · Owned';if(lang==='fr'&&source.endsWith(' · Possédé'))source=source.slice(0,-' · Possédé'.length)+' · Owned';if(lang==='es'&&source.endsWith(' · En posesión'))source=source.slice(0,-' · En posesión'.length)+' · Owned';
  const suffixes={de:{' · Owned':' · Im Besitz',' · Not chosen':' · Nicht gewählt',' · Confirm below':' · Unten bestätigen',' · Choose permanently':' · Dauerhaft wählen'},fr:{' · Owned':' · Possédé',' · Not chosen':' · Non choisi',' · Confirm below':' · Confirmer ci-dessous',' · Choose permanently':' · Choisir définitivement'},es:{' · Owned':' · En posesión',' · Not chosen':' · No elegido',' · Confirm below':' · Confirma abajo',' · Choose permanently':' · Elegir permanentemente'}};
  if(suffixes[lang])for(const [a,b] of Object.entries(suffixes[lang]))if(trim.endsWith(a))return raw.replace(a,b);
  if(dict[lang][source])return raw.replace(trim,dict[lang][source]);
@@ -558,7 +559,7 @@ byId('crumbLanguageSelect').onchange=e=>choose(e.target.value);
 byId('crumbSoundSetting').onclick=()=>{byId('crumbSound').click();applyLanguage();};
 byId('crumbKeyboardToggle').onchange=()=>{const hint=byId('controlHint');if(hint)hint.hidden=!byId('crumbKeyboardToggle').checked;try{localStorage.setItem('crumb.keyboardhint.v1',byId('crumbKeyboardToggle').checked?'on':'off');}catch{}};
 try{byId('crumbKeyboardToggle').checked=localStorage.getItem('crumb.keyboardhint.v1')!=='off';}catch{}
-byId('crumbReset').onclick=()=>{if(!confirm(tr('Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.')+'\\n\\n'+tr('Reset all progress')+'?'))return;for(const k of ['crumb.language.v1','crumb.nest.v1','crumb.discoveries.v1','crumb.sandbox.v1','crumb.audio.v1','crumb.keyboardhint.v1'])try{localStorage.removeItem(k);}catch{}location.reload();};
+byId('crumbReset').onclick=()=>{if(!confirm(tr('Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.')+'\n\n'+tr('Reset all progress')+'?'))return;for(const k of ['crumb.language.v1','crumb.nest.v1','crumb.discoveries.v1','crumb.sandbox.v1','crumb.audio.v1','crumb.keyboardhint.v1'])try{localStorage.removeItem(k);}catch{}location.reload();};
 const observeIds=['message','journalCount','discoveries','storageNote','sandboxStatus','sandboxConfirmText','sandboxItems'];
 const mo=new MutationObserver(records=>{for(const r of records){const el=r.target.nodeType===1?r.target:r.target.parentElement;if(el&&!el.closest('#crumbLocaleChoices'))translateTree(el);}});
 for(const id of observeIds){const el=byId(id);if(el)mo.observe(el,{subtree:true,childList:true,characterData:true});}
