@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crumb — what does it like?</title><style>
 *{box-sizing:border-box}body{margin:0;background:#e7dfd0;color:#403e37;font-family:Georgia,serif}main{position:relative;max-width:1400px;margin:auto;min-height:100svh;overflow:hidden}header{position:absolute;z-index:1;top:35px;left:5%;pointer-events:none}h1{font-weight:400;font-size:46px;letter-spacing:-2px;margin:0}header p{font:14px system-ui,sans-serif;color:#777163;margin:8px 0}canvas{display:block;width:100%;height:100svh;touch-action:none}canvas:focus-visible{outline:3px solid #758363;outline-offset:-6px}form{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);display:flex;gap:8px;width:min(470px,90%);padding:8px;background:#f8f3e8e8;border:1px solid #c7bcaa;border-radius:16px;box-shadow:0 10px 30px #554c3710}input{width:100%;min-width:0;border:0;background:transparent;padding:10px;font:17px Georgia,serif;color:#413e35;outline:none}input:focus{box-shadow:inset 0 -2px #9c8762}button{border:0;border-radius:9px;background:#414d43;color:#f7f2e7;padding:12px 17px;font:13px system-ui,sans-serif;cursor:pointer}button:hover{background:#576552}#message{position:absolute;bottom:145px;left:10%;width:80%;text-align:center;font:14px system-ui,sans-serif;color:#746b5b;pointer-events:none}#controlHint{position:absolute;bottom:53px;left:5%;right:5%;margin:0;font:11px system-ui,sans-serif;color:#807565;pointer-events:none}@media(max-width:600px){#controlHint{bottom:43px;font-size:10px}}footer{position:absolute;bottom:25px;left:5%;right:5%;display:flex;align-items:center;justify-content:space-between;gap:12px;font:12px system-ui,sans-serif;color:#807565}footer button{background:transparent;color:#6d604e;padding:8px;text-decoration:underline}footer span{max-width:65%;line-height:1.5}@media(max-width:600px){header{top:24px}h1{font-size:38px}header p{font-size:12px}footer{bottom:12px}}
 #journalToggle{position:absolute;top:42px;right:5%;background:#f8f3e8b8;color:#5b604f;border:1px solid #c3b9a5}#vitals{position:absolute;top:123px;left:5%;font:12px system-ui,sans-serif;color:#777163;display:flex;gap:16px;pointer-events:none}dialog{width:min(520px,92vw);max-height:80vh;overflow:auto;background:#f5eddd;border:1px solid #b7a98d;border-radius:16px;color:#4e483c;padding:25px;box-shadow:0 20px 80px #312e292e}dialog::backdrop{background:#3b38294d;backdrop-filter:blur(3px)}dialog h2{font-weight:400;font-size:28px;margin:0 0 12px}dialog h3{font:15px system-ui,sans-serif;margin:22px 0 7px}dialog p{font:14px system-ui,sans-serif;line-height:1.6;color:#756a58}dialog ul{padding-left:20px;font:14px system-ui,sans-serif;line-height:1.9}#closeJournal{float:right;padding:8px 12px}#journalCount{display:block;margin-top:6px;color:#8c806a;font:11px system-ui,sans-serif}@media(max-width:600px){#journalToggle{top:28px;padding:9px;font-size:11px}#vitals{top:100px;font-size:11px}footer span{max-width:43%}footer button{font-size:11px;padding:6px}#message{font-size:13px;bottom:148px}}
-</style></head><body><main><header><h1>crumb.</h1><p>A small creature. Particular tastes.</p></header><button id="journalToggle" type="button">Field notes<span id="journalCount">Nothing discovered yet</span></button><div id="vitals"><span id="hunger">A little peckish</span><span id="mood">Curious</span></div><dialog id="journal"><button id="closeJournal">Close ×</button><h2>Crumb’s peculiarities</h2><p>Only things you have actually seen it react to appear here. Try food, objects, sounds—or something you might say to a creature.</p><div id="discoveries"></div><p id="storageNote"></p></dialog><canvas id="room" tabindex="0" aria-label="Crumb’s room. Drag cards and toys with a mouse or touch. For keyboard control, focus the scene; use left and right to select an item, Enter or Space to pick it up or drop it, arrow keys to move it, and Escape to release it."></canvas><p id="controlHint">Keyboard: Left/Right select · Enter/Space pick up or drop · arrows move · Esc releases</p><p id="message" role="status">Try a word. Watch what it does.</p><form id="feed"><input id="word" aria-label="A word for Crumb" placeholder="What might a tiny creature like?" maxlength="24" autocomplete="off"><button>Give it</button></form><footer><span>Some words matter to it. You’ll have to find out which.</span><div><button id="scatter" type="button">Make a little mess</button><button id="fresh" type="button">Fresh nest</button></div></footer></main><script src="words.js?v=20261015-achievements"></script><script>
+</style></head><body><main><header><h1>crumb.</h1><p>A small creature. Particular tastes.</p></header><div id="lab137Brand" aria-label="Lab 137">LAB-137 · CREATURE STUDY</div><button id="journalToggle" type="button">Field notes<span id="journalCount">Nothing discovered yet</span></button><div id="vitals"><span id="hunger">A little peckish</span><span id="mood">Curious</span></div><dialog id="journal"><button id="closeJournal">Close ×</button><h2>Crumb’s peculiarities</h2><p>Only things you have actually seen it react to appear here. Try food, objects, sounds—or something you might say to a creature.</p><div id="discoveries"></div><p id="storageNote"></p></dialog><canvas id="room" tabindex="0" aria-label="Crumb’s room. Drag cards and toys with a mouse or touch. For keyboard control, focus the scene; use left and right to select an item, Enter or Space to pick it up or drop it, arrow keys to move it, and Escape to release it."></canvas><p id="controlHint">Keyboard: Left/Right select · Enter/Space pick up or drop · arrows move · Esc releases</p><p id="message" role="status">Try a word. Watch what it does.</p><form id="feed"><input id="word" aria-label="A word for Crumb" placeholder="What might a tiny creature like?" maxlength="24" autocomplete="off"><button>Give it</button></form><footer><span>Some words matter to it. You’ll have to find out which.</span><div><button id="scatter" type="button">Make a little mess</button><button id="fresh" type="button">Fresh nest</button></div></footer></main><script src="words.js?v=20261015-achievements"></script><script>
 'use strict';
 const canvas=document.getElementById('room'),ctx=canvas.getContext('2d'),message=document.getElementById('message'),input=document.getElementById('word');let W=1000,H=700,last=0,clock=0,drag=null,pointer={x:-1000,y:-1000},target=null,phase='idle',timer=0,carry=null,treasures=[],nextId=1,saveOK=true,hunger=.35,joy=0,discoveries={},effects=[],command=null,personalScattered=false,nestAfterLove=null,wander=null,wanderPause=2,idleWalking=false,twin=null,splitProgress=0,backgroundCanvas=null,languageBubble=null;
 const creature={x:300,y:380,facing:1,walk:0,blink:0};const nest=()=>({x:W*.73,y:H*.53});const say=s=>message.textContent=window.crumbTranslate?window.crumbTranslate(s):s;const width=t=>Math.min(270,28+t.length*9);
@@ -107,7 +107,7 @@ function frame(now){const dt=last?Math.min(.04,(now-last)/1000):0;last=now;updat
 @media(max-width:600px){#sandboxToggle{top:95px;right:5%;font-size:11px;padding:8px}#sandboxPanel{top:135px;max-height:48vh}}
 </style>
 <button id="sandboxToggle" type="button">🎁 Rewards</button>
-<section id="sandboxPanel" hidden aria-label="Crumb's rewards"><h3>Crumb's little treasures</h3><div id="sandboxStatus"></div><div id="sandboxConfirm" hidden><p id="sandboxConfirmText"></p><button id="sandboxConfirmChoice" type="button">Confirm permanent choice</button> <button id="sandboxCancelChoice" type="button">Cancel</button></div><div id="sandboxItems"></div><h3>Word achievements</h3><div id="sandboxAchievements" aria-live="polite"></div><p>Each milestone gives one item choice. That choice is permanent; the other items at that milestone stay locked. Tap owned wearables to equip them and toys to place or put away. Discover recognized words to unlock rewards.</p></section>
+<section id="sandboxPanel" hidden aria-label="Crumb's rewards"><h3>Crumb's little treasures</h3><div id="sandboxStatus"></div><div id="sandboxConfirm" hidden><p id="sandboxConfirmText"></p><button id="sandboxConfirmChoice" type="button">Confirm permanent choice</button> <button id="sandboxCancelChoice" type="button">Cancel</button></div><div id="sandboxItems"></div><h3>Achievement trophies</h3><div id="sandboxTrophies" aria-live="polite"></div><h3>Next achievement levels</h3><div id="sandboxAchievements" aria-live="polite"></div><p>Each milestone gives one item choice. That choice is permanent; the other items at that milestone stay locked. Tap owned wearables to equip them and toys to place or put away. Discover recognized words to unlock rewards.</p></section>
 <script>
 (function(){
 'use strict';
@@ -152,11 +152,14 @@ const catalog=[
 {id:'mystery-boots',name:'Starlight boots',emoji:'👢',at:150,type:'wear',mystery:true},
 {id:'mystery-comet',name:'Comet carousel',emoji:'☄️',at:190,type:'world',mystery:true}];
 const tiers=[5,10,15,25,40,60,85,115,150,190];
+const achievementDefs=[{"id":"food-5","track":"food","name":"First Bite","emoji":"🍎","trophy":"🥉","target":5,"category":"food"},{"id":"food-15","track":"food","name":"Snack Scholar","emoji":"🍎","trophy":"🥈","target":15,"category":"food"},{"id":"food-30","track":"food","name":"Feast Champion","emoji":"🍎","trophy":"🥇","target":30,"category":"food"},{"id":"play-5","track":"play","name":"Toy Scout","emoji":"🧸","trophy":"🥉","target":5,"category":"playful"},{"id":"play-15","track":"play","name":"Playtime Pro","emoji":"🧸","trophy":"🥈","target":15,"category":"playful"},{"id":"play-30","track":"play","name":"Joymaster","emoji":"🧸","trophy":"🥇","target":30,"category":"playful"},{"id":"nest-5","track":"nest","name":"Twig Tally","emoji":"🪺","trophy":"🥉","target":5,"category":"nesting"},{"id":"nest-15","track":"nest","name":"Nest Weaver","emoji":"🪺","trophy":"🥈","target":15,"category":"nesting"},{"id":"nest-30","track":"nest","name":"Master Builder","emoji":"🪺","trophy":"🥇","target":30,"category":"nesting"},{"id":"en-5","track":"en","name":"First Words","emoji":"🇬🇧","trophy":"🇬🇧🥉","target":5,"language":"en"},{"id":"en-15","track":"en","name":"Story Keeper","emoji":"🇬🇧","trophy":"🇬🇧🥈","target":15,"language":"en"},{"id":"en-30","track":"en","name":"Word Collector","emoji":"🇬🇧","trophy":"🇬🇧🥇","target":30,"language":"en"},{"id":"de-5","track":"de","name":"Guten Tag","emoji":"🇩🇪","trophy":"🇩🇪🥉","target":5,"language":"de"},{"id":"de-15","track":"de","name":"Wortfreund","emoji":"🇩🇪","trophy":"🇩🇪🥈","target":15,"language":"de"},{"id":"de-30","track":"de","name":"Sprachentdecker","emoji":"🇩🇪","trophy":"🇩🇪🥇","target":30,"language":"de"},{"id":"fr-5","track":"fr","name":"Bonjour Buddy","emoji":"🇫🇷","trophy":"🇫🇷🥉","target":5,"language":"fr"},{"id":"fr-15","track":"fr","name":"Petit Polyglot","emoji":"🇫🇷","trophy":"🇫🇷🥈","target":15,"language":"fr"},{"id":"fr-30","track":"fr","name":"Parole Pro","emoji":"🇫🇷","trophy":"🇫🇷🥇","target":30,"language":"fr"},{"id":"es-5","track":"es","name":"Hola Amigo","emoji":"🇪🇸","trophy":"🇪🇸🥉","target":5,"language":"es"},{"id":"es-15","track":"es","name":"Palabra Pal","emoji":"🇪🇸","trophy":"🇪🇸🥈","target":15,"language":"es"},{"id":"es-30","track":"es","name":"Vocabulario Viva","emoji":"🇪🇸","trophy":"🇪🇸🥇","target":30,"language":"es"},{"id":"multi-2","track":"multi","name":"Language Hopper","emoji":"🌍","trophy":"🌍🥉","target":2,"perLanguage":5},{"id":"multi-3","track":"multi","name":"Three-Language Trailblazer","emoji":"🌍","trophy":"🌍🥈","target":3,"perLanguage":5},{"id":"multi-4","track":"multi","name":"Four-Language Friend","emoji":"🌍","trophy":"🌍🥇","target":4,"perLanguage":5},{"id":"polyglot-15","track":"multi","name":"Multilingual Master","emoji":"🗣️","trophy":"🏆🌐","target":4,"perLanguage":15}];
+catalog.push(...achievementDefs.map(a=>({id:'trophy-'+a.id,name:a.name+' Trophy',emoji:a.trophy,type:'world',achievement:true})));
+
 const key='crumb.sandbox.v1';
 const rewardKey=word=>CrumbWords.discoveryKey(word);
 const knownRewardWord=word=>{const normalized=CrumbWords.normalize(word);return !!normalized&&(CrumbWords.classify(normalized).kind!=='unknown'||Object.hasOwn(specialWords,normalized));};
-let state={words:[],wear:null,placed:[],chosen:[],entries:[]},pendingChoice=null;
-try{const s=JSON.parse(localStorage.getItem(key)||'{}');if(Array.isArray(s.words))state.words=[...new Set(s.words.filter(x=>typeof x==='string'&&knownRewardWord(x)).map(rewardKey))].slice(0,10000);if(Array.isArray(s.entries))state.entries=s.entries.filter(e=>e&&typeof e.word==='string'&&['en','de','fr','es'].includes(e.language));if(typeof s.wear==='string'&&catalog.some(i=>i.id===s.wear&&i.type==='wear'))state.wear=s.wear;if(Array.isArray(s.placed))state.placed=[...new Set(s.placed.filter(x=>catalog.some(i=>i.id===x&&i.type==='world')))];if(Array.isArray(s.chosen))state.chosen=[...new Set(s.chosen.filter(x=>catalog.some(i=>i.id===x)))];else state.chosen=[s.wear,...state.placed].filter(x=>catalog.some(i=>i.id===x));}catch(e){}
+let state={words:[],wear:null,placed:[],chosen:[],rewardPicks:[],entries:[]},pendingChoice=null;
+try{const s=JSON.parse(localStorage.getItem(key)||'{}');if(Array.isArray(s.words))state.words=[...new Set(s.words.filter(x=>typeof x==='string'&&knownRewardWord(x)).map(rewardKey))].slice(0,10000);if(Array.isArray(s.entries))state.entries=s.entries.filter(e=>e&&typeof e.word==='string'&&['en','de','fr','es'].includes(e.language));if(typeof s.wear==='string'&&catalog.some(i=>i.id===s.wear&&i.type==='wear'))state.wear=s.wear;if(Array.isArray(s.placed))state.placed=[...new Set(s.placed.filter(x=>catalog.some(i=>i.id===x&&i.type==='world')))];if(Array.isArray(s.chosen))state.chosen=[...new Set(s.chosen.filter(x=>catalog.some(i=>i.id===x)))];else state.chosen=[s.wear,...state.placed].filter(x=>catalog.some(i=>i.id===x));if(Array.isArray(s.rewardPicks))state.rewardPicks=[...new Set(s.rewardPicks.filter(x=>catalog.some(i=>i.id===x&&i.at&&!i.mystery)))];else state.rewardPicks=state.chosen.filter(x=>catalog.some(i=>i.id===x&&i.at&&!i.mystery));}catch(e){}
 // Import older Field Notes without changing or deleting the original record.
 // A word is credited only once, even if it already exists in sandbox progress.
 try{
@@ -174,25 +177,44 @@ for(const word of state.words)if(!state.entries.some(e=>e.word===word))addEntry(
 function addEntry(input,forceLanguage){const text=CrumbWords.normalize(input),result=CrumbWords.classify(text),canonical=rewardKey(text);if(!text||!knownRewardWord(text))return;const language=forceLanguage||result.language||(Object.hasOwn(specialWords,text)?'en':null)||'en';const id=canonical+'|'+language;if(!state.entries.some(e=>e.id===id))state.entries.push({id,word:canonical,language});}
 for(const entry of state.entries){entry.word=rewardKey(entry.word);entry.id=entry.word+'|'+entry.language;}
 state.entries=state.entries.filter((e,i,a)=>e.word&&a.findIndex(v=>v.id===e.id)===i);
+function getAchievementCounts(){
+const languageCounts={en:0,de:0,fr:0,es:0},categoryCounts={food:0,playful:0,nesting:0};
+for(const entry of state.entries)if(languageCounts[entry.language]!==undefined)languageCounts[entry.language]++;for(const word of state.words){const kind=CrumbWords.categoryOf(word);if(categoryCounts[kind]!==undefined)categoryCounts[kind]++;}
+return{languageCounts,categoryCounts,multi5:Object.values(languageCounts).filter(n=>n>=5).length,multi15:Object.values(languageCounts).filter(n=>n>=15).length};
+}
+function achievementValue(a,counts){return a.category?counts.categoryCounts[a.category]:a.language?counts.languageCounts[a.language]:a.perLanguage===5?counts.multi5:counts.multi15;}
+function syncAchievementAwards(){const counts=getAchievementCounts();for(const a of achievementDefs)if(achievementValue(a,counts)>=a.target&&!state.chosen.includes('trophy-'+a.id))state.chosen.push('trophy-'+a.id);}
+function syncMysteryRewards(){for(const at of tiers){const mystery=catalog.find(x=>x.at===at&&x.mystery);if(state.words.length>=at&&mystery&&!state.chosen.includes(mystery.id))state.chosen.push(mystery.id);}}
+syncMysteryRewards();syncAchievementAwards();
 const persist=()=>{try{localStorage.setItem(key,JSON.stringify(state));}catch(e){}};
 persist();
 const panel=document.getElementById('sandboxPanel'),items=document.getElementById('sandboxItems'),status=document.getElementById('sandboxStatus');
 document.getElementById('sandboxToggle').onclick=()=>{panel.hidden=!panel.hidden;renderPanel();};
 function renderPanel(){
 const count=state.words.length,confirmBox=document.getElementById('sandboxConfirm'),confirmText=document.getElementById('sandboxConfirmText');
-status.textContent=count+' recognized unique '+(count===1?'word':'words')+' · '+state.chosen.length+' items owned.';
-if(pendingChoice){const pending=catalog.find(x=>x.id===pendingChoice);confirmBox.hidden=false;confirmText.textContent='Choose '+pending.name+' permanently? The other choices at this milestone will stay locked.';}else confirmBox.hidden=true;
+status.textContent=count+' recognized unique '+(count===1?'word':'words')+' · '+state.chosen.length+' items and trophies owned.';
+if(pendingChoice){const pending=catalog.find(x=>x.id===pendingChoice);confirmBox.hidden=false;confirmText.textContent='Choose '+pending.name+' permanently? Your mystery reward is automatic.';}else confirmBox.hidden=true;
 items.replaceChildren();
 tiers.forEach(at=>{
 const group=document.createElement('div');group.style.gridColumn='1 / -1';group.style.fontWeight='bold';group.style.marginTop='9px';
-const choices=catalog.filter(x=>x.at===at),selected=state.chosen.find(id=>choices.some(x=>x.id===id)),unlocked=count>=at;
-group.textContent=at+' words '+(unlocked?(selected?'✓ Reward collected · permanent':'— Choose one · permanent'):'· 🔒');items.appendChild(group);
+const choices=catalog.filter(x=>x.at===at),selected=state.rewardPicks.find(id=>choices.some(x=>x.id===id&&!x.mystery)),unlocked=count>=at;
+group.textContent=at+' words · '+(unlocked?(selected?'Choice collected · mystery reward is yours':'Choose one · mystery reward is yours automatically'):'choose one visible reward; mystery reward revealed at unlock');
+items.appendChild(group);
 choices.forEach(item=>{
 const mystery=!!item.mystery,owned=state.chosen.includes(item.id),active=item.type==='wear'?state.wear===item.id:state.placed.includes(item.id);
 const btn=document.createElement('button');btn.type='button';
-if(mystery&&!unlocked){return;}
-else{
-const isPending=pendingChoice===item.id;btn.disabled=!unlocked||!!selected&&!owned||!!pendingChoice&&!isPending;
+if(mystery&&!unlocked){btn.disabled=true;btn.textContent='❔ Mystery reward';items.appendChild(btn);return;}
+if(mystery){
+btn.textContent=item.emoji+' '+item.name+' · Yours automatically'+(active?' · In use':' · Tap to place/use');
+btn.className=active?'active':'';
+btn.onclick=()=>{
+if(item.type==='wear')state.wear=state.wear===item.id?null:item.id;
+else state.placed=state.placed.includes(item.id)?state.placed.filter(x=>x!==item.id):[...state.placed,item.id];
+persist();renderPanel();say(item.name+(active?' put away.':item.type==='wear'?' is now equipped.':' is now in Crumb’s world.'));
+};
+}else{
+const isPending=pendingChoice===item.id;
+btn.disabled=!unlocked||!!selected&&!owned||!!pendingChoice&&!isPending;
 btn.textContent=item.emoji+' '+item.name+(owned?(active?' · In use':' · Owned'):!unlocked?' · 🔒':selected?' · Not chosen':isPending?' · Confirm below':' · Choose permanently');
 btn.className=active?'active':'';
 btn.onclick=()=>{
@@ -205,28 +227,43 @@ persist();renderPanel();say(item.name+(active?' put away.':item.type==='wear'?' 
 items.appendChild(btn);
 });
 });
-renderAchievements();
+renderTrophies();renderAchievements();
+}
+function renderTrophies(){
+const box=document.getElementById('sandboxTrophies');box.replaceChildren();
+const owned=catalog.filter(x=>x.achievement&&state.chosen.includes(x.id));
+if(!owned.length){const empty=document.createElement('div');empty.className='trophy-empty';empty.textContent='Earn word or language trophies, then tap one to place it in Crumb’s room.';box.appendChild(empty);return;}
+for(const trophy of owned){
+const placed=state.placed.includes(trophy.id),btn=document.createElement('button');btn.type='button';btn.className='trophy-card'+(placed?' active':'');btn.textContent=trophy.emoji+' '+trophy.name+(placed?' · In the room':' · Place trophy');
+btn.setAttribute('aria-pressed',String(placed));btn.onclick=()=>{state.placed=placed?state.placed.filter(x=>x!==trophy.id):[...state.placed,trophy.id];persist();renderPanel();say(trophy.name+(placed?' put away.':' placed in Crumb’s room.'));};box.appendChild(btn);
+}
 }
 function renderAchievements(){
 const box=document.getElementById('sandboxAchievements');box.replaceChildren();
-const entryCounts={en:0,de:0,fr:0,es:0},categoryCounts={food:0,playful:0,nesting:0};
-for(const entry of state.entries){if(entryCounts[entry.language]!==undefined)entryCounts[entry.language]++;const kind=CrumbWords.categoryOf(entry.word);if(categoryCounts[kind]!==undefined)categoryCounts[kind]++;}
-function heading(label){const h=document.createElement('div');h.textContent=label;h.style.gridColumn='1 / -1';h.style.fontWeight='bold';h.style.marginTop='8px';box.appendChild(h);}
-function badge(emoji,name,count,target,unit){const earned=count>=target;const el=document.createElement('div');el.className='achievement'+(earned?' earned':'');el.textContent=(earned?'🏅 ':'🔒 ')+emoji+' '+name+' · '+Math.min(count,target)+'/'+target+' '+unit;box.appendChild(el);}
-heading('Word families');
-for(const spec of [{kind:'food',name:'Food finder',emoji:'🍎'},{kind:'playful',name:'Play pal',emoji:'🧸'},{kind:'nesting',name:'Nest builder',emoji:'🪺'}])for(const target of [5,15,30])badge(spec.emoji,spec.name,categoryCounts[spec.kind],target,'words');
-heading('Languages');
-for(const spec of [{code:'en',name:'English explorer',flag:'🇬🇧'},{code:'de',name:'German explorer',flag:'🇩🇪'},{code:'fr',name:'French explorer',flag:'🇫🇷'},{code:'es',name:'Spanish explorer',flag:'🇪🇸'}])for(const target of [5,15,30])badge(spec.flag,spec.name,entryCounts[spec.code],target,'words');
-heading('Multilinguist');
-const fiveLanguages=Object.values(entryCounts).filter(n=>n>=5).length, fifteenLanguages=Object.values(entryCounts).filter(n=>n>=15).length;
-badge('🌍','Curious linguist',fiveLanguages,2,'languages with 5+ words');
-badge('🌍','Triple talker',fiveLanguages,3,'languages with 5+ words');
-badge('🌍','Four-language friend',fiveLanguages,4,'languages with 5+ words');
-badge('🗣️','Multilinguist',fifteenLanguages,4,'languages with 15+ words');
+const counts=getAchievementCounts();
+const tracks=[
+{key:'food',emoji:'🍎',title:'Food words',unit:'unique food words'},
+{key:'play',emoji:'🧸',title:'Play words',unit:'unique play words'},
+{key:'nest',emoji:'🪺',title:'Nest words',unit:'unique nest words'},
+{key:'en',emoji:'🇬🇧',title:'English words',unit:'English words'},
+{key:'de',emoji:'🇩🇪',title:'German words',unit:'German words'},
+{key:'fr',emoji:'🇫🇷',title:'French words',unit:'French words'},
+{key:'es',emoji:'🇪🇸',title:'Spanish words',unit:'Spanish words'},
+{key:'multi',emoji:'🌍',title:'Multilinguist',unit:'languages'}
+];
+function valueFor(a){return a.category?counts.categoryCounts[a.category]:a.language?counts.languageCounts[a.language]:a.perLanguage===5?counts.multi5:counts.multi15;}
+for(const track of tracks){
+const stages=achievementDefs.filter(a=>a.track===track.key),current=stages.find(a=>valueFor(a)<a.target)||stages[stages.length-1],value=valueFor(current),complete=stages.every(a=>valueFor(a)>=a.target);
+const el=document.createElement('div');el.className='achievement'+(complete?' earned':'');
+const progress=complete?'Max level · '+current.target+'/'+current.target+' '+track.unit:current.name+' · '+Math.min(value,current.target)+'/'+current.target+' '+track.unit;
+el.textContent=track.emoji+' '+track.title+' · '+progress;
+if(complete)el.setAttribute('aria-label',track.title+' complete at '+current.target+' '+track.unit);
+box.appendChild(el);
+}
 }
 document.getElementById('sandboxConfirmChoice').onclick=()=>{
 const item=catalog.find(x=>x.id===pendingChoice);if(!item)return;
-state.chosen.push(item.id);
+state.chosen.push(item.id);state.rewardPicks.push(item.id);
 if(item.type==='wear')state.wear=item.id;else state.placed.push(item.id);
 pendingChoice=null;persist();renderPanel();say(item.name+' is yours permanently. '+(item.type==='wear'?'Crumb can wear it.':'It belongs in Crumb’s world.'));
 };
@@ -235,10 +272,10 @@ const originalGive=giveWord;
 giveWord=function(word,reactNow=false){
 const accepted=originalGive(word,reactNow);
 if(accepted&&!reactNow){
-const raw=String(word).trim().slice(0,80),normalized=rewardKey(raw),before=state.words.length,entriesBefore=state.entries.length;
-if(knownRewardWord(normalized)){if(!state.words.includes(normalized))state.words.push(normalized);addEntry(raw);
-if(state.words.length!==before||state.entries.length!==entriesBefore){persist();renderPanel();}
-if(tiers.includes(state.words.length)&&state.words.length!==before)setTimeout(()=>say('🎁 New reward tier unlocked! Open Rewards to choose an item.'),300);
+const raw=String(word).trim().slice(0,80),normalized=rewardKey(raw),before=state.words.length,entriesBefore=state.entries.length,ownedBefore=state.chosen.length;
+if(knownRewardWord(normalized)){if(!state.words.includes(normalized))state.words.push(normalized);addEntry(raw);syncMysteryRewards();syncAchievementAwards();
+if(state.words.length!==before||state.entries.length!==entriesBefore||state.chosen.length!==ownedBefore){persist();renderPanel();}
+if(tiers.includes(state.words.length)&&state.words.length!==before)setTimeout(()=>say('🎁 New reward tier unlocked! Choose one visible item; the mystery reward is yours too.'),300);else if(state.chosen.length>ownedBefore)setTimeout(()=>say('🏆 New achievement trophy earned! Find it in Rewards and place it in Crumb’s room.'),300);
 }}
 return accepted;
 };
@@ -248,7 +285,7 @@ function selectedTargetIndex(list){return list.findIndex(x=>keyboardSelection&&(
 function focusKeyboardTarget(target){keyboardSelection=target;keyboardGrabbed=false;say('Selected '+target.label+'. Press Enter or Space to pick it up, then use the arrow keys to move it.');}
 canvas.addEventListener('keydown',e=>{const keys=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter',' ','Escape'];if(!keys.includes(e.key))return;e.preventDefault();const list=keyboardTargets();if(e.key==='Escape'){keyboardGrabbed=false;keyboardSelection=null;save();persist();say('Item released.');return;}if(e.key==='Enter'||e.key===' '){if(!keyboardSelection){if(list.length)focusKeyboardTarget(list[0]);else say('There are no cards or toys to move yet.');}else{keyboardGrabbed=!keyboardGrabbed;if(keyboardSelection.type==='word'&&keyboardSelection.ref.settled)keyboardSelection.ref.displaced=true;say(keyboardGrabbed?'Picked up '+keyboardSelection.label+'. Use the arrow keys to move it; press Enter or Space to drop.':'Dropped '+keyboardSelection.label+'.');if(!keyboardGrabbed){save();persist();}}return;}if(!list.length){say('There are no cards or toys to move yet.');return;}if(!keyboardGrabbed){const direction=e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:1;const index=selectedTargetIndex(list);focusKeyboardTarget(list[(index<0?(direction>0?0:list.length-1):(index+direction+list.length)%list.length)]);return;}const step=e.shiftKey?32:12,dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0,dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;if(keyboardSelection.type==='word'){const t=keyboardSelection.ref;t.x=Math.max(width(t.text)/2,Math.min(W-width(t.text)/2,t.x+dx));t.y=Math.max(H*.25,Math.min(H-195,t.y+dy));if(t.settled)t.displaced=true;}else{const ids=state.placed.filter(id=>catalog.some(item=>item.id===id&&item.type==='world')),i=ids.indexOf(keyboardSelection.id),o=objectPositions[keyboardSelection.id]||(objectPositions[keyboardSelection.id]=worldPosition(keyboardSelection.id,i));o.x=Math.max(35,Math.min(W-35,o.x+dx));o.y=Math.max(H*.43,Math.min(H*.82,o.y+dy));}});
 
-function worldPosition(id,i){return objectPositions[id]||{x:W*(.15+(i%4)*.19),y:H*(.73+Math.floor(i/4)*.09)};}
+function worldPosition(id,i){const columns=5,rows=Math.max(1,Math.ceil(state.placed.length/columns)),row=Math.floor(i/columns),spread=Math.min(.20,(rows-1)*.04),gap=rows>1?spread/(rows-1):0;return objectPositions[id]||{x:W*(.12+(i%columns)*.18),y:H*(rows>1?.62+row*gap:.72)};}
 canvas.addEventListener('pointerdown',e=>{
 if(drag)return;
 const p=pos(e),ids=state.placed.filter(id=>catalog.some(item=>item.id===id&&item.type==='world'));
@@ -269,9 +306,15 @@ o.x=Math.max(35,Math.min(W-35,p.x));o.y=Math.max(H*.43,Math.min(H*.82,p.y));
 function stopToyDrag(){if(toyDrag){toyDrag=null;ballMotion.vx=0;ballMotion.vy=0;}}
 canvas.addEventListener('pointerup',stopToyDrag);canvas.addEventListener('pointercancel',stopToyDrag);
 function drawObject(item,x,y){
-ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
-const base=Math.max(30,Math.min(55,W*.055)),scale=item.id==='gift'?1.75:item.id==='bear'?1.5:1;ctx.font=(base*scale)+'px system-ui';
-ctx.fillText(item.emoji,x,y);ctx.restore();
+const active=phase==='toyPlay'&&toyVisit===item.id,seed=item.id.charCodeAt(0)||0;
+const wobble=active?Math.sin(timer*5+seed)*.18:Math.sin(clock*1.3+seed)*.035;
+const bob=active?-Math.abs(Math.sin(timer*5+seed))*(item.achievement?5:9):Math.sin(clock*2+seed)*2;
+const pulse=active?1+Math.sin(timer*7+seed)*.07:1+Math.sin(clock*2+seed)*.018;
+ctx.save();ctx.translate(x,y+bob);ctx.rotate(wobble);ctx.scale(pulse,pulse);ctx.textAlign='center';ctx.textBaseline='middle';
+const base=Math.max(30,Math.min(55,W*.055)),scale=item.id==='gift'?1.75:item.id==='bear'?1.5:item.achievement?1.14:1;ctx.font=(base*scale)+'px system-ui';
+ctx.fillText(item.emoji,0,0);
+if(item.achievement&&active&&Math.floor(timer*3)!==Math.floor((timer-.04)*3)){ctx.fillStyle='#d0a956';ctx.font='15px system-ui';ctx.fillText('✦',-23,-24);ctx.fillText('✦',23,-18);}
+ctx.restore();
 }
 const baseDraw=draw;
 draw=function(){
@@ -286,17 +329,36 @@ if(wear){
 const bob=Math.sin(creature.walk)*2;
 ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
 ctx.font='32px system-ui';
-const headwear=['hat','cap','crown','bow','flower','ribbon','mask','glasses','monocle','star'];
-const feetwear=['shoes','boots'];
-const neckwear=['scarf'];
-const offset=wear.id==='mask'?18:headwear.includes(wear.id)?(wear.id==='hat'?79:wear.id==='cap'?70:wear.id==='glasses'||wear.id==='monocle'?35:68):feetwear.includes(wear.id)?-27:neckwear.includes(wear.id)?-5:60;
-if(wear.id==='scarf'){
-ctx.translate(creature.x,creature.y+5+bob);
+const headwear=['hat','cap','crown','bow','flower','ribbon','mask','glasses','monocle','star','mystery-star','mystery-crown'];
+const feetwear=['shoes','boots','mystery-boots'];
+const neckwear=['scarf','mystery-cape'];
+const offset=wear.id==='mask'?18:headwear.includes(wear.id)?(wear.id==='hat'?79:wear.id==='cap'?70:wear.id==='glasses'||wear.id==='monocle'?35:68):feetwear.includes(wear.id)?0:neckwear.includes(wear.id)?-5:60;
+if(feetwear.includes(wear.id)){
+const boots=wear.id==='boots'||wear.id==='mystery-boots';
+ctx.translate(creature.x,creature.y+8+bob);
+for(const side of [-1,1]){
+ctx.save();ctx.translate(side*9,0);
+ctx.fillStyle=boots?(wear.id==='mystery-boots'?'#8d83a9':'#8ca56d'):'#bd795e';
+ctx.strokeStyle=boots?(wear.id==='mystery-boots'?'#594f72':'#566b49'):'#785044';ctx.lineWidth=1.4;
+ctx.beginPath();
+if(boots){ctx.moveTo(-5,-11);ctx.lineTo(5,-11);ctx.lineTo(5,2);ctx.lineTo(9,6);ctx.lineTo(8,9);ctx.lineTo(-8,9);ctx.lineTo(-9,6);ctx.lineTo(-5,2);}
+else{ctx.moveTo(-5,-5);ctx.lineTo(5,-5);ctx.lineTo(6,0);ctx.lineTo(10,4);ctx.lineTo(8,8);ctx.lineTo(-8,8);ctx.lineTo(-10,5);ctx.lineTo(-6,1);}
+ctx.closePath();ctx.fill();ctx.stroke();
+ctx.strokeStyle=boots?'#e6d6a2':'#ead7b7';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-4,boots?-8:-2);ctx.lineTo(4,boots?-8:-2);ctx.stroke();
+if(boots){ctx.strokeStyle=wear.id==='mystery-boots'?'#d7cfef':'#c8d49e';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-5,-10);ctx.lineTo(5,-10);ctx.stroke();}
+ctx.restore();
+}
+}else if(wear.id==='mystery-wings'){
+ctx.translate(creature.x,creature.y-29+bob);ctx.font='25px system-ui';ctx.fillText('🪽',-25,0);ctx.fillText('🪽',25,0);
+}else if(wear.id==='mystery-cape'){
+ctx.translate(creature.x,creature.y-20+bob);ctx.fillStyle='#726391';ctx.strokeStyle='#4f456a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-23,-15);ctx.quadraticCurveTo(0,-22,23,-15);ctx.lineTo(17,20);ctx.lineTo(0,11);ctx.lineTo(-17,20);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#e6c766';ctx.beginPath();ctx.arc(0,-14,4,0,Math.PI*2);ctx.fill();
+}else if(wear.id==='scarf'){
+ctx.translate(creature.x,creature.y-22+bob);
 ctx.strokeStyle='#8f463f';ctx.lineWidth=8;ctx.lineCap='round';ctx.beginPath();ctx.arc(0,0,17,.12,Math.PI-.12);ctx.stroke();
 ctx.fillStyle='#bd6257';ctx.beginPath();ctx.moveTo(11,1);ctx.lineTo(15,18);ctx.lineTo(7,22);ctx.lineTo(5,3);ctx.closePath();ctx.fill();
 ctx.strokeStyle='#e4a29a';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(12,6);ctx.lineTo(13,15);ctx.stroke();
 }else{
-ctx.font=(feetwear.includes(wear.id)?'26px':'32px')+' system-ui';
+ctx.font='32px system-ui';
 ctx.translate(wear.id==='star'?creature.x+creature.facing*35:creature.x,wear.id==='star'?creature.y+8:creature.y-offset+bob);
 if(wear.id==='star')ctx.rotate(creature.facing*.55);
 ctx.fillText(wear.emoji,0,0);
@@ -308,8 +370,8 @@ if(keyboardSelection){ctx.save();ctx.strokeStyle=keyboardGrabbed?'#56754d':'#9a7
 let playClock=0,toyVisit=null;
 const baseUpdate=update;
 update=function(dt){
-if(phase==='toyApproach'&&toyVisit){timer+=dt;const i=state.placed.indexOf(toyVisit),o=worldPosition(toyVisit,i),side=creature.x>o.x?1:-1;if(moveTo(o.x+side*(toyVisit==='gift'?64:54),o.y+13,76,dt)){phase='toyPlay';timer=0;say(toyVisit==='bear'?'Crumb gives the teddy a careful little cuddle.':toyVisit==='gift'?'Crumb peeks into the dollhouse. Who lives here?':'Crumb investigates its toy.');}return;}
-if(phase==='toyPlay'&&toyVisit){timer+=dt;const i=state.placed.indexOf(toyVisit),o=worldPosition(toyVisit,i);if(toyVisit==='bear'){creature.y=o.y+13+Math.sin(timer*4)*2;if(Math.floor(timer*2)!==Math.floor((timer-dt)*2))burst('♥',1);}else if(toyVisit==='gift'){const a=timer*2.2;moveTo(o.x+Math.cos(a)*54,o.y+Math.sin(a)*17+15,52,dt);if(Math.floor(timer*1.5)!==Math.floor((timer-dt)*1.5))burst('✦',1);}else if(Math.floor(timer*1.5)!==Math.floor((timer-dt)*1.5))burst('♥',1);if(timer>3.6){const id=toyVisit;toyVisit=null;phase='idle';timer=0;playClock=0;say(id==='bear'?'The teddy is apparently an excellent friend.':id==='gift'?'A complete tour. Crumb approves of the tiny kitchen.':'Crumb has inspected this treasure thoroughly.');}return;}
+if(phase==='toyApproach'&&toyVisit){timer+=dt;const i=state.placed.indexOf(toyVisit),o=worldPosition(toyVisit,i),side=creature.x>o.x?1:-1;if(moveTo(o.x+side*(toyVisit==='gift'?64:54),o.y+13,76,dt)){phase='toyPlay';timer=0;const activeToy=catalog.find(item=>item.id===toyVisit);say(activeToy?.achievement?'Crumb admires its trophy.':toyVisit==='bear'?'Crumb gives the teddy a careful little cuddle.':toyVisit==='gift'?'Crumb peeks into the dollhouse. Who lives here?':toyVisit==='ball'?'Crumb gives the ball a little nudge.':'Crumb investigates its toy.');}return;}
+if(phase==='toyPlay'&&toyVisit){timer+=dt;const i=state.placed.indexOf(toyVisit),o=worldPosition(toyVisit,i);if(toyVisit==='bear'){creature.y=o.y+13+Math.sin(timer*4)*2;if(Math.floor(timer*2)!==Math.floor((timer-dt)*2))burst('♥',1);}else if(catalog.find(item=>item.id===toyVisit)?.achievement){creature.y=o.y+13+Math.sin(timer*3)*2;if(Math.floor(timer*2)!==Math.floor((timer-dt)*2))burst('✦',1);}else if(toyVisit==='gift'){const a=timer*2.2;moveTo(o.x+Math.cos(a)*54,o.y+Math.sin(a)*17+15,52,dt);if(Math.floor(timer*1.5)!==Math.floor((timer-dt)*1.5))burst('✦',1);}else if(Math.floor(timer*1.5)!==Math.floor((timer-dt)*1.5))burst('♥',1);if(timer>3.6){const id=toyVisit;toyVisit=null;phase='idle';timer=0;playClock=0;const item=catalog.find(x=>x.id===id);say(item?.achievement?'Crumb has a new trophy to admire.':id==='bear'?'The teddy is apparently an excellent friend.':id==='gift'?'A complete tour. Crumb approves of the tiny kitchen.':id==='ball'?'The ball gets a cheerful little kick.':'Crumb has inspected this treasure thoroughly.');}return;}
 baseUpdate(dt);
 if(keyboardSelection&&(keyboardSelection.type==='word'?!treasures.includes(keyboardSelection.ref):!state.placed.includes(keyboardSelection.id))){keyboardSelection=null;keyboardGrabbed=false;}
 const ballIndex=state.placed.indexOf('ball');
@@ -331,7 +393,7 @@ if(phase!=='idle'||target||drag||carry||!state.placed.length){playClock=0;return
 playClock+=dt;
 if(playClock>8){
 playClock=0;
-const ids=state.placed.filter(id=>['bear','gift'].includes(id));const choices=ids.length?ids:state.placed;toyVisit=choices[Math.floor(Math.random()*choices.length)];phase='toyApproach';timer=0;wander=null;
+const choices=state.placed;toyVisit=choices[Math.floor(Math.random()*choices.length)];phase='toyApproach';timer=0;wander=null;
 }
 };
 renderPanel();
@@ -634,6 +696,41 @@ if(lang){byId('crumbLanguageSelect').value=lang;applyLanguage();}else gate.showM
   #sandboxToggle{top:137px;right:5%;padding:8px;font-size:11px}
   #crumbSound{top:183px;right:5%;padding:7px 9px;font-size:11px}
   #sandboxPanel{top:230px;right:5%;max-height:40vh}
+}
+</style>
+
+<style>
+/* Larger, calmer controls and subtle Lab-137 authorship. */
+button{font-size:14px}
+input{font-size:19px}
+header p{font-size:15px}
+#message{font-size:15px}
+#controlHint{font-size:12px}
+footer{font-size:13px}
+#vitals{font-size:13px}
+#sandboxPanel{font-size:14px}
+#sandboxPanel h3{font-size:18px}
+#sandboxItems button{font-size:13px;line-height:1.3}
+#sandboxStatus{font-size:14px}
+#sandboxPanel>p{font-size:13px;line-height:1.6}
+#sandboxAchievements{grid-template-columns:1fr;gap:7px}
+#sandboxAchievements .achievement{font-size:13px;padding:9px}
+#sandboxTrophies{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:0 0 12px}
+#sandboxTrophies .trophy-card{background:#e5dbc8;color:#4b493e;border:1px solid #c4b79f;padding:9px 7px;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+#sandboxTrophies .trophy-card.active{outline:2px solid #71825f;background:#e3eadc}
+#sandboxTrophies .trophy-empty{grid-column:1/-1;color:#7b725f;font-size:13px;line-height:1.5;padding:9px;background:#eee7d9;border-radius:9px}
+#lab137Brand{position:absolute;z-index:1;top:10px;left:50%;transform:translateX(-50%);font:10px system-ui,sans-serif;letter-spacing:2.3px;color:#938a77;opacity:.72;pointer-events:none;white-space:nowrap}
+@media(max-width:600px){
+button{font-size:13px}
+#message{font-size:14px}
+#controlHint{font-size:11px}
+footer{font-size:12px}
+#sandboxPanel h3{font-size:16px}
+#sandboxItems button{font-size:12px}
+#sandboxAchievements .achievement{font-size:12px}
+#sandboxTrophies{grid-template-columns:1fr}
+#sandboxTrophies .trophy-card{font-size:12px}
+#lab137Brand{top:7px;font-size:8px;letter-spacing:1.8px}
 }
 </style>
 </body></html>
