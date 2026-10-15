@@ -1,18 +1,20 @@
 (function(root){
  'use strict';
  const groups={
- food:['crumb','crumbs','cookie','biscuit','bread','toast','berry','berries','apple','oat','oats','cheese','honey','cake','muffin','seed','seeds','snack','poptart'],
- nesting:['moss','twig','twigs','leaf','leaves','thread','yarn','wool','cotton','paper','feather','feathers','string','ribbon','fluff','scrap','scraps','fabric','straw'],
- scary:['boo','thunder','fire','vacuum','hawk','owl','snake','monster','bang','storm','lightning','roar','danger','spider'],
- distasteful:['soap','onion','garlic','pickle','pickles','lemon','vinegar','pepper','mustard','broccoli','bleach','bitter'],
- playful:['ball','marble','bell','bubble','bubbles','button','dice','sparkle','jingle','toy','bounce','peekaboo'],
- command:['sit','sleep','nap','wake','wake up','come','come here','dance','spin','stay','fetch','home','go home']
+ food:['crumb','crumbs','cookie','biscuit','bread','toast','berry','berries','apple','oat','oats','cheese','honey','cake','muffin','seed','seeds','snack','poptart','banana','pear','peach','plum','grape','melon','watermelon','strawberry','blueberry','raspberry','cherry','carrot','lettuce','cabbage','potato','rice','pasta','noodle','cereal','cracker','peanut','almond','walnut','chocolate','pudding','donut','pancake','waffle','syrup','jam','jelly','milk','yogurt','egg','popcorn','pretzel','raisin','coconut','mango','pineapple','orange','tomato','cucumber','pumpkin','sunflower','sunflower seed'],
+ nesting:['moss','twig','twigs','leaf','leaves','thread','yarn','wool','cotton','paper','feather','feathers','string','ribbon','fluff','scrap','scraps','fabric','straw','stick','sticks','branch','branches','bark','pebble','pebbles','stone','stones','grass','hay','clover','dandelion','pinecone','acorn','acorns','shell','shells','sand','soil','dirt','mud','blanket','pillow','cloth','blanket scrap','nest','basket','cardboard','newspaper','tissue','napkin','woolly'],
+ scary:['boo','thunder','fire','vacuum','hawk','owl','snake','monster','bang','storm','lightning','roar','danger','spider','shadow','darkness','dark','ghost','zombie','dragon','dinosaur','tornado','earthquake','flood','earthquake','siren','alarm','predator','cat','dog','coyote','fox','eagle','bat','crow'],
+ distasteful:['soap','onion','garlic','pickle','pickles','lemon','vinegar','pepper','mustard','broccoli','bleach','bitter','sour','mold','rotten','spoiled','stink','stinky','dirty','slime','goo','sludge','dust','ashes','burnt','soggy','bitter melon','medicine'],
+ playful:['ball','marble','bell','bubble','bubbles','button','dice','sparkle','jingle','toy','bounce','peekaboo','kite','swing','slide','hop','skip','jump','tickle','giggle','laugh','song','music','whistle','drum','tambourine','puzzle','blocks','teddy','teddy bear','doll','truck','train','car','spinning top'],
+ command:['sit','sleep','nap','wake','wake up','come','come here','dance','spin','stay','fetch','home','go home','hello','hi','hey','look','listen','wait','stop','follow','turn around','play','rest','goodnight','good night']
  };
  const labels={food:'Something to eat',nesting:'Building materials',scary:'Things to hide from',distasteful:'Absolutely not',playful:'Playthings',command:'Words it understands',unknown:'Still a mystery'};
  const aliases={nap:'sleep','wake up':'wake','come here':'come','go home':'home'};
  function normalize(text){return String(text).normalize('NFKC').toLowerCase().trim().replace(/^[\s.!?,;:]+|[\s.!?,;:]+$/g,'').replace(/\s+/g,' ');}
  const tantrum=['war','hate','hatred','violence','cruelty','bullying','bully','abuse','neglect','greed','pollution','litter','trash','garbage','smoke','smog','fireworks','loud noise','chainsaw','leaf blower','vacuum cleaner','pesticide','poison','oil spill','deforestation','destroy','destruction','chaos','mean','unkind','injustice','betrayal','lies','fighting','bomb','bombs','gunfire','process'];
+ const variants={crumbs:'crumb',berries:'berry',oats:'oat',seeds:'seed',twigs:'twig',leaves:'leaf',feathers:'feather',scraps:'scrap',pickles:'pickle',bubbles:'bubble',sticks:'stick',branches:'branch',pebbles:'pebble',stones:'stone',acorns:'acorn',shells:'shell',bombs:'bomb',hatred:'hate',bullying:'bully','wake up':'wake','come here':'come','go home':'home',nap:'sleep','good night':'goodnight',tjmaxx:'tj maxx','a-lox':'alex',mack:'mac',stasia:'anastasia'};
+ function discoveryKey(text){const word=normalize(text);return variants[word]||word;}
  const personal={priscilla:'love',peter:'love',jonathan:'love',jessica:'love',mac:'love',mack:'love','riley-l':'fury',lippyslippers:'fury',babystein:'love',baron:'roll',danny:'loveDance',angelface:'loveDance',kiddoface:'loveDance',stasia:'loveDance',anastasia:'loveDance'};
  function classify(text){const word=normalize(text);if(tantrum.includes(word))return{kind:'personal',word,action:'fury'};if(Object.hasOwn(personal,word))return{kind:'personal',word,action:personal[word]};for(const [kind,words]of Object.entries(groups))if(words.includes(word))return{kind,word,action:aliases[word]||word};return{kind:'unknown',word,action:null};}
- root.CrumbWords={classify,normalize,labels,total:Object.values(groups).reduce((a,v)=>a+v.length,0)+Object.keys(personal).length};
+ root.CrumbWords={classify,normalize,discoveryKey,labels,total:Object.values(groups).reduce((a,v)=>a+v.length,0)+Object.keys(personal).length};
 })(globalThis);
