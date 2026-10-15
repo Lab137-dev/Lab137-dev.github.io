@@ -267,4 +267,69 @@ if(lines[id])say(lines[id]);
 };
 renderPanel();
 })();
+</script>
+<style>
+#crumbSound{position:absolute;right:5%;top:148px;z-index:4;background:#f8f3e8;color:#465448;border:1px solid #b7aa91;padding:9px 12px}
+@media(max-width:600px){#crumbSound{top:136px;padding:7px 9px;font-size:11px}}
+</style>
+<button id="crumbSound" type="button" aria-label="Toggle Crumb sounds">🔇 Sound off</button>
+<script>
+(function(){
+'use strict';
+// Lightweight, locally synthesized sounds. No downloads, speech or autoplay.
+const key='crumb.audio.v1',button=document.getElementById('crumbSound');
+let enabled=false,context=null,lastSound=0;
+try{enabled=localStorage.getItem(key)==='on';}catch(e){}
+function label(){button.textContent=enabled?'🔊 Sound on':'🔇 Sound off';button.setAttribute('aria-pressed',String(enabled));}
+function audioContext(){
+if(!enabled)return null;
+if(!context){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{context=new C();}catch(e){return null;}}
+if(context.state==='suspended')context.resume().catch(()=>{});
+return context;
+}
+function note(freq,end,duration,shape='sine',volume=.055,delay=0){
+const ac=audioContext();if(!ac)return;
+const t=ac.currentTime+delay,o=ac.createOscillator(),g=ac.createGain();
+o.type=shape;o.frequency.setValueAtTime(Math.max(30,freq),t);
+o.frequency.exponentialRampToValueAtTime(Math.max(30,end),t+duration);
+g.gain.setValueAtTime(.0001,t);
+g.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),t+.012);
+g.gain.exponentialRampToValueAtTime(.0001,t+duration);
+o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+duration+.02);
+}
+function sound(kind){
+if(!enabled)return;
+const now=performance.now();if(now-lastSound<190)return;lastSound=now;
+switch(kind){
+case 'happy':note(570,940,.17);note(720,1150,.18,'sine',.045,.13);break;
+case 'angry':note(230,85,.3,'sawtooth',.025);note(155,80,.17,'square',.012,.18);break;
+case 'sad':note(500,230,.38,'sine',.045);note(350,170,.3,'sine',.03,.27);break;
+case 'dance':for(let i=0;i<4;i++)note([440,660,550,880][i],[520,780,650,1040][i],.11,'triangle',.035,i*.14);break;
+case 'scared':note(900,340,.25,'triangle',.04);break;
+case 'ball':note(160,85,.11,'sine',.08);note(410,230,.09,'triangle',.018,.05);break;
+case 'reward':note(440,570,.13,'sine',.04);note(590,780,.13,'sine',.04,.13);note(780,1050,.25,'sine',.05,.26);break;
+case 'curious':note(390,520,.12,'sine',.025);break;
+default:note(400,510,.12,'sine',.025);
+}
+}
+button.addEventListener('click',()=>{
+enabled=!enabled;try{localStorage.setItem(key,enabled?'on':'off');}catch(e){}
+label();if(enabled){audioContext();sound('happy');}
+});
+label();
+const originalSay=say;
+say=function(msg){
+originalSay(msg);
+if(!enabled)return;
+const text=String(msg).toLowerCase();
+if(text.includes('unlocked')||text.includes('reward choice')||text.includes('is yours!'))sound('reward');
+else if(text.includes('kicks the soccer ball'))sound('ball');
+else if(text.includes('tiny feelings')||text.includes('hurt its'))sound('sad');
+else if(text.includes('ruined')||text.includes('loss of composure')||text.includes('architectural emergency'))sound('angry');
+else if(text.includes('dance floor')||text.includes('performance'))sound('dance');
+else if(text.includes('absolutely not')||text.includes('checking for witnesses'))sound('scared');
+else if(text.includes('champion')||text.includes('delighted')||text.includes('love'))sound('happy');
+else if(text.includes('considering your offering'))sound('curious');
+};
+})();
 </script></body></html>
