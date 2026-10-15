@@ -103,11 +103,11 @@ function frame(now){const dt=last?Math.min(.04,(now-last)/1000):0;last=now;updat
 #sandboxPanel{position:absolute;right:5%;top:150px;z-index:5;width:min(320px,90vw);max-height:58vh;overflow:auto;background:#f8f1e4f5;border:1px solid #b7aa91;border-radius:15px;padding:14px;box-shadow:0 12px 35px #473b2b33;font:13px system-ui,sans-serif}
 #sandboxPanel[hidden]{display:none}#sandboxPanel h3{margin:6px 0 12px;font-size:16px}#sandboxItems{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
 #sandboxItems button{background:#e5dbc8;color:#4b493e;border:1px solid #c4b79f;padding:9px 5px;font-size:12px}#sandboxItems button:disabled{opacity:.5;cursor:default}#sandboxItems button.active{outline:2px solid #536c54}
-#sandboxStatus{margin:8px 0 12px;color:#665e4e;line-height:1.5}#sandboxConfirm{margin:8px 0 12px;padding:10px;background:#eee3ce;border:1px solid #c5b18d;border-radius:10px}#sandboxConfirm[hidden]{display:none}#sandboxConfirm p{margin:0 0 8px;line-height:1.5}#sandboxConfirm button{margin:3px 3px 0 0;padding:9px 10px;font-size:12px}
+#sandboxStatus{margin:8px 0 12px;color:#665e4e;line-height:1.5}#sandboxAchievements{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 0 12px}#sandboxAchievements .achievement{padding:8px;border-radius:9px;background:#eee7d9;color:#777061;font-size:11px;line-height:1.35}#sandboxAchievements .achievement.earned{background:#e3eadc;color:#40563e;border:1px solid #b9c9ad}#sandboxPanel h3:not(:first-child){margin-top:18px}#sandboxConfirm{margin:8px 0 12px;padding:10px;background:#eee3ce;border:1px solid #c5b18d;border-radius:10px}#sandboxConfirm[hidden]{display:none}#sandboxConfirm p{margin:0 0 8px;line-height:1.5}#sandboxConfirm button{margin:3px 3px 0 0;padding:9px 10px;font-size:12px}
 @media(max-width:600px){#sandboxToggle{top:95px;right:5%;font-size:11px;padding:8px}#sandboxPanel{top:135px;max-height:48vh}}
 </style>
 <button id="sandboxToggle" type="button">🎁 Rewards</button>
-<section id="sandboxPanel" hidden aria-label="Crumb's rewards"><h3>Crumb's little treasures</h3><div id="sandboxStatus"></div><div id="sandboxConfirm" hidden><p id="sandboxConfirmText"></p><button id="sandboxConfirmChoice" type="button">Confirm permanent choice</button> <button id="sandboxCancelChoice" type="button">Cancel</button></div><div id="sandboxItems"></div><p>Each milestone gives one item choice. That choice is permanent; the other items at that milestone stay locked. Tap owned wearables to equip them and toys to place or put away. Discover recognized words to unlock rewards.</p></section>
+<section id="sandboxPanel" hidden aria-label="Crumb's rewards"><h3>Crumb's little treasures</h3><div id="sandboxStatus"></div><div id="sandboxConfirm" hidden><p id="sandboxConfirmText"></p><button id="sandboxConfirmChoice" type="button">Confirm permanent choice</button> <button id="sandboxCancelChoice" type="button">Cancel</button></div><div id="sandboxItems"></div><h3>Word achievements</h3><div id="sandboxAchievements" aria-live="polite"></div><p>Each milestone gives one item choice. That choice is permanent; the other items at that milestone stay locked. Tap owned wearables to equip them and toys to place or put away. Discover recognized words to unlock rewards.</p></section>
 <script>
 (function(){
 'use strict';
@@ -141,13 +141,22 @@ const catalog=[
 {id:'monocle',name:'Fancy monocle',emoji:'🧐',at:150,type:'wear'},
 {id:'radio',name:'Tiny radio',emoji:'📻',at:150,type:'world'},
 {id:'pond',name:'Flower pond',emoji:'🪷',at:190,type:'world'},
-{id:'rocket',name:'Toy rocket',emoji:'🚀',at:190,type:'world'}];
+{id:'rocket',name:'Toy rocket',emoji:'🚀',at:190,type:'world'},{id:'mystery-star',name:'Lucky star pin',emoji:'🌟',at:5,type:'wear',mystery:true},
+{id:'mystery-cape',name:'Moon cape',emoji:'🦸',at:10,type:'wear',mystery:true},
+{id:'mystery-tent',name:'Pocket tent',emoji:'⛺',at:15,type:'world',mystery:true},
+{id:'mystery-kite',name:'Rainbow kite',emoji:'🪁',at:25,type:'world',mystery:true},
+{id:'mystery-crown',name:'Acorn crown',emoji:'🌰',at:40,type:'wear',mystery:true},
+{id:'mystery-garden',name:'Tiny garden',emoji:'🌷',at:60,type:'world',mystery:true},
+{id:'mystery-wings',name:'Firefly wings',emoji:'🪽',at:85,type:'wear',mystery:true},
+{id:'mystery-cloud',name:'Cloud pillow',emoji:'☁️',at:115,type:'world',mystery:true},
+{id:'mystery-boots',name:'Starlight boots',emoji:'👢',at:150,type:'wear',mystery:true},
+{id:'mystery-comet',name:'Comet carousel',emoji:'☄️',at:190,type:'world',mystery:true}];
 const tiers=[5,10,15,25,40,60,85,115,150,190];
 const key='crumb.sandbox.v1';
 const rewardKey=word=>CrumbWords.discoveryKey(word);
 const knownRewardWord=word=>{const normalized=CrumbWords.normalize(word);return !!normalized&&(CrumbWords.classify(normalized).kind!=='unknown'||Object.hasOwn(specialWords,normalized));};
-let state={words:[],wear:null,placed:[],chosen:[]},pendingChoice=null;
-try{const s=JSON.parse(localStorage.getItem(key)||'{}');if(Array.isArray(s.words))state.words=[...new Set(s.words.filter(x=>typeof x==='string'&&knownRewardWord(x)).map(rewardKey))].slice(0,10000);if(typeof s.wear==='string'&&catalog.some(i=>i.id===s.wear&&i.type==='wear'))state.wear=s.wear;if(Array.isArray(s.placed))state.placed=[...new Set(s.placed.filter(x=>catalog.some(i=>i.id===x&&i.type==='world')))];if(Array.isArray(s.chosen))state.chosen=[...new Set(s.chosen.filter(x=>catalog.some(i=>i.id===x)))];else state.chosen=[s.wear,...state.placed].filter(x=>catalog.some(i=>i.id===x));}catch(e){}
+let state={words:[],wear:null,placed:[],chosen:[],entries:[]},pendingChoice=null;
+try{const s=JSON.parse(localStorage.getItem(key)||'{}');if(Array.isArray(s.words))state.words=[...new Set(s.words.filter(x=>typeof x==='string'&&knownRewardWord(x)).map(rewardKey))].slice(0,10000);if(Array.isArray(s.entries))state.entries=s.entries.filter(e=>e&&typeof e.word==='string'&&['en','de','fr','es'].includes(e.language));if(typeof s.wear==='string'&&catalog.some(i=>i.id===s.wear&&i.type==='wear'))state.wear=s.wear;if(Array.isArray(s.placed))state.placed=[...new Set(s.placed.filter(x=>catalog.some(i=>i.id===x&&i.type==='world')))];if(Array.isArray(s.chosen))state.chosen=[...new Set(s.chosen.filter(x=>catalog.some(i=>i.id===x)))];else state.chosen=[s.wear,...state.placed].filter(x=>catalog.some(i=>i.id===x));}catch(e){}
 // Import older Field Notes without changing or deleting the original record.
 // A word is credited only once, even if it already exists in sandbox progress.
 try{
@@ -156,11 +165,15 @@ if(oldNotes&&typeof oldNotes==='object'&&!Array.isArray(oldNotes)){
 const merged=new Set(state.words.map(rewardKey).filter(Boolean));
 for(const [word,kind] of Object.entries(oldNotes)){
 const normalized=CrumbWords.normalize(word);
-if(normalized&&((CrumbWords.classify(normalized).kind===kind&&kind!=='unknown')||(kind==='special'&&Object.hasOwn(specialWords,normalized))))merged.add(rewardKey(normalized));
+if(normalized&&((CrumbWords.classify(normalized).kind===kind&&kind!=='unknown')||(kind==='special'&&Object.hasOwn(specialWords,normalized)))){merged.add(rewardKey(normalized));addEntry(normalized);}
 }
 state.words=[...merged];
 }
 }catch(e){}
+for(const word of state.words)if(!state.entries.some(e=>e.word===word))addEntry(word,'en');
+function addEntry(input,forceLanguage){const text=CrumbWords.normalize(input),result=CrumbWords.classify(text),canonical=rewardKey(text);if(!text||!knownRewardWord(text))return;const language=forceLanguage||result.language||(Object.hasOwn(specialWords,text)?'en':null)||'en';const id=canonical+'|'+language;if(!state.entries.some(e=>e.id===id))state.entries.push({id,word:canonical,language});}
+for(const entry of state.entries){entry.word=rewardKey(entry.word);entry.id=entry.word+'|'+entry.language;}
+state.entries=state.entries.filter((e,i,a)=>e.word&&a.findIndex(v=>v.id===e.id)===i);
 const persist=()=>{try{localStorage.setItem(key,JSON.stringify(state));}catch(e){}};
 persist();
 const panel=document.getElementById('sandboxPanel'),items=document.getElementById('sandboxItems'),status=document.getElementById('sandboxStatus');
@@ -171,28 +184,45 @@ status.textContent=count+' recognized unique '+(count===1?'word':'words')+' · '
 if(pendingChoice){const pending=catalog.find(x=>x.id===pendingChoice);confirmBox.hidden=false;confirmText.textContent='Choose '+pending.name+' permanently? The other choices at this milestone will stay locked.';}else confirmBox.hidden=true;
 items.replaceChildren();
 tiers.forEach(at=>{
-const group=document.createElement('div');group.style.gridColumn='1 / -1';
-group.style.fontWeight='bold';group.style.marginTop='9px';
-const choices=catalog.filter(x=>x.at===at);
-const selected=state.chosen.find(id=>choices.some(x=>x.id===id));
-if(count<at){group.textContent=at+' words · 🔒 Mystery reward';items.appendChild(group);const mystery=document.createElement('button');mystery.type='button';mystery.disabled=true;mystery.textContent='❔ Mystery reward';items.appendChild(mystery);return;}
-group.textContent=at+' words '+(selected?'✓ Reward collected · permanent':'— Choose one · permanent');
-items.appendChild(group);
+const group=document.createElement('div');group.style.gridColumn='1 / -1';group.style.fontWeight='bold';group.style.marginTop='9px';
+const choices=catalog.filter(x=>x.at===at),selected=state.chosen.find(id=>choices.some(x=>x.id===id)),unlocked=count>=at;
+group.textContent=at+' words '+(unlocked?(selected?'✓ Reward collected · permanent':'— Choose one · permanent'):'· 🔒');items.appendChild(group);
 choices.forEach(item=>{
-const unlocked=count>=at,owned=state.chosen.includes(item.id),isPending=pendingChoice===item.id;
-const btn=document.createElement('button');
-btn.type='button';btn.disabled=!unlocked||!!selected&&!owned||!!pendingChoice&&!isPending;
-const active=item.type==='wear'?state.wear===item.id:state.placed.includes(item.id);
-btn.textContent=item.emoji+' '+item.name+(owned?(active?' · In use':' · Owned'):!unlocked?' 🔒':selected?' · Not chosen':isPending?' · Confirm below':' · Choose permanently');
-btn.className=(item.type==='wear'?state.wear===item.id:state.placed.includes(item.id))?'active':'';
+const mystery=!!item.mystery,owned=state.chosen.includes(item.id),active=item.type==='wear'?state.wear===item.id:state.placed.includes(item.id);
+const btn=document.createElement('button');btn.type='button';
+if(mystery&&!unlocked){return;}
+else{
+const isPending=pendingChoice===item.id;btn.disabled=!unlocked||!!selected&&!owned||!!pendingChoice&&!isPending;
+btn.textContent=item.emoji+' '+item.name+(owned?(active?' · In use':' · Owned'):selected?' · Not chosen':isPending?' · Confirm below':' · Choose permanently');
+btn.className=active?'active':'';
 btn.onclick=()=>{
 if(!state.chosen.includes(item.id)){if(selected||pendingChoice)return;pendingChoice=item.id;renderPanel();document.getElementById('sandboxConfirmChoice').focus();return;}
 if(item.type==='wear')state.wear=state.wear===item.id?null:item.id;
 else state.placed=state.placed.includes(item.id)?state.placed.filter(x=>x!==item.id):[...state.placed,item.id];
 persist();renderPanel();say(item.name+(active?' put away.':item.type==='wear'?' is now equipped.':' is now in Crumb’s world.'));
-};items.appendChild(btn);
+};
+}
+items.appendChild(btn);
 });
 });
+renderAchievements();
+}
+function renderAchievements(){
+const box=document.getElementById('sandboxAchievements');box.replaceChildren();
+const entryCounts={en:0,de:0,fr:0,es:0},categoryCounts={food:0,playful:0,nesting:0};
+for(const entry of state.entries){if(entryCounts[entry.language]!==undefined)entryCounts[entry.language]++;const kind=CrumbWords.categoryOf(entry.word);if(categoryCounts[kind]!==undefined)categoryCounts[kind]++;}
+function heading(label){const h=document.createElement('div');h.textContent=label;h.style.gridColumn='1 / -1';h.style.fontWeight='bold';h.style.marginTop='8px';box.appendChild(h);}
+function badge(emoji,name,count,target,unit){const earned=count>=target;const el=document.createElement('div');el.className='achievement'+(earned?' earned':'');el.textContent=(earned?'🏅 ':'🔒 ')+emoji+' '+name+' · '+Math.min(count,target)+'/'+target+' '+unit;box.appendChild(el);}
+heading('Word families');
+for(const spec of [{kind:'food',name:'Food finder',emoji:'🍎'},{kind:'playful',name:'Play pal',emoji:'🧸'},{kind:'nesting',name:'Nest builder',emoji:'🪺'}])for(const target of [5,15,30])badge(spec.emoji,spec.name,categoryCounts[spec.kind],target,'words');
+heading('Languages');
+for(const spec of [{code:'en',name:'English explorer',flag:'🇬🇧'},{code:'de',name:'German explorer',flag:'🇩🇪'},{code:'fr',name:'French explorer',flag:'🇫🇷'},{code:'es',name:'Spanish explorer',flag:'🇪🇸'}])for(const target of [5,15,30])badge(spec.flag,spec.name,entryCounts[spec.code],target,'words');
+heading('Multilinguist');
+const fiveLanguages=Object.values(entryCounts).filter(n=>n>=5).length, fifteenLanguages=Object.values(entryCounts).filter(n=>n>=15).length;
+badge('🌍','Curious linguist',fiveLanguages,2,'languages with 5+ words');
+badge('🌍','Triple talker',fiveLanguages,3,'languages with 5+ words');
+badge('🌍','Four-language friend',fiveLanguages,4,'languages with 5+ words');
+badge('🗣️','Multilinguist',fifteenLanguages,4,'languages with 15+ words');
 }
 document.getElementById('sandboxConfirmChoice').onclick=()=>{
 const item=catalog.find(x=>x.id===pendingChoice);if(!item)return;
@@ -205,10 +235,10 @@ const originalGive=giveWord;
 giveWord=function(word,reactNow=false){
 const accepted=originalGive(word,reactNow);
 if(accepted&&!reactNow){
-const normalized=rewardKey(String(word).trim().slice(0,24));
-if(knownRewardWord(normalized)&&!state.words.includes(normalized)){
-state.words.push(normalized);persist();renderPanel();
-if(tiers.includes(state.words.length))setTimeout(()=>say('🎁 New reward choice! Open Rewards and pick your favorite.'),300);
+const raw=String(word).trim().slice(0,80),normalized=rewardKey(raw),before=state.words.length,entriesBefore=state.entries.length;
+if(knownRewardWord(normalized)){if(!state.words.includes(normalized))state.words.push(normalized);addEntry(raw);
+if(state.words.length!==before||state.entries.length!==entriesBefore){persist();renderPanel();}
+if(tiers.includes(state.words.length)&&state.words.length!==before)setTimeout(()=>say('🎁 New reward tier unlocked! Open Rewards to choose an item.'),300);
 }}
 return accepted;
 };
