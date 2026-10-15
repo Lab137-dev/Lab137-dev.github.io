@@ -45,11 +45,12 @@ for(const [language,words] of Object.entries(positiveTranslations))for(const ali
 function canonicalize(word){return (localizedAliases[word]&&localizedAliases[word].canonical)||baseVariants[word]||word;}
 function discoveryKey(text){return canonicalize(normalize(text));}
 function classify(text){
- const input=normalize(text),translated=localizedAliases[input],word=translated?translated.canonical:canonicalize(input),language=translated?.language||null;
+ const input=normalize(text),translated=localizedAliases[input],word=translated?translated.canonical:canonicalize(input),language=translated?.language||'en';
  if(tantrum.includes(word))return{kind:'personal',word,action:'fury',language};
  if(Object.hasOwn(personal,word))return{kind:'personal',word,action:personal[word],language};
  for(const [kind,words]of Object.entries(groups))if(words.includes(word))return{kind,word,action:aliases[word]||word,language};
  return{kind:'unknown',word,action:null,language:null};
 }
-root.CrumbWords={classify,normalize,discoveryKey,labels,total:Object.values(groups).reduce((a,v)=>a+v.length,0)+Object.keys(personal).length};
+function categoryOf(text){const word=canonicalize(normalize(text));for(const kind of ['food','playful','nesting'])if(groups[kind].includes(word))return kind;return null;}
+root.CrumbWords={classify,categoryOf,normalize,discoveryKey,labels,total:Object.values(groups).reduce((a,v)=>a+v.length,0)+Object.keys(personal).length};
 })(globalThis);
