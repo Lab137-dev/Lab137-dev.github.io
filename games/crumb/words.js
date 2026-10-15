@@ -10,7 +10,7 @@ const groups={
 };
 const labels={food:'Something to eat',nesting:'Building materials',scary:'Things to hide from',distasteful:'Absolutely not',playful:'Playthings',command:'Words it understands',unknown:'Still a mystery'};
 const aliases={nap:'sleep','wake up':'wake','come here':'come','go home':'home'};
-function normalize(text){return String(text).normalize('NFKC').toLowerCase().trim().replace(/^[\\s.!?,;:]+|[\\s.!?,;:]+$/g,'').replace(/\\s+/g,' ');}
+function normalize(text){return String(text).normalize('NFKC').toLowerCase().trim().replace(/^[\s.!?,;:]+|[\s.!?,;:]+$/g,'').replace(/\s+/g,' ');}
 const tantrum=['war','hate','hatred','violence','cruelty','bullying','bully','abuse','neglect','greed','pollution','litter','trash','garbage','smoke','smog','fireworks','loud noise','chainsaw','leaf blower','vacuum cleaner','pesticide','poison','oil spill','deforestation','destroy','destruction','chaos','mean','unkind','injustice','betrayal','lies','fighting','bomb','bombs','gunfire','process'];
 const variants={crumbs:'crumb',berries:'berry',oats:'oat',seeds:'seed',twigs:'twig',leaves:'leaf',feathers:'feather',scraps:'scrap',pickles:'pickle',bubbles:'bubble',sticks:'stick',branches:'branch',pebbles:'pebble',stones:'stone',acorns:'acorn',shells:'shell',bombs:'bomb',hatred:'hate',bullying:'bully','wake up':'wake','come here':'come','go home':'home',nap:'sleep',mack:'mac',friends:'friend',stasia:'anastasia'};
 const personal={};
