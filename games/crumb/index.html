@@ -1,46 +1,105 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crumb — what does it like?</title><style>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crumb — what does it like?</title><meta name="description" content="Meet Crumb, a tiny creature with a memorable voice and a growing world. Discover words, unlock rewards, build a nest and playground, and visit a lantern-lit village. Playtesters wanted!"><link rel="canonical" href="https://lab137-dev.github.io/games/crumb/"><meta property="og:type" content="website"><meta property="og:title" content="Crumb — Playtesters wanted!"><meta property="og:description" content="A tiny creature. A growing world. Discover words, build his home, and unlock a lantern-lit village. Help us test Crumb in your browser."><meta property="og:url" content="https://lab137-dev.github.io/games/crumb/"><meta property="og:image" content="https://lab137-dev.github.io/games/crumb/assets/crumb-preview.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><style>
 *{box-sizing:border-box}body{margin:0;background:#e7dfd0;color:#403e37;font-family:Georgia,serif}main{position:relative;max-width:1400px;margin:auto;min-height:100vh;min-height:100svh;overflow:hidden}header{position:absolute;z-index:1;top:35px;left:5%;pointer-events:none}h1{font-weight:400;font-size:46px;letter-spacing:-2px;margin:0}header p{font:14px system-ui,sans-serif;color:#777163;margin:8px 0}canvas{display:block;width:100%;height:100vh;height:100svh;touch-action:none}canvas:focus-visible{outline:3px solid #758363;outline-offset:-6px}form{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);display:flex;gap:8px;width:min(470px,90%);padding:8px;background:#f8f3e8e8;border:1px solid #c7bcaa;border-radius:16px;box-shadow:0 10px 30px #554c3710}input{width:100%;min-width:0;border:0;background:transparent;padding:10px;font:17px Georgia,serif;color:#413e35;outline:none}input:focus{box-shadow:inset 0 -2px #9c8762}button{border:0;border-radius:9px;background:#414d43;color:#f7f2e7;padding:12px 17px;font:13px system-ui,sans-serif;cursor:pointer}button:hover{background:#576552}#message{position:absolute;bottom:145px;left:10%;width:80%;text-align:center;font:14px system-ui,sans-serif;color:#746b5b;pointer-events:none}#controlHint{position:absolute;bottom:53px;left:5%;right:5%;margin:0;font:11px system-ui,sans-serif;color:#807565;pointer-events:none}@media(max-width:600px){#controlHint{bottom:43px;font-size:10px}}footer{position:absolute;bottom:25px;left:5%;right:5%;display:flex;align-items:center;justify-content:space-between;gap:12px;font:12px system-ui,sans-serif;color:#807565}footer button{background:transparent;color:#6d604e;padding:8px;text-decoration:underline}footer span{max-width:65%;line-height:1.5}@media(max-width:600px){header{top:24px}h1{font-size:38px}header p{font-size:12px}footer{bottom:12px}}
 #journalToggle{position:absolute;top:42px;right:5%;background:#f8f3e8b8;color:#5b604f;border:1px solid #c3b9a5}#vitals{position:absolute;top:123px;left:5%;font:12px system-ui,sans-serif;color:#777163;display:flex;gap:16px;pointer-events:none}dialog{width:min(520px,92vw);max-height:80vh;overflow:auto;background:#f5eddd;border:1px solid #b7a98d;border-radius:16px;color:#4e483c;padding:25px;box-shadow:0 20px 80px #312e292e}dialog::backdrop{background:#3b38294d;backdrop-filter:blur(3px)}dialog h2{font-weight:400;font-size:28px;margin:0 0 12px}dialog h3{font:15px system-ui,sans-serif;margin:22px 0 7px}dialog p{font:14px system-ui,sans-serif;line-height:1.6;color:#756a58}dialog ul{padding-left:20px;font:14px system-ui,sans-serif;line-height:1.9}#closeJournal{float:right;padding:8px 12px}#journalCount{display:block;margin-top:6px;color:#8c806a;font:11px system-ui,sans-serif}@media(max-width:600px){#journalToggle{top:28px;padding:9px;font-size:11px}#vitals{top:100px;font-size:11px}footer span{max-width:43%}footer button{font-size:11px;padding:6px}#message{font-size:13px;bottom:148px}}
-</style></head><body><main><header><h1>crumb.</h1><p>A small creature. Particular tastes.</p></header><div id="lab137Brand" aria-label="Lab-137 ( because we can )">Lab-137 ( because we can )</div><button id="journalToggle" type="button">Field notes<span id="journalCount">Nothing discovered yet</span></button><div id="vitals"><span id="hunger">A little peckish</span><span id="mood">Curious</span></div><dialog id="journal"><button id="closeJournal">Close ×</button><h2>Crumb’s peculiarities</h2><p>Only things you have actually seen it react to appear here. Try food, objects, sounds—or something you might say to a creature.</p><div id="discoveries"></div><p id="storageNote"></p></dialog><canvas id="room" tabindex="0" aria-label="Crumb’s room. Drag cards and toys with a mouse or touch. For keyboard control, focus the scene; use left and right to select an item, Enter or Space to pick it up or drop it, arrow keys to move it, and Escape to release it."></canvas><p id="controlHint">Keyboard: Left/Right select · Enter/Space pick up or drop · arrows move · Esc releases</p><p id="message" role="status">Try a word. Watch what it does.</p><form id="feed"><input id="word" aria-label="A word for Crumb" placeholder="What might a tiny creature like?" maxlength="24" autocomplete="off"><button>Give it</button></form><footer><span>Some words matter to it. You’ll have to find out which.</span><div><button id="scatter" type="button">Make a little mess</button><button id="fresh" type="button">Fresh nest</button></div></footer></main><script>if(typeof window.crumbTranslate!=="function")window.crumbTranslate=function(s){return String(s);};window.addEventListener("error",function(e){if(window.__crumbStartupErrorShown)return;window.__crumbStartupErrorShown=true;var m=document.getElementById("message");if(!m)return;var detail=e&&e.message?e.message:"A game script could not load";var file=e&&e.filename?e.filename.split("/").pop():"";var target=e&&e.target;if(!e.message&&target&&target.src)file=target.src.split("/").pop();m.textContent="Crumb startup error: "+detail+(file?" ["+file+(e&&e.lineno?":"+e.lineno:"")+"]":"");},true);window.addEventListener("unhandledrejection",function(e){if(window.__crumbStartupErrorShown)return;window.__crumbStartupErrorShown=true;var m=document.getElementById("message");if(m){var r=e&&e.reason;m.textContent="Crumb startup error: "+(r&&r.message?r.message:String(r||"unhandled promise"));}});</script><script src="words.js?v=20261015-vocab529"></script><script>
+</style></head><body><main><header><h1>crumb.</h1><p>A small creature. Particular tastes.</p></header><div id="lab137Brand" aria-label="Lab-137 ( because we can )">Lab-137 ( because we can )</div><button id="journalToggle" type="button">Field notes<span id="journalCount">Nothing discovered yet</span></button><div id="vitals"><span id="hunger">A little peckish</span><span id="mood">Curious</span></div><dialog id="journal"><button id="closeJournal">Close ×</button><h2>Crumb’s peculiarities</h2><p>Only things you have actually seen it react to appear here. Try food, objects, sounds—or something you might say to a creature.</p><div id="discoveries"></div><p id="storageNote"></p></dialog><canvas id="room" tabindex="0" aria-label="Crumb’s room. Drag cards and toys with a mouse or touch. For keyboard control, focus the scene; use left and right to select an item, Enter or Space to pick it up or drop it, arrow keys to move it, and Escape to release it."></canvas><p id="message" role="status">Try a word. Watch what it does.</p><form id="feed"><input id="word" aria-label="A word for Crumb" placeholder="What might a tiny creature like?" maxlength="24" autocomplete="off"><button>Give it</button></form><footer><span>Some words matter to it. You’ll have to find out which.</span><div><button id="scatter" type="button">Make a little mess</button><button id="fresh" type="button">Fresh nest</button></div></footer><button id="nestUndo" type="button" hidden>Undo fresh nest</button></main><script>if(typeof window.crumbTranslate!=="function")window.crumbTranslate=function(s){return String(s);};window.addEventListener("error",function(e){if(window.__crumbStartupErrorShown)return;window.__crumbStartupErrorShown=true;var m=document.getElementById("message");if(!m)return;var detail=e&&e.message?e.message:"A game script could not load";var file=e&&e.filename?e.filename.split("/").pop():"";var target=e&&e.target;if(!e.message&&target&&target.src)file=target.src.split("/").pop();m.textContent="Crumb startup error: "+detail+(file?" ["+file+(e&&e.lineno?":"+e.lineno:"")+"]":"");},true);window.addEventListener("unhandledrejection",function(e){if(window.__crumbStartupErrorShown)return;window.__crumbStartupErrorShown=true;var m=document.getElementById("message");if(m){var r=e&&e.reason;m.textContent="Crumb startup error: "+(r&&r.message?r.message:String(r||"unhandled promise"));}});</script><script src="words.js?v=20261015-playtest1"></script><script>
 'use strict';
-const canvas=document.getElementById('room'),ctx=canvas.getContext('2d'),message=document.getElementById('message'),input=document.getElementById('word');let W=1000,H=700,last=0,clock=0,drag=null,pointer={x:-1000,y:-1000},target=null,phase='idle',timer=0,carry=null,treasures=[],nextId=1,saveOK=true,hunger=.35,joy=0,discoveries={},effects=[],command=null,personalScattered=false,nestAfterLove=null,wander=null,wanderPause=2,idleWalking=false,twin=null,splitProgress=0,backgroundCanvas=null,languageBubble=null;
+const canvas=document.getElementById('room'),ctx=canvas.getContext('2d'),message=document.getElementById('message'),input=document.getElementById('word');let W=1000,H=700,last=0,clock=0,drag=null,pointer={x:-1000,y:-1000},pointerSeen=-Infinity,target=null,phase='idle',timer=0,carry=null,treasures=[],nextId=1,saveOK=true,hunger=.35,joy=0,discoveries={},effects=[],command=null,personalScattered=false,nestAfterLove=null,wander=null,wanderPause=2,idleWalking=false,twin=null,splitProgress=0,backgroundCanvas=null,languageBubble=null,visitors=[],crumbColor='soot';
+const crumbColors={soot:{name:'Soot',colors:['#565b50','#353a34','#222824']},rose:{name:'Rose',colors:['#c88297','#85546c','#4c3244']},sky:{name:'Sky',colors:['#82b6d1','#4e7d9e','#2c465e']},mint:{name:'Mint',colors:['#8ec4a3','#4f866b','#2d5144']},gold:{name:'Honey',colors:['#d2ae61','#96753b','#584626']},lavender:{name:'Lavender',colors:['#b09bcc','#78658e','#463b56']},coral:{name:'Coral',colors:['#d3957e','#99634f','#583c32']},snow:{name:'Snow',colors:['#e6e4da','#b6b8ae','#747e79']}};
+function startSocialVisit(){
+if(target){treasures=treasures.filter(t=>t!==target);target=null;}interrupt();phase='social';timer=0;joy=1;
+const colors=['rose','sky','mint','gold'],wears=['🎀','🎩','🧢','👑'];
+visitors=colors.map((color,i)=>({visitor:true,x:i%2?W+70:-70,y:H*(.51+i*.035),walk:0,facing:i%2?-1:1,blink:0,colors:crumbColors[color].colors,wear:wears[i],index:i,goal:true,leaving:false,arrived:false}));
+say('Company! A very small gathering.');window.crumbAudio?.event('social');
+}
+function updateVisitors(dt){
+for(const guest of visitors){
+if(phase!=='social'||timer>6.8)guest.leaving=true;
+let gx,gy;if(guest.leaving){gx=guest.index%2?W+120:-120;gy=H*(.55+guest.index*.035);}else{const a=timer*1.5+guest.index*Math.PI/2;gx=Math.max(48,Math.min(W-48,creature.x+Math.cos(a)*Math.min(W*.23,115)));gy=Math.max(H*.43,Math.min(H*.75,creature.y+Math.sin(a)*30));}
+const dx=gx-guest.x,dy=gy-guest.y,d=Math.hypot(dx,dy);if(!guest.leaving&&d<40)guest.arrived=true;const step=Math.min(d,(guest.leaving?Math.max(220,W*.7):guest.arrived?110:Math.max(220,W*.65))*dt);
+if(d>1){guest.x+=dx/d*step;guest.y+=dy/d*step;guest.walk+=step*.1;guest.facing=Math.sign(dx)||1;}
+}
+visitors=visitors.filter(g=>!g.leaving||(g.x>-100&&g.x<W+100));
+}
 const creature={x:300,y:380,facing:1,walk:0,blink:0};const nest=()=>({x:W*.73,y:H*.53});const say=s=>message.textContent=window.crumbTranslate?window.crumbTranslate(s):s;const width=t=>Math.min(270,28+t.length*9);
 const specialWords={april:'rain',mitosis:'mitosis',success:'celebrate','tj maxx':'nervous',tjmaxx:'nervous',alex:'disco','a-lox':'disco',jason:'pizza'};
 function showLanguageFlag(code){if(code&&code!=='en')languageBubble={code,life:2.8};}
 function resize(){const oldW=W,oldH=H,rect=canvas.getBoundingClientRect();W=rect.width||window.innerWidth||1000;H=rect.height||window.innerHeight||700;backgroundCanvas=null;const dpr=Math.min(2,devicePixelRatio||1);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);creature.x*=W/oldW;creature.y*=H/oldH;wander=null;if(twin){twin.x*=W/oldW;twin.y*=H/oldH;twin.goal=null;}for(const t of treasures){t.x*=W/oldW;t.y*=H/oldH;}if(drag)drag=null;}
-function home(t){const n=nest(),i=Math.max(0,treasures.filter(v=>v.settled).indexOf(t));return {x:n.x+Math.sin(t.id*3.7)*Math.min(W*.09,75),y:n.y-8-Math.floor(i/3)*21};}
-function save(){try{localStorage.setItem('crumb.discoveries.v1',JSON.stringify(discoveries));localStorage.setItem('crumb.nest.v1',JSON.stringify(treasures.filter(t=>t.settled).map(t=>({text:t.text,id:t.id,angle:t.angle})).slice(-12)));}catch{saveOK=false;}}
-try{const saved=JSON.parse(localStorage.getItem('crumb.nest.v1')||'[]');if(Array.isArray(saved))for(const s of saved.slice(-12))if(typeof s.text==='string'&&s.text.length<=24){treasures.push({text:s.text,id:nextId++,x:0,y:0,angle:0,settled:true,displaced:false});}}catch{saveOK=false;}
+function nestCapacity(){return window.crumbBonus?.capacity()||12;}
+function home(t){const custom=window.crumbBonus?.nestHome(t);if(custom)return custom;const n=nest(),i=Math.max(0,treasures.filter(v=>v.settled).indexOf(t));return {x:n.x+Math.sin(t.id*3.7)*Math.min(W*.09,75),y:n.y-8-Math.floor(i/3)*21};}
+function save(){if(window.crumbGod?.testing)return true;try{localStorage.setItem('crumb.discoveries.v1',JSON.stringify(discoveries));localStorage.setItem('crumb.nest.v1',JSON.stringify(treasures.filter(t=>t.settled).map(t=>({text:t.text,id:t.id,angle:t.angle})).slice(-48)));return true;}catch{saveOK=false;return false;}}
+try{const saved=JSON.parse(localStorage.getItem('crumb.nest.v1')||'[]');if(Array.isArray(saved))for(const s of saved.slice(-48))if(typeof s.text==='string'&&s.text.length<=24){treasures.push({text:s.text,id:nextId++,x:0,y:0,angle:0,settled:true,displaced:false});}}catch{saveOK=false;}
 try{const notes=JSON.parse(localStorage.getItem('crumb.discoveries.v1')||'{}');if(notes&&typeof notes==='object'&&!Array.isArray(notes))for(const [word,kind]of Object.entries(notes)){const normalized=CrumbWords.normalize(word),classified=CrumbWords.classify(normalized);if(normalized&&((classified.kind===kind&&kind!=='unknown')||(kind==='special'&&Object.hasOwn(specialWords,normalized))))discoveries[normalized]=kind;}}catch{saveOK=false;}
 resize();for(const t of treasures){Object.assign(t,home(t));t.angle=Math.sin(t.id*7)*.24;}creature.x=W*.32;creature.y=H*.54;
 window.addEventListener('resize',resize,{passive:true});if(typeof ResizeObserver==='function')new ResizeObserver(resize).observe(canvas);
-function refreshJournal(){const count=new Set(Object.keys(discoveries).map(CrumbWords.discoveryKey)).size;document.getElementById('journalCount').textContent=count?count+(count===1?' word discovered':' words discovered'):'Nothing discovered yet';const list=document.getElementById('discoveries');list.replaceChildren();if(!count){const p=document.createElement('p');p.textContent='Blank pages. A very opinionated subject. Start experimenting.';list.appendChild(p);}for(const kind of ['food','nesting','scary','distasteful','playful','command','special','personal']){const found=Object.entries(discoveries).filter(([,v])=>v===kind);if(!found.length)continue;const heading=document.createElement('h3');heading.textContent=CrumbWords.labels[kind]||(kind==='special'?'Special reactions':'Names Crumb loves');list.appendChild(heading);const p=document.createElement('p');p.textContent=found.map(([word])=>word).join(' · ');list.appendChild(p);}document.getElementById('storageNote').textContent=saveOK?'Your discoveries stay in this browser when local storage is available.':'Storage is unavailable. These discoveries will last for this visit.';}
+function refreshJournal(){const count=new Set(Object.keys(discoveries).map(CrumbWords.discoveryKey)).size;document.getElementById('journalCount').textContent=count?count+(count===1?' word discovered':' words discovered'):'Nothing discovered yet';const list=document.getElementById('discoveries');list.replaceChildren();if(!count){const p=document.createElement('p');p.textContent='Blank pages. A very opinionated subject. Start experimenting.';list.appendChild(p);}for(const kind of ['food','nesting','scary','distasteful','playful','social','command','special','personal']){const found=Object.entries(discoveries).filter(([,v])=>v===kind);if(!found.length)continue;const heading=document.createElement('h3');heading.textContent=CrumbWords.labels[kind]||(kind==='special'?'Special reactions':'Names Crumb loves');list.appendChild(heading);const p=document.createElement('p');p.textContent=found.map(([word])=>word).join(' · ');list.appendChild(p);}if(Object.values(discoveries).includes('nesting')){const rebuild=document.createElement('button');rebuild.id='rebuildNestFromNotes';rebuild.type='button';rebuild.textContent='Rebuild nest from field notes';rebuild.onclick=rebuildNestFromNotes;list.appendChild(rebuild);}document.getElementById('storageNote').textContent=saveOK?'Your discoveries stay in this browser when local storage is available.':'Storage is unavailable. These discoveries will last for this visit.';}
 function discover(item){if(item.kind==='unknown')return;discoveries[CrumbWords.normalize(item.text)]=item.kind;save();refreshJournal();}
+function rebuildNestFromNotes(){
+const words=Object.entries(discoveries).filter(([,kind])=>kind==='nesting').map(([word])=>word).slice(-nestCapacity());
+if(!words.length)return;
+if(treasures.some(t=>t.settled)&&!confirm(window.crumbTranslate('Replace the current nest with materials recorded in field notes? This rebuilds one of each recorded material, up to '+nestCapacity()+' pieces.')))return;
+interrupt();drag=null;
+// Keep current offerings; make room by retiring old, processed loose scraps.
+const loose=treasures.filter(t=>!t.settled);treasures=loose.filter(t=>!t.processed).concat(loose.filter(t=>t.processed).slice(0,Math.max(0,(nestCapacity()+8)-words.length-loose.filter(t=>!t.processed).length)));
+for(const text of words)treasures.push({text,kind:'nesting',id:nextId++,x:0,y:0,angle:0,settled:true,displaced:false,processed:true,age:0});
+for(const t of treasures.filter(t=>t.settled)){Object.assign(t,home(t));t.angle=Math.sin(t.id*7)*.24;}
+const saved=save();refreshJournal();document.getElementById('journal').close();
+say(saved?'A familiar pile, rebuilt from field notes. Crumb approves.':'The pile is rebuilt, but could not be saved. Keep this page open.');
+}
 document.getElementById('journalToggle').onclick=()=>{refreshJournal();document.getElementById('journal').showModal();};document.getElementById('closeJournal').onclick=()=>document.getElementById('journal').close();
-function interrupt(){wander=null;wanderPause=1.5;idleWalking=false;if(carry){if(carry.settled)carry.displaced=true;else{carry.displaced=false;carry.processed=false;}}carry=null;target=null;command=null;phase='idle';timer=0;}
+function interrupt(){window.crumbIdle?.cancel();wander=null;wanderPause=1.5;idleWalking=false;if(carry){if(carry.settled)carry.displaced=true;else{carry.displaced=false;carry.processed=false;}}carry=null;target=null;command=null;phase='idle';timer=0;}
 const signs={comeback:'Fuck you too.',nervous:'no comment',pizza:'buy pizza bruh',swear:'Tiny ears. Huge vocabulary.',poop:'Please use the litter box.',bull:'Certified organic nonsense.',sass:'I prefer “cheeky.”',diva:'That’s MISS Crumb to you.',hot:'Who touched the thermostat?',bathroom:'Bathroom’s that way →'};
-function offerReactionCard(text){if(treasures.filter(t=>!t.settled&&!t.processed).length>=3){say('A lot to consider. Let it finish investigating first.');return false;}if(treasures.length>=20){const old=treasures.find(t=>t.processed&&!t.settled&&t!==drag&&t!==target);if(old)treasures=treasures.filter(t=>t!==old);else{say('The desk is rather full. Let it finish first.');return false;}}treasures.push({text,kind:'reaction',id:nextId++,x:W*.23+Math.sin(nextId)*W*.045,y:H*.59+treasures.filter(t=>!t.settled&&!t.processed).length*25,angle:Math.sin(nextId*5)*.16,settled:false,displaced:false,processed:false,age:0});if(phase==='command'&&command==='sleep')interrupt();say('Crumb is considering your offering.');return true;}
+function offerReactionCard(text){if(treasures.filter(t=>!t.settled&&!t.processed).length>=3){say('A lot to consider. Let it finish investigating first.');return false;}if(treasures.length>=nestCapacity()+8){const old=treasures.find(t=>t.processed&&!t.settled&&t!==drag&&t!==target);if(old)treasures=treasures.filter(t=>t!==old);else{say('The desk is rather full. Let it finish first.');return false;}}treasures.push({text,kind:'reaction',id:nextId++,x:W*.23+Math.sin(nextId)*W*.045,y:H*.59+treasures.filter(t=>!t.settled&&!t.processed).length*25,angle:Math.sin(nextId*5)*.16,settled:false,displaced:false,processed:false,age:0});if(phase==='command'&&command==='sleep')interrupt();say('Crumb is considering your offering.');return true;}
 function giveWord(text,reactNow=false){text=String(text).trim().slice(0,24);if(!text)return false;const special=specialWords[CrumbWords.normalize(text)];if(special){if(!reactNow)return offerReactionCard(text);discover({text,kind:'special'});if(special==='mitosis'&&twin){say('Two is quite enough Crumb for one desk.');return true;}interrupt();command=special;phase='special';timer=0;joy=special==='celebrate'||special==='disco'?1:0;say(special==='rain'?'April showers. One very damp Crumb.':special==='mitosis'?'One Crumb. A suspicious wobble.':special==='comeback'?'You hurt its tiny feelings…':special==='nervous'?'Checking for witnesses.':special==='disco'?'The dance floor has been notified.':special==='celebrate'?'A very small champion.':'Crumb has prepared a statement.');return true;}const reaction=CrumbWords.classify(text);if(reaction.language)showLanguageFlag(reaction.language);if(reaction.kind==='personal'){if(!reactNow)return offerReactionCard(text);discover({...reaction,text});if(['friend','friends','freund','freundin','freunde','ami','amie','amis','amies','amigo','amiga','amigos','amigas'].includes(CrumbWords.normalize(text)))nestAfterLove=text;interrupt();command=reaction.action;phase='personal';timer=0;personalScattered=false;joy=command==='fury'?0:1;say(command==='fury'?'An immediate and spectacular loss of composure.':command==='roll'?'All four feet. Absolutely delighted.':'Oh. That name means something to it.');return true;}if(reaction.kind==='command'){interrupt();command=reaction.action;phase='command';timer=0;discover({...reaction,text});if(command==='wake'){phase='idle';command=null;say('Oh. Yes. Awake. Completely awake.');}else if(command==='fetch'){target=treasures.find(t=>t.settled&&t!==drag);if(target){phase='fetchApproach';say('Something for you? Let it choose.');}else{phase='idle';say('There is nothing to fetch yet.');}}else say('It seems to understand that.');return true;}
 if(treasures.filter(t=>!t.settled&&!t.processed).length>=3){say('A lot to consider. Let it finish investigating first.');return false;}
 // Old rejected or unknown scraps make room, without discarding its nest.
-if(treasures.length>=20){const old=treasures.find(t=>t.processed&&!t.settled&&t!==drag&&t!==target);if(old)treasures=treasures.filter(t=>t!==old);else{say('The desk is rather full. Try a command, or start a fresh nest.');return false;}}
+if(treasures.length>=nestCapacity()+8){const old=treasures.find(t=>t.processed&&!t.settled&&t!==drag&&t!==target);if(old)treasures=treasures.filter(t=>t!==old);else{say('The desk is rather full. Try a command, or start a fresh nest.');return false;}}
 if(reaction.kind==='scary'||phase==='command'&&command==='sleep')interrupt();const item={text,kind:reaction.kind,id:nextId++,x:W*.23+Math.sin(nextId)*W*.045,y:H*.59+treasures.filter(t=>!t.settled&&!t.processed).length*25,angle:Math.sin(nextId*5)*.16,settled:false,displaced:false,processed:false,age:0};treasures.push(item);if(item.kind==='scary'){interrupt();target=item;phase='fright';timer=0;discover(item);say('Oh. No. Absolutely not.');}else say('Crumb is considering your offering.');return true;}
 document.getElementById('feed').addEventListener('submit',e=>{e.preventDefault();if(giveWord(input.value))input.value='';else input.focus();});
 refreshJournal();
-document.getElementById('fresh').onclick=()=>{treasures=[];nextId=1;interrupt();drag=null;hunger=.35;joy=0;effects=[];twin=null;splitProgress=0;save();say('A clean desk. A fresh start. Crumb has plans.');};
+const nestUndoKey='crumb.nest.undo.v1',nestUndoButton=document.getElementById('nestUndo');
+let nestUndoSnapshot=null;
+try{const s=JSON.parse(localStorage.getItem(nestUndoKey)||'null');if(s&&s.version===1&&Array.isArray(s.items)&&s.items.length&&s.items.every(t=>typeof t.text==='string'&&t.text.length<=24&&Number.isFinite(t.x)&&Number.isFinite(t.y)&&Number.isFinite(t.id)))nestUndoSnapshot=s;}catch{}
+nestUndoButton.hidden=!nestUndoSnapshot;
+document.getElementById('fresh').onclick=()=>{
+if(treasures.length){
+if(!confirm(window.crumbTranslate('Clear Crumb’s nest and all loose word cards? Your discoveries and rewards will stay. You can restore this pile with Undo fresh nest.')))return;
+const snapshot={version:1,items:treasures.map(t=>({...t,x:t.x/W,y:t.y/H,origin:t.origin?{x:t.origin.x/W,y:t.origin.y/H}:undefined})),hunger,joy};
+try{if(!window.crumbGod?.testing){const data=JSON.stringify(snapshot);localStorage.setItem(nestUndoKey,data);if(localStorage.getItem(nestUndoKey)!==data)throw Error('Undo save unavailable');}}
+catch{say('Crumb could not save an undo copy. Your nest has not been cleared.');return;}
+nestUndoSnapshot=snapshot;nestUndoButton.hidden=false;
+}
+treasures=[];nextId=1;interrupt();drag=null;hunger=.35;joy=0;effects=[];twin=null;visitors=[];splitProgress=0;save();say('A clean desk. A fresh start. Crumb has plans.');
+};
+nestUndoButton.onclick=()=>{
+if(!nestUndoSnapshot)return;
+if(treasures.length&&!confirm(window.crumbTranslate('Restore the pile from before Fresh nest? This replaces the word cards currently on the desk. Your discoveries and rewards will stay.')))return;
+interrupt();drag=null;effects=[];twin=null;visitors=[];splitProgress=0;
+treasures=nestUndoSnapshot.items.map(t=>({...t,x:t.x*W,y:t.y*H,origin:t.origin?{x:t.origin.x*W,y:t.origin.y*H}:undefined}));
+nextId=Math.max(0,...treasures.map(t=>t.id))+1;
+hunger=Number.isFinite(nestUndoSnapshot.hunger)?Math.max(0,Math.min(1,nestUndoSnapshot.hunger)):.35;
+joy=Number.isFinite(nestUndoSnapshot.joy)?Math.max(0,Math.min(1,nestUndoSnapshot.joy)):0;
+if(!save()){say('The pile is back, but Crumb could not save it. Keep this page open; your undo copy is still available.');return;}nestUndoSnapshot=null;nestUndoButton.hidden=true;
+if(!window.crumbGod?.testing)try{localStorage.removeItem(nestUndoKey);}catch{}
+say('The old pile is back. Crumb looks relieved.');
+};
 function pos(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};}
-canvas.addEventListener('pointermove',e=>{pointer=pos(e);if(drag){drag.x=Math.max(width(drag.text)/2,Math.min(W-width(drag.text)/2,pointer.x));drag.y=Math.max(H*.25,Math.min(H-195,pointer.y));drag.displaced=drag.settled;}});
-canvas.addEventListener('pointerdown',e=>{pointer=pos(e);const hit=[...treasures].reverse().find(t=>t!==carry&&t!==target&&Math.abs(t.x-pointer.x)<width(t.text)/2+8&&Math.abs(t.y-pointer.y)<22);if(hit){drag=hit;canvas.setPointerCapture(e.pointerId);if(target===hit){target=null;phase='idle';}say(hit.id===1?'Careful. That one is apparently important.':'Crumb did not approve this renovation.');}});
-function release(){if(drag){drag.displaced=true;drag=null;save();}}canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);canvas.addEventListener('pointerleave',()=>{if(!drag)pointer={x:-1000,y:-1000};});
-document.getElementById('scatter').onclick=()=>{const candidates=treasures.filter(t=>t.settled&&t!==carry);if(!candidates.length){say('There must be a nest before there can be a mess.');return;}candidates.slice(0,3).forEach((t,i)=>{t.x=W*(.32+.12*i);t.y=H*.65-i*22;t.angle=(i-1)*.4;t.displaced=true;});say('An architectural emergency.');};
+canvas.addEventListener('pointermove',e=>{pointer=pos(e);pointerSeen=clock;if(drag){drag.x=Math.max(width(drag.text)/2,Math.min(W-width(drag.text)/2,pointer.x));drag.y=Math.max(H*.25,Math.min(H-195,pointer.y));drag.displaced=drag.settled;}});
+canvas.addEventListener('pointerdown',e=>{pointer=pos(e);pointerSeen=clock;const hit=[...treasures].reverse().find(t=>t!==carry&&t!==target&&Math.abs(t.x-pointer.x)<width(t.text)/2+8&&Math.abs(t.y-pointer.y)<22);if(hit){drag=hit;canvas.setPointerCapture(e.pointerId);if(target===hit){target=null;phase='idle';}say(hit.id===1?'Careful. That one is apparently important.':'Crumb did not approve this renovation.');}});
+function release(){if(drag){const disturbed=drag.settled;drag.displaced=true;drag=null;if(disturbed)reactToNestMess();save();}}canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);canvas.addEventListener('pointerleave',()=>{if(!drag){pointer={x:-1000,y:-1000};pointerSeen=-Infinity;}});
+function reactToNestMess(){if(phase==='nestShock'||phase==='personal'||phase==='special')return;interrupt();phase='nestShock';timer=0;window.crumbAudio?.event('mess');say('Wha Habba??');}
+document.getElementById('scatter').onclick=()=>{const candidates=treasures.filter(t=>t.settled&&t!==carry);if(!candidates.length){say('There must be a nest before there can be a mess.');return;}candidates.slice(0,3).forEach((t,i)=>{t.x=W*(.32+.12*i);t.y=H*.65-i*22;t.angle=(i-1)*.4;t.displaced=true;});reactToNestMess();};
 function moveTo(x,y,speed,dt){const dx=x-creature.x,dy=y-creature.y,d=Math.hypot(dx,dy);if(Math.abs(dx)>2)creature.facing=Math.sign(dx);if(d<3)return true;const step=Math.min(d,speed*dt);creature.x+=dx/d*step;creature.y+=dy/d*step;creature.walk+=step*.10;return false;}
 function finish(text){if(target){target.processed=true;target.displaced=false;}carry=null;target=null;phase='idle';timer=0;if(text)say(text);save();}
 function burst(symbol,count=5){for(let i=0;i<count;i++)effects.push({symbol,x:creature.x,y:creature.y-35,vx:(i-(count-1)/2)*22,vy:-35-i%2*15,life:1.3});}
 function roamingPoint(){return{x:W*(.15+Math.random()*.68),y:H*(.47+Math.random()*.18)};}
 function updateTwin(dt){if(!twin)return;twin.age+=dt;if(phase==='special'&&command==='mitosis'){splitProgress=Math.min(1,timer/2.5);twin.x=creature.x+Math.sin(splitProgress*Math.PI/2)*Math.min(80,W*.22);twin.y=creature.y;return;}if(twin.age>22){const dx=creature.x-twin.x,dy=creature.y-twin.y,d=Math.hypot(dx,dy);if(d<5){twin=null;splitProgress=0;burst('✦',3);return;}const step=Math.min(d,90*dt);twin.x+=dx/d*step;twin.y+=dy/d*step;twin.walk+=step*.1;return;}if(phase==='command'&&command==='sleep')return;twin.pause-=dt;if(!twin.goal&&twin.pause<=0)twin.goal=roamingPoint();if(twin.goal){const dx=twin.goal.x-twin.x,dy=twin.goal.y-twin.y,d=Math.hypot(dx,dy);if(d<3){twin.goal=null;twin.pause=1+Math.random()*2;}else{const step=Math.min(d,42*dt);twin.x+=dx/d*step;twin.y+=dy/d*step;twin.walk+=step*.1;}}}
-function update(dt){idleWalking=false;updateTwin(dt);if(languageBubble){languageBubble.life-=dt;if(languageBubble.life<=0)languageBubble=null;}clock+=dt;timer+=dt;hunger=Math.min(1,hunger+dt*.0015);joy=Math.max(0,joy-dt*.008);for(const e of effects){e.x+=e.vx*dt;e.y+=e.vy*dt;e.life-=dt;}effects=effects.filter(e=>e.life>0);for(const t of treasures){t.age=(t.age||0)+dt;}treasures=treasures.filter(t=>!(t.processed&&!t.settled&&t!==target&&t!==drag&&t.age>35));
+function update(dt){idleWalking=false;updateTwin(dt);updateVisitors(dt);if(languageBubble){languageBubble.life-=dt;if(languageBubble.life<=0)languageBubble=null;}clock+=dt;timer+=dt;hunger=Math.min(1,hunger+dt*.0015);joy=Math.max(0,joy-dt*.008);for(const e of effects){e.x+=e.vx*dt;e.y+=e.vy*dt;e.life-=dt;}effects=effects.filter(e=>e.life>0);for(const t of treasures){t.age=(t.age||0)+dt;}treasures=treasures.filter(t=>!(t.processed&&!t.settled&&t!==target&&t!==drag&&t.age>35));
 document.getElementById('hunger').textContent=window.crumbTranslate(hunger>.75?'Quite hungry':hunger>.4?'A little peckish':'Comfortably fed');document.getElementById('mood').textContent=window.crumbTranslate(phase==='personal'?(command==='fury'?'Furious':command==='roll'?'Delighted':'Overflowing with love'):phase==='fright'?'Alarmed':phase==='sneeze'?'Offended':phase==='play'||joy>.3?'Playful':phase==='command'&&command==='sleep'?'Asleep':phase==='eat'?'Delighted':'Curious');
+if(phase==='bonusCourse'||phase==='villageGame'){window.crumbBonus?.step(dt);return;}
+if(phase==='idleAntic'){window.crumbIdle?.step(dt);return;}
+if(phase==='social'){if(timer>1&&timer<6.8&&Math.floor(timer*1.5)!==Math.floor((timer-dt)*1.5))burst('♥',1);if(!visitors.length||timer>13){visitors=[];phase='proud';timer=0;say('A lovely visit. Everyone has somewhere to scurry.');}return;}
+if(phase==='nestShock'){if(timer>1.8){phase='idle';timer=0;}return;}
 if(phase==='special'){
 if(command==='mitosis'){if(!twin)twin={x:creature.x,y:creature.y,facing:-1,walk:0,age:0,pause:1,goal:null};if(timer>3.5){splitProgress=1;phase='proud';command=null;timer=0;say('Two Crumbs. Neither accepts responsibility.');}return;}
 if(command==='celebrate'&&Math.floor(timer*4)!==Math.floor((timer-dt)*4))burst('★',3);
@@ -60,7 +119,7 @@ if(phase==='fright'){moveTo(W*.10,H*.46+8,260,dt);if(timer>3.8){target.age=31;fi
 if(phase==='fetchApproach'){if(moveTo(target.x-42,target.y+5,145,dt)){carry=target;phase='fetchCarry';timer=0;}return;}
 if(phase==='fetchCarry'){carry.x=creature.x+35;carry.y=creature.y-9;if(moveTo(W*.28,H*.60,105,dt)){target.x=W*.28+44;target.y=H*.60;finish('For you. It expects you to be impressed.');}return;}
 if(phase==='approach'){if(moveTo(target.x+(creature.x>target.x?42:-42),target.y+5,145,dt)){phase='sniff';timer=0;}return;}
-if(phase==='sniff'&&timer>1.25){if(target.kind==='reaction'){const text=target.text;treasures=treasures.filter(t=>t!==target);target=null;giveWord(text,true);return;}discover(target);timer=0;if(target.displaced){carry=target;phase='haul';say('No, no. It belongs over here.');}else if(target.kind==='food'){phase='eat';say('That smells extremely promising.');}else if(target.kind==='nesting'){if(treasures.filter(t=>t.settled).length>=12){finish('Excellent material. Unfortunately, the house is full.');return;}carry=target;phase='haul';say(target.text.length>14?'A heavy piece of architecture.':'Yes. That belongs in the nest.');}else if(target.kind==='distasteful'){phase='sneeze';burst('·',8);say('It has made its position on this quite clear.');}else if(target.kind==='playful'){phase='play';target.origin={x:target.x,y:target.y};joy=Math.min(1,joy+.5);say('Oh! This is a different sort of useful.');}else{phase='puzzle';timer=0;say('Crumb is completely baffled by that one.');}return;}
+if(phase==='sniff'&&timer>1.25){if(target.kind==='reaction'){const text=target.text;treasures=treasures.filter(t=>t!==target);target=null;giveWord(text,true);return;}discover(target);timer=0;if(target.displaced){carry=target;phase='haul';say('No, no. It belongs over here.');}else if(target.kind==='food'){phase='eat';say('That smells extremely promising.');}else if(target.kind==='nesting'){if(treasures.filter(t=>t.settled).length>=nestCapacity()){finish('Excellent material. Unfortunately, the house is full.');return;}carry=target;phase='haul';say(target.text.length>14?'A heavy piece of architecture.':'Yes. That belongs in the nest.');}else if(target.kind==='distasteful'){phase='sneeze';burst('·',8);say('It has made its position on this quite clear.');}else if(target.kind==='social'){startSocialVisit();}else if(target.kind==='playful'){phase='play';target.origin={x:target.x,y:target.y};joy=Math.min(1,joy+.5);say('Oh! This is a different sort of useful.');}else{phase='puzzle';timer=0;say('Crumb is completely baffled by that one.');}return;}
 if(phase==='eat'){target.eaten=Math.min(1,timer/2.1);if(timer>2.1){hunger=Math.max(0,hunger-.34);joy=Math.min(1,joy+.12);treasures=treasures.filter(t=>t!==target);burst('♥',2);finish('Gone. A very favorable review.');}return;}
 if(phase==='sneeze'){target.x+=dt*38;target.angle+=dt*.8;if(timer>1.7){target.age=25;finish('It would prefer that you never mention that again.');}return;}
 if(phase==='puzzle'){if(timer>3.1)finish('Crumb has absolutely no idea what that means.');return;}
@@ -68,27 +127,41 @@ if(phase==='play'){const o=target.origin;target.x=o.x+Math.sin(timer*3)*42;targe
 if(phase==='haul'){const h=home(target);if(moveTo(h.x-35,h.y+4,Math.max(32,115-target.text.length*3),dt)){target.settled=true;target.processed=true;target.displaced=false;Object.assign(target,home(target));target.angle=Math.sin(target.id*7)*.24;carry=null;target=null;phase='proud';timer=0;save();say('Please admire the craftsmanship.');}else{carry.x=creature.x+creature.facing*35;carry.y=creature.y-8+Math.sin(creature.walk)*2;carry.angle=creature.facing*.12;}return;}}
 function rounded(x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();if(typeof ctx.roundRect==='function'){ctx.roundRect(x,y,w,h,r);return;}ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
 function drawWord(t){ctx.save();ctx.translate(t.x,t.y);ctx.rotate(t.angle);const eaten=1-(t.eaten||0);ctx.scale(Math.max(.01,eaten),Math.max(.01,eaten));ctx.globalAlpha=t.processed&&!t.settled?Math.max(.12,1-t.age/40):1;const w=width(t.text);ctx.shadowColor='#473a2827';ctx.shadowBlur=7;ctx.shadowOffsetY=3;ctx.fillStyle=t.id===1?'#d9b781':'#e9d8b5';rounded(-w/2,-15,w,30,3);ctx.fill();ctx.shadowColor='transparent';ctx.strokeStyle='#bcaa86';ctx.lineWidth=.7;ctx.stroke();ctx.fillStyle='#5c4b35';ctx.font='16px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t.text,0,0,w-15);if(t.id===1){ctx.fillStyle='#9a7650';ctx.beginPath();ctx.arc(w/2-6,-9,2,0,7);ctx.fill();}ctx.restore();}
-function drawCreature(bodyCreature=creature,size=1){const walking=(bodyCreature===creature?idleWalking:!!bodyCreature.goal)||['toyApproach','toyPlay'].includes(phase)||phase==='personal'&&['fury','roll'].includes(command)||['approach','haul','fright','play','fetchApproach','fetchCarry'].includes(phase)||phase==='command'&&['come','home'].includes(command),sway=walking?Math.sin(bodyCreature.walk)*2:0,sniff=phase==='sniff'?Math.sin(timer*12)*2:0,proud=phase==='proud'?Math.sin(Math.min(1,timer)*Math.PI)*5:0;ctx.save();ctx.translate(bodyCreature.x,bodyCreature.y);ctx.scale(size,size);if(phase==='special'&&command==='rain'){ctx.save();ctx.fillStyle='#899da4';for(const [x,y,r] of [[-20,-104,15],[0,-112,20],[20,-103,16]]){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}ctx.fillRect(-21,-106,43,17);ctx.strokeStyle='#669ebc';ctx.lineWidth=2;ctx.lineCap='round';for(let i=0;i<10;i++){const x=-32+i*7,y=-85+((timer*95+i*13)%70);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-3,y+7);ctx.stroke();}ctx.fillStyle='#83b3c533';ctx.beginPath();ctx.ellipse(0,9,42,7,0,0,Math.PI*2);ctx.fill();ctx.restore();}const shadow=ctx.createRadialGradient(0,7,0,0,7,51);shadow.addColorStop(0,'#36312745');shadow.addColorStop(1,'#36312700');ctx.fillStyle=shadow;ctx.beginPath();ctx.ellipse(0,9,53,14,0,0,7);ctx.fill();
+function gazeFor(body){
+const main=body===creature,seed=body.index??body.id??0;
+if(main&&clock-pointerSeen<2.5&&pointer.x>=0&&pointer.x<=W&&pointer.y>=0&&pointer.y<=H)return {x:Math.max(-4,Math.min(4,(pointer.x-body.x)/65)),y:Math.max(-1.5,Math.min(1.5,(pointer.y-body.y)/110))};
+if(main&&target)return {x:Math.max(-3.6,Math.min(3.6,(target.x-body.x)/45)),y:Math.max(-1,Math.min(1,(target.y-body.y)/100))};
+if(body.party)return {x:Math.max(-3.5,Math.min(3.5,(creature.x-body.x)/40)),y:0};
+if(body.goal||(main&&(idleWalking||['approach','haul','fright','fetchApproach','fetchCarry','bonusCourse'].includes(phase)||phase==='idleAntic'&&['zoomies','tidy'].includes(command))))return {x:body.facing*2.7,y:.2};
+return {x:Math.sin(clock*.62+seed*1.7)*2.8+Math.sin(clock*.19+seed)*.6,y:Math.sin(clock*.43+seed)*.7};
+}
+function creatureScene(body){const villageScene=window.crumbVillage?.scene(body);if(villageScene)return villageScene;if(body===creature&&window.crumbGod?.stage==='flex')return {phase:'godFlex',command:null};return body.npc?{phase:body.party?'social':'idle',command:null}:{phase,command};}
+function drawCreature(bodyCreature=creature,size=1){const {phase,command}=creatureScene(bodyCreature);const power=window.crumbGod?.appearance(bodyCreature);if(power)size=power.scale;const palette=bodyCreature.colors||crumbColors[crumbColor].colors;const walking=(phase==='idleAntic'&&['zoomies','tidy'].includes(command))||(bodyCreature===creature?idleWalking:!!bodyCreature.goal)||['toyApproach','toyPlay'].includes(phase)||phase==='personal'&&['fury','roll'].includes(command)||['godDoor','bonusCourse','approach','haul','fright','play','fetchApproach','fetchCarry'].includes(phase)||phase==='command'&&['come','home'].includes(command),sway=walking?Math.sin(bodyCreature.walk)*2:0,sniff=phase==='sniff'?Math.sin(timer*12)*2:0,proud=phase==='proud'?Math.sin(Math.min(1,timer)*Math.PI)*5:0;ctx.save();ctx.globalAlpha*=window.crumbGod?.alpha(bodyCreature)??1;ctx.translate(bodyCreature.x,bodyCreature.y);{const pose=window.crumbVillage?.pose(bodyCreature)||(bodyCreature===creature?window.crumbBonus?.pose():null);if(pose){ctx.translate(0,pose.hop||0);ctx.scale(1,pose.squash||1);ctx.rotate(pose.tilt||0);ctx.globalAlpha*=pose.opacity??1;}}ctx.scale(size,size);if(power){ctx.save();const aura=ctx.createRadialGradient(0,-29,18,0,-29,68);aura.addColorStop(0,'#43caff33');aura.addColorStop(.55,'#009dff55');aura.addColorStop(1,'#008bff00');ctx.fillStyle=aura;ctx.fillRect(-70,-99,140,140);ctx.restore();ctx.shadowColor='#31baff';ctx.shadowBlur=power.glow;}if(phase==='special'&&command==='rain'){ctx.save();ctx.fillStyle='#899da4';for(const [x,y,r] of [[-20,-104,15],[0,-112,20],[20,-103,16]]){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}ctx.fillRect(-21,-106,43,17);ctx.strokeStyle='#669ebc';ctx.lineWidth=2;ctx.lineCap='round';for(let i=0;i<10;i++){const x=-32+i*7,y=-85+((timer*95+i*13)%70);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-3,y+7);ctx.stroke();}ctx.fillStyle='#83b3c533';ctx.beginPath();ctx.ellipse(0,9,42,7,0,0,Math.PI*2);ctx.fill();ctx.restore();}const shadow=ctx.createRadialGradient(0,7,0,0,7,51);shadow.addColorStop(0,'#36312745');shadow.addColorStop(1,'#36312700');ctx.fillStyle=shadow;ctx.beginPath();ctx.ellipse(0,9,53,14,0,0,7);ctx.fill();
 if(phase==='personal'&&command==='roll'){const turn=Math.min(1,timer/.6)*Math.min(1,(6-timer)/.6);ctx.translate(0,-29);ctx.rotate(Math.PI*turn);ctx.translate(0,29);}
 for(let i=0;i<4;i++){const x=(i-1.5)*17,y=phase==='personal'&&command==='roll'?Math.sin(timer*18+i*2)*9:walking?Math.sin(bodyCreature.walk+i*2)*4:0;ctx.strokeStyle='#353733';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,-9);ctx.quadraticCurveTo(x-4,3,x-7,y+5);ctx.stroke();}
-const special=phase==='special',crying=special&&command==='comeback'&&timer<1.8,celebrating=special&&command==='celebrate',disco=special&&command==='disco',nervous=special&&command==='nervous';const affectionate=phase==='personal'&&(command==='love'||command==='loveDance'),furious=phase==='personal'&&command==='fury',dancing=disco||phase==='personal'&&command==='loveDance'||phase==='command'&&(command==='dance'||command==='spin'),sleeping=phase==='command'&&command==='sleep',sitting=phase==='command'&&(command==='sit'||command==='stay');ctx.translate(sniff+(phase==='sneeze'?Math.sin(timer*35)*4:0),-29+sway-proud+(sleeping||sitting?12:0)-(dancing?Math.abs(Math.sin(timer*7))*17:0));if(affectionate){const swell=Math.sin(Math.min(1,timer/1.2)*Math.PI/2)*Math.min(1,(6-timer)/.8);ctx.scale(1+swell*.42,1+swell*.40);}if(furious){ctx.translate(Math.sin(timer*45)*4,-Math.abs(Math.sin(timer*15))*7);ctx.rotate(Math.sin(timer*22)*.13);}if(dancing)ctx.rotate(command==='spin'?timer*6:Math.sin(timer*7)*.20);if(phase==='fright'){ctx.scale(.84,.72);ctx.rotate(Math.sin(timer*31)*.04);}if(sleeping)ctx.scale(1.1,.72);const body=ctx.createRadialGradient(-14,-19,4,8,5,47);body.addColorStop(0,furious?'#79534a':affectionate?'#68705a':'#565b50');body.addColorStop(.45,'#353a34');body.addColorStop(1,'#222824');ctx.fillStyle=body;ctx.beginPath();for(let i=0;i<=120;i++){const a=i/120*Math.PI*2,r=36+Math.sin(i*2.71)*2.6+Math.cos(i*1.13)*2;const x=Math.cos(a)*r*(1+proud*.015),y=Math.sin(a)*r*.9;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();
-ctx.lineWidth=.8;for(let i=0;i<78;i++){const a=i*2.399,r=34+Math.sin(i*5.1)*3,x=Math.cos(a)*r,y=Math.sin(a)*r*.9;ctx.strokeStyle=i%3?'#343b32':'#626a5755';ctx.beginPath();ctx.moveTo(x*.91,y*.91);ctx.quadraticCurveTo(x*1.12+Math.sin(i)*3,y*1.1,x*1.15,y*1.15);ctx.stroke();}
-const gaze=nervous?Math.sin(timer*9)*4:phase==='proud'?0:Math.max(-4,Math.min(4,(pointer.x-bodyCreature.x)/90)),eyeY=-5,closed=sleeping||Math.sin(clock*.9)>.998;for(const x of [-12,12]){ctx.fillStyle='#d8bd75';ctx.beginPath();ctx.ellipse(x+gaze*.2,eyeY,6,closed?.7:phase==='fright'?10:7.5,0,0,7);ctx.fill();if(!closed){ctx.fillStyle='#202824';ctx.beginPath();ctx.ellipse(x+gaze,eyeY+1,2.4,4.4,0,0,7);ctx.fill();ctx.fillStyle='#fff5cb';ctx.beginPath();ctx.arc(x+gaze-1,eyeY-2,1.2,0,7);ctx.fill();}}
+const special=phase==='special',crying=special&&command==='comeback'&&timer<1.8,celebrating=special&&command==='celebrate',disco=special&&command==='disco',nervous=special&&command==='nervous';const affectionate=phase==='personal'&&(command==='love'||command==='loveDance'),furious=phase==='personal'&&command==='fury',dancing=phase==='villageGame'||(phase==='idleAntic'&&command==='dance')||(phase==='social'&&!bodyCreature.leaving)||disco||phase==='personal'&&command==='loveDance'||phase==='command'&&(command==='dance'||command==='spin'),sleeping=phase==='command'&&command==='sleep',sitting=phase==='command'&&(command==='sit'||command==='stay');ctx.translate(sniff+(phase==='sneeze'?Math.sin(timer*35)*4:0),-29+sway-proud+(sleeping||sitting?12:0)-(dancing?Math.abs(Math.sin(timer*7))*17:0));if(affectionate){const swell=Math.sin(Math.min(1,timer/1.2)*Math.PI/2)*Math.min(1,(6-timer)/.8);ctx.scale(1+swell*.42,1+swell*.40);}if(furious){ctx.translate(Math.sin(timer*45)*4,-Math.abs(Math.sin(timer*15))*7);ctx.rotate(Math.sin(timer*22)*.13);}if(dancing)ctx.rotate(command==='spin'?timer*6:Math.sin(timer*7)*.20);if(phase==='fright'){ctx.scale(.84,.72);ctx.rotate(Math.sin(timer*31)*.04);}if(sleeping)ctx.scale(1.1,.72);const body=ctx.createRadialGradient(-14,-19,4,8,5,47);body.addColorStop(0,furious?'#79534a':affectionate?'#68705a':palette[0]);body.addColorStop(.45,palette[1]);body.addColorStop(1,palette[2]);ctx.fillStyle=body;ctx.beginPath();for(let i=0;i<=120;i++){const a=i/120*Math.PI*2,r=36+Math.sin(i*2.71)*2.6+Math.cos(i*1.13)*2;const x=Math.cos(a)*r*(1+proud*.015),y=Math.sin(a)*r*.9;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();
+ctx.lineWidth=.8;for(let i=0;i<78;i++){const a=i*2.399,r=34+Math.sin(i*5.1)*3,x=Math.cos(a)*r,y=Math.sin(a)*r*.9;ctx.strokeStyle=i%3?palette[1]:palette[0]+'88';ctx.beginPath();ctx.moveTo(x*.91,y*.91);ctx.quadraticCurveTo(x*1.12+Math.sin(i)*3,y*1.1,x*1.15,y*1.15);ctx.stroke();}
+const look=gazeFor(bodyCreature),gaze=nervous?Math.sin(timer*9)*4:phase==='proud'?look.x*.4:look.x,eyeY=-5,closed=sleeping||Math.sin(clock*.9)>.998;for(const x of [-12,12]){ctx.fillStyle='#d8bd75';ctx.beginPath();ctx.ellipse(x+gaze*.2,eyeY,6,closed?.7:phase==='fright'?10:7.5,0,0,7);ctx.fill();if(!closed){ctx.fillStyle='#202824';ctx.beginPath();ctx.ellipse(x+gaze,eyeY+1+look.y,2.4,4.4,0,0,7);ctx.fill();ctx.fillStyle='#fff5cb';ctx.beginPath();ctx.arc(x+gaze-1,eyeY-2+look.y,1.2,0,7);ctx.fill();}}
 if(crying){ctx.fillStyle='#7cbedb';for(const x of [-12,12]){ctx.beginPath();ctx.ellipse(x,-1+(timer*32%22),3,5,0,0,7);ctx.fill();}}
-if(celebrating||disco){ctx.strokeStyle='#434b3e';ctx.lineWidth=5;ctx.lineCap='round';for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(side*27,9);ctx.lineTo(side*43,-13);ctx.lineTo(side*48,celebrating?-52:side===1?-48:12+Math.sin(timer*9)*12);ctx.stroke();}if(disco){ctx.fillStyle='#dfbb77';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('✦ DISCO ✦',0,-57);}}
-if(affectionate){ctx.fillStyle='#e4a29d';ctx.font='13px Georgia';ctx.textAlign='center';ctx.fillText('♥',-12,-1);ctx.fillText('♥',12,-1);}if(furious){ctx.strokeStyle='#242621';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-20,-15);ctx.lineTo(-5,-9);ctx.moveTo(20,-15);ctx.lineTo(5,-9);ctx.stroke();}ctx.strokeStyle='#1b221d';ctx.lineWidth=1.7;ctx.beginPath();ctx.moveTo(-4,10);ctx.quadraticCurveTo(0,phase==='sneeze'||furious||crying?6:affectionate?16:phase==='proud'||phase==='eat'||phase==='play'?15:11,4,10);ctx.stroke();if(special&&signs[command]&&!crying){
+if(phase==='godFlex'){ctx.strokeStyle=palette[1];ctx.lineWidth=11;ctx.lineCap='round';for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(side*25,7);ctx.lineTo(side*48,-1);ctx.lineTo(side*57,-28);ctx.lineTo(side*45,-42);ctx.stroke();ctx.fillStyle=palette[0];ctx.beginPath();ctx.arc(side*51,-15,9,0,7);ctx.fill();}}
+if(phase==='idleAntic'&&command==='tidy'&&bodyCreature===creature){ctx.strokeStyle='#434b3e';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(27,9);ctx.lineTo(44,20);ctx.stroke();}
+if(phase==='idleAntic'&&command==='wave'){ctx.strokeStyle='#434b3e';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(27,9);ctx.lineTo(39,-14);ctx.lineTo(43+Math.sin(timer*13)*8,-44);ctx.stroke();}
+if(phase==='nestShock'&&bodyCreature===creature){const lift=Math.min(1,timer/.16)*Math.min(1,(1.8-timer)/.22);ctx.strokeStyle='#434b3e';ctx.lineWidth=5;ctx.lineCap='round';for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(side*27,9);ctx.lineTo(side*42,-10-lift*10);ctx.lineTo(side*48,-10-lift*38+Math.sin(timer*16)*2);ctx.stroke();}}
+if(celebrating||disco||phase==='social'||phase==='villageGame'){ctx.strokeStyle='#434b3e';ctx.lineWidth=5;ctx.lineCap='round';for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(side*27,9);ctx.lineTo(side*43,-13);ctx.lineTo(side*48,celebrating?-52:side===1?-48:12+Math.sin(timer*9)*12);ctx.stroke();}if(disco){ctx.fillStyle='#dfbb77';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('✦ DISCO ✦',0,-57);}}
+if(affectionate){ctx.fillStyle='#e4a29d';ctx.font='13px Georgia';ctx.textAlign='center';ctx.fillText('♥',-12,-1);ctx.fillText('♥',12,-1);}if(furious){ctx.strokeStyle='#242621';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-20,-15);ctx.lineTo(-5,-9);ctx.moveTo(20,-15);ctx.lineTo(5,-9);ctx.stroke();}ctx.strokeStyle='#1b221d';ctx.lineWidth=1.7;ctx.beginPath();ctx.moveTo(-4,10);ctx.quadraticCurveTo(0,phase==='nestShock'?18:phase==='sneeze'||furious||crying?6:affectionate?16:phase==='proud'||phase==='eat'||phase==='play'?15:11,4,10);ctx.stroke();if(special&&signs[command]&&!crying){
 const text=signs[command],sw=Math.min(W-24,Math.max(140,text.length*7.2+24)),sx=Math.max(-sw/2,12-bodyCreature.x),ex=Math.min(sx,W-12-bodyCreature.x-sw),sy=30;
 ctx.strokeStyle='#434b3e';ctx.lineWidth=5;for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(side*26,12);ctx.lineTo(ex+(side===-1?8:sw-8),sy+14);ctx.stroke();}
 ctx.fillStyle='#fff5dc';rounded(ex,sy,sw,42,4);ctx.fill();ctx.strokeStyle='#a1875c';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#433826';ctx.font='bold 14px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,ex+sw/2,sy+21,sw-16);
 }if(carry){ctx.strokeStyle='#4e5647';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(bodyCreature.facing*22,11);ctx.quadraticCurveTo(bodyCreature.facing*34,22,bodyCreature.facing*40,19);ctx.stroke();}ctx.restore();}
 function drawBackground(){if(!backgroundCanvas){const ratio=Math.min(2,devicePixelRatio||1);backgroundCanvas=document.createElement('canvas');backgroundCanvas.width=Math.ceil(W*ratio);backgroundCanvas.height=Math.ceil(H*ratio);const b=backgroundCanvas.getContext('2d');b.scale(ratio,ratio);const bg=b.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#e9e3d7');bg.addColorStop(.40,'#ded8ca');bg.addColorStop(.41,'#c8b69a');bg.addColorStop(1,'#d9c6a6');b.fillStyle=bg;b.fillRect(0,0,W,H);const light=b.createRadialGradient(W*.22,H*.2,10,W*.3,H*.4,W*.8);light.addColorStop(0,'#fffbe555');light.addColorStop(1,'#63543b09');b.fillStyle=light;b.fillRect(0,0,W,H);b.strokeStyle='#9d89691b';b.lineWidth=1;for(let i=0;i<18;i++){b.beginPath();const y=H*.42+i*32;b.moveTo(0,y);b.bezierCurveTo(W*.3,y+5,W*.7,y-4,W,y+2);b.stroke();}}ctx.drawImage(backgroundCanvas,0,0,W,H);}
-function drawLanguageFlag(code){
+function drawLanguageFlag(code,context=ctx){
+ const ctx=context;
  const x=-22,y=-14,w=44,h=28;
  ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
  if(code==='de'){ctx.fillStyle='#171717';ctx.fillRect(x,y,w,h/3);ctx.fillStyle='#d83a35';ctx.fillRect(x,y+h/3,w,h/3);ctx.fillStyle='#f1c64a';ctx.fillRect(x,y+2*h/3,w,h/3);}
  else if(code==='fr'){ctx.fillStyle='#24468f';ctx.fillRect(x,y,w/3,h);ctx.fillStyle='#fff';ctx.fillRect(x+w/3,y,w/3,h);ctx.fillStyle='#d94343';ctx.fillRect(x+2*w/3,y,w/3,h);}
  else if(code==='es'){ctx.fillStyle='#c62828';ctx.fillRect(x,y,w,h);ctx.fillStyle='#f4c542';ctx.fillRect(x,y+h*.25,w,h*.5);}
- else {ctx.fillStyle='#fff';ctx.fillRect(x,y,w,h);ctx.fillStyle='#bd3440';for(let i=0;i<7;i++)ctx.fillRect(x,y+i*4,w,2);ctx.fillStyle='#274878';ctx.fillRect(x,y,19,15);ctx.fillStyle='#fff7cf';for(let row=0;row<3;row++)for(let col=0;col<3;col++){ctx.beginPath();ctx.arc(x+3+col*5,y+3+row*4,.7,0,Math.PI*2);ctx.fill();}}
+ else {ctx.fillStyle='#fff';ctx.fillRect(x,y,w,h);ctx.fillStyle='#bd3440';for(let i=0;i<7;i++)ctx.fillRect(x,y+i*h*2/13,w,h/13);ctx.fillStyle='#274878';ctx.fillRect(x,y,19,15);ctx.fillStyle='#fff7cf';for(let row=0;row<3;row++)for(let col=0;col<3;col++){ctx.beginPath();ctx.arc(x+3+col*5,y+3+row*4,.7,0,Math.PI*2);ctx.fill();}}
  ctx.restore();ctx.save();ctx.strokeStyle='#564c3c';ctx.lineWidth=1;rounded(x,y,w,h,2);ctx.stroke();ctx.restore();
 }
 function oval(x,y,rx,ry){ctx.beginPath();if(typeof ctx.ellipse==='function'){ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);return;}ctx.save();ctx.translate(x,y);ctx.scale(rx,ry);ctx.arc(0,0,1,0,Math.PI*2);ctx.restore();}
@@ -96,7 +169,7 @@ function draw(){ctx.clearRect(0,0,W,H);drawBackground();
 const n=nest();ctx.save();ctx.translate(n.x,n.y+8);ctx.fillStyle='#64523818';oval(0,0,W*.13,22);ctx.fill();for(let i=0;i<35;i++){ctx.strokeStyle=['#9d89674a','#b9a17b66','#88795544'][i%3];ctx.lineWidth=2;ctx.beginPath();const a=i*2.39;ctx.moveTo(Math.cos(a)*W*.10,Math.sin(a)*15);ctx.quadraticCurveTo(Math.sin(a)*40,-10,Math.cos(a+1)*W*.09,Math.sin(a+1)*18);ctx.stroke();}ctx.restore();
 // A forgotten spool gives the little world a human scale—and a hiding place.
 function drawSpool(){ctx.save();ctx.translate(W*.10,H*.46);ctx.rotate(-.12);ctx.fillStyle='#a8926b';ctx.fillRect(-14,-27,28,39);ctx.fillStyle='#d6c7a8';ctx.beginPath();ctx.ellipse(0,-27,22,8,0,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(0,12,22,8,0,0,7);ctx.fill();ctx.strokeStyle='#d7c9a6';ctx.lineWidth=1.4;for(let i=0;i<9;i++){ctx.beginPath();ctx.moveTo(-14,-22+i*4);ctx.lineTo(14,-22+i*4);ctx.stroke();}ctx.restore();}
-drawSpool();for(const t of treasures)if(t!==carry&&t!==drag)drawWord(t);const size=twin?1-(splitProgress*.26):1;drawCreature(creature,size);if(twin)drawCreature(twin,size);if(phase==='fright')drawSpool();if(carry)drawWord(carry);if(drag)drawWord(drag);if(phase==='puzzle'||languageBubble){const pulse=Math.sin(clock*5)*.07,appear=languageBubble?Math.min(1,languageBubble.life*2):Math.min(1,timer*4),fade=languageBubble?Math.min(1,languageBubble.life*2):Math.min(1,(3.1-timer)*3),opacity=Math.max(0,Math.min(appear,fade));const cx=Math.max(48,Math.min(W-48,creature.x+44)),cy=Math.max(80,creature.y-104-Math.sin(clock*3)*5);ctx.save();ctx.globalAlpha=opacity;ctx.translate(cx,cy);ctx.rotate(Math.sin(clock*4)*.09);ctx.scale(1+pulse,1+pulse);ctx.shadowColor='#fff6cf';ctx.shadowBlur=13;ctx.fillStyle='#fff5d7';ctx.strokeStyle='#343b32';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,32,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;if(languageBubble)drawLanguageFlag(languageBubble.code);else{ctx.fillStyle='#202820';ctx.font='bold 52px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('?',0,-3);}ctx.restore();}for(const e of effects){ctx.save();ctx.globalAlpha=Math.min(1,e.life);ctx.fillStyle='#7e7056';ctx.textAlign='center';ctx.font='20px Georgia';ctx.fillText(e.symbol,e.x,e.y);ctx.restore();}}
+window.crumbBonus?.drawNestScenery();window.crumbBonus?.drawCourse(false);drawSpool();for(const t of treasures)if(t!==carry&&t!==drag)drawWord(t);window.crumbGod?.drawDoor();const size=twin?1-(splitProgress*.26):1;window.crumbBonus?.drawZoomies();drawCreature(creature,size);for(const guest of visitors){drawCreature(guest,.8);ctx.save();ctx.font='25px system-ui';ctx.textAlign='center';ctx.fillText(guest.wear,guest.x,guest.y-54-Math.abs(Math.sin(timer*7))*7);ctx.restore();}if(twin)drawCreature(twin,size);if(phase==='fright')drawSpool();if(carry)drawWord(carry);if(drag)drawWord(drag);if(phase==='puzzle'||languageBubble){const pulse=Math.sin(clock*5)*.07,appear=languageBubble?Math.min(1,languageBubble.life*2):Math.min(1,timer*4),fade=languageBubble?Math.min(1,languageBubble.life*2):Math.min(1,(3.1-timer)*3),opacity=Math.max(0,Math.min(appear,fade));const cx=Math.max(48,Math.min(W-48,creature.x+44)),cy=Math.max(80,creature.y-104-Math.sin(clock*3)*5);ctx.save();ctx.globalAlpha=opacity;ctx.translate(cx,cy);ctx.rotate(Math.sin(clock*4)*.09);ctx.scale(1+pulse,1+pulse);ctx.shadowColor='#fff6cf';ctx.shadowBlur=13;ctx.fillStyle='#fff5d7';ctx.strokeStyle='#343b32';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,32,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;if(languageBubble)drawLanguageFlag(languageBubble.code);else{ctx.fillStyle='#202820';ctx.font='bold 52px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('?',0,-3);}ctx.restore();}for(const e of effects){ctx.save();ctx.globalAlpha=Math.min(1,e.life);ctx.fillStyle='#7e7056';ctx.textAlign='center';ctx.font='20px Georgia';ctx.fillText(e.symbol,e.x,e.y);ctx.restore();}}
 function frame(now){const dt=last?Math.min(.04,(now-last)/1000):0;last=now;update(dt);draw();requestAnimationFrame(frame);}requestAnimationFrame(frame);if(treasures.length)say('The nest is still here. What else does it respond to?');
 </script>
 <style>
@@ -106,9 +179,41 @@ function frame(now){const dt=last?Math.min(.04,(now-last)/1000):0;last=now;updat
 #sandboxItems button{background:#e5dbc8;color:#4b493e;border:1px solid #c4b79f;padding:9px 5px;font-size:12px}#sandboxItems button:disabled{opacity:.5;cursor:default}#sandboxItems button.active{outline:2px solid #536c54}
 #sandboxStatus{margin:8px 0 12px;color:#665e4e;line-height:1.5}#sandboxAchievements{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 0 12px}#sandboxAchievements .achievement{padding:8px;border-radius:9px;background:#eee7d9;color:#777061;font-size:11px;line-height:1.35}#sandboxAchievements .achievement.earned{background:#e3eadc;color:#40563e;border:1px solid #b9c9ad}#sandboxPanel h3:not(:first-child){margin-top:18px}#sandboxConfirm{margin:8px 0 12px;padding:10px;background:#eee3ce;border:1px solid #c5b18d;border-radius:10px}#sandboxConfirm[hidden]{display:none}#sandboxConfirm p{margin:0 0 8px;line-height:1.5}#sandboxConfirm button{margin:3px 3px 0 0;padding:9px 10px;font-size:12px}
 @media(max-width:600px){#sandboxToggle{top:95px;right:5%;font-size:11px;padding:8px}#sandboxPanel{top:135px;max-height:48vh}}
+#crumbColorReward{margin:12px 0;padding:4px;background:#fff9ef}
+#crumbColorToggle{border-color:#be7cff;animation:crumbRainbow 4s linear infinite}
+#crumbColorDialog{width:min(390px,92vw);background:#fff9ef}
+#crumbColorClose{float:right;padding:7px 10px;background:#e5dbc8;color:#403e37}
+#crumbColorTitle{font-size:23px}
+#crumbGoalDock{position:absolute;left:50%;transform:translateX(-50%);bottom:70px;z-index:3;width:min(720px,90%);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#crumbGoalDock button{min-height:50px;border:2px solid var(--goalGlow,#be7cff);background:#fff9ef;color:#465448;padding:7px 8px;font-size:12px;line-height:1.3;animation:crumbGoalPulse 3s ease-in-out infinite}
+#crumbGoalDock button small{display:block;font-size:10px;margin-top:3px;color:#746b5b}
+#crumbGoalDock #crumbColorToggle{animation:crumbRainbow 4s linear infinite}
+@keyframes crumbGoalPulse{0%,100%{box-shadow:0 0 3px var(--goalGlow)}50%{box-shadow:0 0 10px var(--goalGlow),inset 0 0 3px var(--goalGlow)}}
+#crumbGoalClose{float:right;background:#e5dbc8;color:#403e37;padding:7px 10px}#crumbGoalProgress{width:100%;accent-color:#697f5a}
+#feed{bottom:130px}#message{bottom:200px}
+@media(max-width:600px){#crumbGoalDock{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#feed{bottom:187px}#message{bottom:258px}#nestUndo{bottom:290px}}
+@media(prefers-reduced-motion:reduce){#crumbGoalDock button,#crumbGoalDock #crumbColorToggle{animation:none;box-shadow:0 0 5px var(--goalGlow,#be7cff)}}
+#crumbColorReward p{font-size:12px;line-height:1.5;margin:8px 0}
+.crumbSwatches{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.crumbSwatches button{background:#eee5d6;color:#403e37;border:1px solid #b7aa91;font-size:12px;padding:8px 5px}
+.crumbSwatches button::before{content:'';display:inline-block;width:12px;height:12px;background:var(--coat);border:1px solid #665e4e;border-radius:50%;margin-right:5px;vertical-align:middle}
+.crumbSwatches button[aria-pressed=true]{outline:2px solid #708263}.crumbSwatches button:disabled{opacity:.65;cursor:default}
+@keyframes crumbRainbow{0%,100%{border-color:#ff73a5;box-shadow:0 0 4px #ff73a5,0 0 10px #ff73a577}25%{border-color:#ffc655;box-shadow:0 0 9px #ffc655,0 0 17px #ffc65577}50%{border-color:#49d6ae;box-shadow:0 0 4px #49d6ae,0 0 10px #49d6ae77}75%{border-color:#8687ff;box-shadow:0 0 9px #8687ff,0 0 17px #8687ff77}}
+@media(prefers-reduced-motion:reduce){#crumbColorToggle{animation:none;border-color:#b38bff;box-shadow:0 0 7px #b38bff88}}
+#sandboxToggle.rewardAvailable{border:1px solid #4aaeff;animation:crumbRewardPulse 1.6s ease-in-out infinite}
+@keyframes crumbRewardPulse{0%,100%{box-shadow:0 0 3px #399dff88,inset 0 0 3px #399dff44}50%{box-shadow:0 0 8px #54b9ff,0 0 20px #168bffbb,inset 0 0 7px #4aaeff66;border-color:#a0dfff}}
+@media(prefers-reduced-motion:reduce){#sandboxToggle.rewardAvailable{animation:none;box-shadow:0 0 8px #54b9ff,0 0 16px #168bff99}}
 </style>
 <button id="sandboxToggle" type="button">🎁 Rewards</button>
-<section id="sandboxPanel" hidden aria-label="Crumb's rewards"><h3>Crumb's little treasures</h3><div id="sandboxStatus"></div><div id="sandboxConfirm" hidden><p id="sandboxConfirmText"></p><button id="sandboxConfirmChoice" type="button">Confirm permanent choice</button> <button id="sandboxCancelChoice" type="button">Cancel</button></div><div id="sandboxItems"></div><h3>Achievement trophies</h3><div id="sandboxTrophies" aria-live="polite"></div><h3>Next achievement levels</h3><div id="sandboxAchievements" aria-live="polite"></div><p>Each milestone gives one item choice. That choice is permanent; the other items at that milestone stay locked. Tap owned wearables to equip them and toys to place or put away. Discover recognized words to unlock rewards.</p></section>
+<section id="sandboxPanel" hidden aria-label="Crumb's rewards"><h3>Crumb's little treasures</h3><div id="sandboxStatus"></div><p id="sandboxSaveWarning" role="status" hidden></p><div id="sandboxConfirm" hidden><p id="sandboxConfirmText"></p><button id="sandboxConfirmChoice" type="button">Confirm permanent choice</button> <button id="sandboxCancelChoice" type="button">Cancel</button></div><div id="sandboxItems"></div><h3>Achievement trophies</h3><div id="sandboxTrophies" aria-live="polite"></div><h3>Next achievement levels</h3><div id="sandboxAchievements" aria-live="polite"></div><p>Each milestone gives one item choice. That choice is permanent; the other items at that milestone stay locked. Tap owned wearables to equip them and toys to place or put away. Discover recognized words to unlock rewards.</p></section>
+<nav id="crumbGoalDock" aria-label="Discovery goals">
+<button id="crumbWorkshopGoal" type="button" data-goal="workshop" aria-haspopup="dialog" style="--goalGlow:#e3b34e"><span>Nest Workshop</span><small>100 words · Preview</small></button>
+<button id="crumbColorToggle" type="button" aria-haspopup="dialog"><span>Color studio</span><small>Unlocked at 250 words!</small></button>
+<button id="crumbPlaygroundGoal" type="button" data-goal="playground" aria-haspopup="dialog" style="--goalGlow:#5bbbe6"><span>Playground Builder</span><small>350 words · Preview</small></button>
+<button id="crumbVillageGoal" type="button" data-goal="village" aria-haspopup="dialog" style="--goalGlow:#ba8de6"><span>Crumb Village</span><small>400 words · Preview</small></button>
+</nav>
+<dialog id="crumbGoalDialog" aria-labelledby="crumbGoalTitle"><button id="crumbGoalClose" type="button">Close ×</button><h2 id="crumbGoalTitle"></h2><p id="crumbGoalDescription"></p><progress id="crumbGoalProgress" value="0" max="100" aria-label="Words toward this goal"></progress><p id="crumbGoalCount"></p><div id="crumbBonusContent"></div></dialog>
+<dialog id="crumbColorDialog" aria-labelledby="crumbColorTitle"><button id="crumbColorClose" type="button">Close ×</button><h2 id="crumbColorTitle">Crumb’s color studio</h2><section id="crumbColorReward" aria-label="Crumb color reward"></section></dialog>
 <script>
 (function(){
 'use strict';
@@ -157,13 +262,26 @@ catalog.push(...extendedRewardItems);
 const tiers=[5,10,15,25,40,60,85,115,150,190,220,250,280,310,340,370,400];
 const achievementDefs=[{"id":"food-5","track":"food","name":"First Bite","emoji":"🍎","trophy":"🥉","target":5,"category":"food"},{"id":"food-15","track":"food","name":"Snack Scholar","emoji":"🍎","trophy":"🥈","target":15,"category":"food"},{"id":"food-30","track":"food","name":"Feast Champion","emoji":"🍎","trophy":"🥇","target":30,"category":"food"},{"id":"play-5","track":"play","name":"Toy Scout","emoji":"🧸","trophy":"🥉","target":5,"category":"playful"},{"id":"play-15","track":"play","name":"Playtime Pro","emoji":"🧸","trophy":"🥈","target":15,"category":"playful"},{"id":"play-30","track":"play","name":"Joymaster","emoji":"🧸","trophy":"🥇","target":30,"category":"playful"},{"id":"nest-5","track":"nest","name":"Twig Tally","emoji":"🪺","trophy":"🥉","target":5,"category":"nesting"},{"id":"nest-15","track":"nest","name":"Nest Weaver","emoji":"🪺","trophy":"🥈","target":15,"category":"nesting"},{"id":"nest-30","track":"nest","name":"Master Builder","emoji":"🪺","trophy":"🥇","target":30,"category":"nesting"},{"id":"en-5","track":"en","name":"First Words","emoji":"🇬🇧","trophy":"🇬🇧🥉","target":5,"language":"en"},{"id":"en-15","track":"en","name":"Story Keeper","emoji":"🇬🇧","trophy":"🇬🇧🥈","target":15,"language":"en"},{"id":"en-30","track":"en","name":"Word Collector","emoji":"🇬🇧","trophy":"🇬🇧🥇","target":30,"language":"en"},{"id":"de-5","track":"de","name":"Guten Tag","emoji":"🇩🇪","trophy":"🇩🇪🥉","target":5,"language":"de"},{"id":"de-15","track":"de","name":"Wortfreund","emoji":"🇩🇪","trophy":"🇩🇪🥈","target":15,"language":"de"},{"id":"de-30","track":"de","name":"Sprachentdecker","emoji":"🇩🇪","trophy":"🇩🇪🥇","target":30,"language":"de"},{"id":"fr-5","track":"fr","name":"Bonjour Buddy","emoji":"🇫🇷","trophy":"🇫🇷🥉","target":5,"language":"fr"},{"id":"fr-15","track":"fr","name":"Petit Polyglot","emoji":"🇫🇷","trophy":"🇫🇷🥈","target":15,"language":"fr"},{"id":"fr-30","track":"fr","name":"Parole Pro","emoji":"🇫🇷","trophy":"🇫🇷🥇","target":30,"language":"fr"},{"id":"es-5","track":"es","name":"Hola Amigo","emoji":"🇪🇸","trophy":"🇪🇸🥉","target":5,"language":"es"},{"id":"es-15","track":"es","name":"Palabra Pal","emoji":"🇪🇸","trophy":"🇪🇸🥈","target":15,"language":"es"},{"id":"es-30","track":"es","name":"Vocabulario Viva","emoji":"🇪🇸","trophy":"🇪🇸🥇","target":30,"language":"es"},{"id":"multi-2","track":"multi","name":"Language Hopper","emoji":"🌍","trophy":"🌍🥉","target":2,"perLanguage":5},{"id":"multi-3","track":"multi","name":"Three-Language Trailblazer","emoji":"🌍","trophy":"🌍🥈","target":3,"perLanguage":5},{"id":"multi-4","track":"multi","name":"Four-Language Friend","emoji":"🌍","trophy":"🌍🥇","target":4,"perLanguage":5},{"id":"polyglot-15","track":"multi","name":"Multilingual Master","emoji":"🗣️","trophy":"🏆🌐","target":4,"perLanguage":15}];
 achievementDefs.push(...[{"id":"food-50","track":"food","name":"Market Explorer","emoji":"🍎","trophy":"🏅","target":50,"category":"food"},{"id":"food-75","track":"food","name":"Feast Maker","emoji":"🍎","trophy":"🏅","target":75,"category":"food"},{"id":"food-100","track":"food","name":"Grand Banquet","emoji":"🍎","trophy":"🏅","target":100,"category":"food"},{"id":"play-50","track":"play","name":"Toybox Tinkerer","emoji":"🧸","trophy":"🏅","target":50,"category":"playful"},{"id":"play-60","track":"play","name":"Playground Pro","emoji":"🧸","trophy":"🏅","target":60,"category":"playful"},{"id":"play-70","track":"play","name":"Joyful Legend","emoji":"🧸","trophy":"🏅","target":70,"category":"playful"},{"id":"nest-50","track":"nest","name":"Nest Architect","emoji":"🪺","trophy":"🏅","target":50,"category":"nesting"},{"id":"nest-60","track":"nest","name":"Home Weaver","emoji":"🪺","trophy":"🏅","target":60,"category":"nesting"},{"id":"nest-70","track":"nest","name":"Master of Materials","emoji":"🪺","trophy":"🏅","target":70,"category":"nesting"},{"id":"en-50","track":"en","name":"Curious Reader","emoji":"🇬🇧","trophy":"🇬🇧🏅","target":50,"language":"en"},{"id":"en-75","track":"en","name":"Word Wanderer","emoji":"🇬🇧","trophy":"🇬🇧🏅","target":75,"language":"en"},{"id":"en-100","track":"en","name":"Vocabulary Keeper","emoji":"🇬🇧","trophy":"🇬🇧🏅","target":100,"language":"en"},{"id":"en-150","track":"en","name":"Language Explorer","emoji":"🇬🇧","trophy":"🇬🇧🏅","target":150,"language":"en"},{"id":"en-200","track":"en","name":"Story Scholar","emoji":"🇬🇧","trophy":"🇬🇧🏅","target":200,"language":"en"},{"id":"en-250","track":"en","name":"Wordsmith","emoji":"🇬🇧","trophy":"🇬🇧🏅","target":250,"language":"en"},{"id":"en-300","track":"en","name":"Master of Words","emoji":"🇬🇧","trophy":"🇬🇧🏅","target":300,"language":"en"},{"id":"de-50","track":"de","name":"Wortsammler","emoji":"🇩🇪","trophy":"🇩🇪🏅","target":50,"language":"de"},{"id":"de-75","track":"de","name":"Sprachforscher","emoji":"🇩🇪","trophy":"🇩🇪🏅","target":75,"language":"de"},{"id":"de-100","track":"de","name":"Wortwanderer","emoji":"🇩🇪","trophy":"🇩🇪🏅","target":100,"language":"de"},{"id":"de-150","track":"de","name":"Geschichtenerzähler","emoji":"🇩🇪","trophy":"🇩🇪🏅","target":150,"language":"de"},{"id":"de-200","track":"de","name":"Wortmeister","emoji":"🇩🇪","trophy":"🇩🇪🏅","target":200,"language":"de"},{"id":"de-250","track":"de","name":"Sprachkünstler","emoji":"🇩🇪","trophy":"🇩🇪🏅","target":250,"language":"de"},{"id":"de-300","track":"de","name":"Sprachmeister","emoji":"🇩🇪","trophy":"🇩🇪🏅","target":300,"language":"de"},{"id":"fr-50","track":"fr","name":"Collectionneur de mots","emoji":"🇫🇷","trophy":"🇫🇷🏅","target":50,"language":"fr"},{"id":"fr-75","track":"fr","name":"Explorateur de mots","emoji":"🇫🇷","trophy":"🇫🇷🏅","target":75,"language":"fr"},{"id":"fr-100","track":"fr","name":"Amoureux des mots","emoji":"🇫🇷","trophy":"🇫🇷🏅","target":100,"language":"fr"},{"id":"fr-150","track":"fr","name":"Conteur","emoji":"🇫🇷","trophy":"🇫🇷🏅","target":150,"language":"fr"},{"id":"fr-200","track":"fr","name":"Maître des mots","emoji":"🇫🇷","trophy":"🇫🇷🏅","target":200,"language":"fr"},{"id":"fr-250","track":"fr","name":"Virtuose des mots","emoji":"🇫🇷","trophy":"🇫🇷🏅","target":250,"language":"fr"},{"id":"fr-300","track":"fr","name":"Légende des mots","emoji":"🇫🇷","trophy":"🇫🇷🏅","target":300,"language":"fr"},{"id":"es-50","track":"es","name":"Cazapalabras","emoji":"🇪🇸","trophy":"🇪🇸🏅","target":50,"language":"es"},{"id":"es-75","track":"es","name":"Explorador de palabras","emoji":"🇪🇸","trophy":"🇪🇸🏅","target":75,"language":"es"},{"id":"es-100","track":"es","name":"Amigo de las palabras","emoji":"🇪🇸","trophy":"🇪🇸🏅","target":100,"language":"es"},{"id":"es-150","track":"es","name":"Narrador","emoji":"🇪🇸","trophy":"🇪🇸🏅","target":150,"language":"es"},{"id":"es-200","track":"es","name":"Maestro de palabras","emoji":"🇪🇸","trophy":"🇪🇸🏅","target":200,"language":"es"},{"id":"es-250","track":"es","name":"Virtuoso del idioma","emoji":"🇪🇸","trophy":"🇪🇸🏅","target":250,"language":"es"},{"id":"es-300","track":"es","name":"Leyenda de las palabras","emoji":"🇪🇸","trophy":"🇪🇸🏅","target":300,"language":"es"},{"id":"multi-2-15","track":"multi","name":"Bilingual Bridge","emoji":"🌍","trophy":"🌍🥈","target":2,"perLanguage":15},{"id":"multi-3-15","track":"multi","name":"Trilingual Trailblazer","emoji":"🌍","trophy":"🌍🥈","target":3,"perLanguage":15},{"id":"multi-4-30","track":"multi","name":"Polyglot Pathfinder","emoji":"🌍","trophy":"🌍🥇","target":4,"perLanguage":30},{"id":"multi-4-50","track":"multi","name":"Multilingual Luminary","emoji":"🗣️","trophy":"🏆🌐","target":4,"perLanguage":50}]);
-catalog.push(...achievementDefs.map(a=>({id:'trophy-'+a.id,name:a.name+' Trophy',emoji:a.trophy,type:'world',achievement:true})));
+achievementDefs.push({id:'social-5',track:'social',name:'Little Host',emoji:'🎉',trophy:'🥉',target:5,category:'social'},{id:'social-15',track:'social',name:'Party Planner',emoji:'🎉',trophy:'🥇',target:15,category:'social'});
+catalog.push(...achievementDefs.map(a=>({id:'trophy-'+a.id,name:a.name+' Trophy',emoji:a.language?a.trophy.replace(/[\u{1F1E6}-\u{1F1FF}]/gu,''):a.trophy,language:a.language,type:'world',achievement:true})));
 
-const key='crumb.sandbox.v1';
+const key='crumb.sandbox.v1',backupKey=key+'.backup';
+let rewardSaveBlocked=false;
+function rewardSaveWarning(show){const el=document.getElementById('sandboxSaveWarning');el.hidden=!show;el.textContent=show?'Crumb could not save your reward choices. Keep this page open; your choices may not return next time.':'';}
+function loadRewardSave(){
+let damaged=false;
+for(const saveKey of [key,backupKey]){
+try{const raw=localStorage.getItem(saveKey);if(raw===null)continue;const saved=JSON.parse(raw);if(!saved||typeof saved!=='object'||Array.isArray(saved)||!Array.isArray(saved.words))throw Error('Invalid reward save');return saved;}
+catch(e){damaged=true;}
+}
+// Preserve unreadable saves rather than replacing them with an empty reward list.
+rewardSaveBlocked=damaged;if(damaged)rewardSaveWarning(true);return {};
+}
+
 const rewardKey=word=>CrumbWords.discoveryKey(word);
 const knownRewardWord=word=>{const normalized=CrumbWords.normalize(word);return !!normalized&&(CrumbWords.classify(normalized).kind!=='unknown'||Object.hasOwn(specialWords,normalized));};
-let state={words:[],wear:null,placed:[],chosen:[],rewardPicks:[],entries:[]},pendingChoice=null;
-try{const s=JSON.parse(localStorage.getItem(key)||'{}');if(Array.isArray(s.words))state.words=[...new Set(s.words.filter(x=>typeof x==='string'&&knownRewardWord(x)).map(rewardKey))].slice(0,10000);if(Array.isArray(s.entries))state.entries=s.entries.filter(e=>e&&typeof e.word==='string'&&['en','de','fr','es'].includes(e.language));if(typeof s.wear==='string'&&catalog.some(i=>i.id===s.wear&&i.type==='wear'))state.wear=s.wear;if(Array.isArray(s.placed))state.placed=[...new Set(s.placed.filter(x=>catalog.some(i=>i.id===x&&i.type==='world')))];if(Array.isArray(s.chosen))state.chosen=[...new Set(s.chosen.filter(x=>catalog.some(i=>i.id===x)))];else state.chosen=[s.wear,...state.placed].filter(x=>catalog.some(i=>i.id===x));if(Array.isArray(s.rewardPicks))state.rewardPicks=[...new Set(s.rewardPicks.filter(x=>catalog.some(i=>i.id===x&&i.at&&!i.mystery)))];else state.rewardPicks=state.chosen.filter(x=>catalog.some(i=>i.id===x&&i.at&&!i.mystery));}catch(e){}
+let state={words:[],wear:null,placed:[],chosen:[],rewardPicks:[],entries:[],seenRewards:[],color:'soot',colorSeen:false},pendingChoice=null;
+try{const s=loadRewardSave();if(Array.isArray(s.words))state.words=[...new Set(s.words.filter(x=>typeof x==='string'&&knownRewardWord(x)).map(rewardKey))].slice(0,10000);if(Array.isArray(s.entries))state.entries=s.entries.filter(e=>e&&typeof e.word==='string'&&['en','de','fr','es'].includes(e.language));if(typeof s.wear==='string'&&catalog.some(i=>i.id===s.wear&&i.type==='wear'))state.wear=s.wear;if(Array.isArray(s.placed))state.placed=[...new Set(s.placed.filter(x=>catalog.some(i=>i.id===x&&i.type==='world')))];if(Array.isArray(s.chosen))state.chosen=[...new Set(s.chosen.filter(x=>catalog.some(i=>i.id===x)))];else state.chosen=[s.wear,...state.placed].filter(x=>catalog.some(i=>i.id===x));if(Array.isArray(s.rewardPicks))state.rewardPicks=[...new Set(s.rewardPicks.filter(x=>catalog.some(i=>i.id===x&&i.at&&!i.mystery)))];else state.rewardPicks=state.chosen.filter(x=>catalog.some(i=>i.id===x&&i.at&&!i.mystery));state.color=Object.hasOwn(crumbColors,s.color)?s.color:'soot';state.colorSeen=s.colorSeen===true;state.seenRewards=Array.isArray(s.seenRewards)?s.seenRewards.filter(id=>catalog.some(i=>i.id===id)):[...state.chosen];}catch(e){}
 // Import older Field Notes without changing or deleting the original record.
 // A word is credited only once, even if it already exists in sandbox progress.
 try{
@@ -182,21 +300,35 @@ function addEntry(input,forceLanguage){const text=CrumbWords.normalize(input),re
 for(const entry of state.entries){entry.word=rewardKey(entry.word);entry.id=entry.word+'|'+entry.language;}
 state.entries=state.entries.filter((e,i,a)=>e.word&&a.findIndex(v=>v.id===e.id)===i);
 function getAchievementCounts(){
-const languageCounts={en:0,de:0,fr:0,es:0},categoryCounts={food:0,playful:0,nesting:0};
+const languageCounts={en:0,de:0,fr:0,es:0},categoryCounts={food:0,playful:0,nesting:0,social:0};
 for(const entry of state.entries)if(languageCounts[entry.language]!==undefined)languageCounts[entry.language]++;for(const word of state.words){const kind=CrumbWords.categoryOf(word);if(categoryCounts[kind]!==undefined)categoryCounts[kind]++;}
 return{languageCounts,categoryCounts,multi5:Object.values(languageCounts).filter(n=>n>=5).length,multi15:Object.values(languageCounts).filter(n=>n>=15).length};
 }
 function achievementValue(a,counts){if(a.category)return counts.categoryCounts[a.category];if(a.language)return counts.languageCounts[a.language];return Object.values(counts.languageCounts).filter(n=>n>=a.perLanguage).length;}
 function syncAchievementAwards(){const counts=getAchievementCounts();for(const a of achievementDefs)if(achievementValue(a,counts)>=a.target&&!state.chosen.includes('trophy-'+a.id))state.chosen.push('trophy-'+a.id);}
 function syncMysteryRewards(){for(const at of tiers){const mystery=catalog.find(x=>x.at===at&&x.mystery);if(state.words.length>=at&&mystery&&!state.chosen.includes(mystery.id))state.chosen.push(mystery.id);}}
-syncMysteryRewards();syncAchievementAwards();
-const persist=()=>{try{localStorage.setItem(key,JSON.stringify(state));}catch(e){}};
+window.crumbProgress=()=>window.crumbGod?.enabled?400:state.words.length;window.crumbCurrentWear=()=>catalog.find(item=>item.id===state.wear)||null;window.crumbWearables=()=>catalog.filter(item=>item.type==='wear'&&state.chosen.includes(item.id)).map(({id,name,emoji})=>({id,name,emoji}));
+syncMysteryRewards();syncAchievementAwards();crumbColor=state.words.length>=250?state.color:'soot';
+let testingSnapshot=null;
+const persist=()=>{
+if(testingSnapshot)return;
+if(rewardSaveBlocked){rewardSaveWarning(true);return;}
+try{const data=JSON.stringify(state);localStorage.setItem(key,data);if(localStorage.getItem(key)!==data)throw Error('Reward save was not retained');localStorage.setItem(backupKey,data);rewardSaveWarning(false);}
+catch(e){rewardSaveWarning(true);}
+};
 persist();
+window.crumbTesting={enable(){if(testingSnapshot)return;testingSnapshot={state:JSON.parse(JSON.stringify(state)),pending:pendingChoice};state={...JSON.parse(JSON.stringify(state)),chosen:catalog.map(i=>i.id),rewardPicks:catalog.filter(i=>i.at&&!i.mystery).map(i=>i.id),seenRewards:catalog.map(i=>i.id),colorSeen:true};pendingChoice=null;renderPanel();},disable(){if(!testingSnapshot)return;state=testingSnapshot.state;pendingChoice=testingSnapshot.pending;testingSnapshot=null;crumbColor=state.words.length>=250?state.color:'soot';renderPanel();},earned:()=>testingSnapshot?testingSnapshot.state.words.length:state.words.length};
 const panel=document.getElementById('sandboxPanel'),items=document.getElementById('sandboxItems'),status=document.getElementById('sandboxStatus');
 document.getElementById('sandboxToggle').onclick=()=>{panel.hidden=!panel.hidden;renderPanel();};
+function updateRewardGlow(){
+const available=tiers.some(at=>state.words.length>=at&&!state.rewardPicks.some(id=>catalog.some(item=>item.id===id&&item.at===at&&!item.mystery)))||state.chosen.some(id=>!state.seenRewards.includes(id))||(state.words.length>=250&&!state.colorSeen);
+document.getElementById('sandboxToggle').classList.toggle('rewardAvailable',available);
+}
 function renderPanel(){
-const count=state.words.length,confirmBox=document.getElementById('sandboxConfirm'),confirmText=document.getElementById('sandboxConfirmText');
-status.textContent=count+' recognized unique '+(count===1?'word':'words')+' · '+state.chosen.length+' items and trophies owned.';
+if(!panel.hidden&&(state.chosen.some(id=>!state.seenRewards.includes(id)))){state.seenRewards=[...state.chosen];persist();}
+updateRewardGlow();renderColors();renderGoals();
+const count=window.crumbProgress(),confirmBox=document.getElementById('sandboxConfirm'),confirmText=document.getElementById('sandboxConfirmText');
+status.textContent=(testingSnapshot?'GODMODE · All rewards available · ':'')+state.words.length+' recognized unique '+(count===1?'word':'words')+' · '+state.chosen.length+' items and trophies owned.';
 if(pendingChoice){const pending=catalog.find(x=>x.id===pendingChoice);confirmBox.hidden=false;confirmText.textContent='Choose '+pending.name+' permanently? Your mystery reward is automatic.';}else confirmBox.hidden=true;
 items.replaceChildren();
 tiers.forEach(at=>{
@@ -233,13 +365,50 @@ items.appendChild(btn);
 });
 renderTrophies();renderAchievements();
 }
+function languageFlagIcon(code){
+const labels={en:'English — United States flag',de:'German — Germany flag',fr:'French — France flag',es:'Spanish — Spain flag'};
+const icon=document.createElement('canvas');icon.width=88;icon.height=56;icon.className='rewardFlag';icon.setAttribute('role','img');icon.setAttribute('aria-label',labels[code]||'Language flag');
+const context=icon.getContext('2d');context.scale(2,2);context.translate(22,14);drawLanguageFlag(code,context);return icon;
+}
+function languageCaption(el,code,text){el.replaceChildren(languageFlagIcon(code),document.createTextNode(' '+text));}
+function trophyInfo(id){
+const a=achievementDefs.find(a=>'trophy-'+a.id===id);if(!a)return '';
+const languages={en:'English',de:'German',fr:'French',es:'Spanish'},categories={food:'food',playful:'play',nesting:'nesting',social:'social'};
+const requirement=a.category?'Discover '+a.target+' unique '+categories[a.category]+' words.':a.language?'Discover '+a.target+' unique '+languages[a.language]+' words.':'Discover at least '+a.perLanguage+' unique words in each of '+a.target+' languages.';
+return a.name+': '+requirement+' Progress: '+Math.min(achievementValue(a,getAchievementCounts()),a.target)+'/'+a.target+'.';
+}
+const discoveryGoals={workshop:{name:'Nest Workshop',at:100,description:'Grow a bigger pile, arrange and decorate your nest, and save favorite layouts.'},playground:{name:'Playground Builder',at:350,description:'Build toy courses with tunnels and ramps for Crumb to explore.'},village:{name:'Crumb Village',at:400,description:'Welcome permanent companions with names, colors, outfits, little homes, and group games.'}};
+function renderGoals(){if(window.crumbBonus){window.crumbBonus.refresh();return;}for(const button of document.querySelectorAll('[data-goal]')){const goal=discoveryGoals[button.dataset.goal];button.querySelector('small').textContent=state.words.length>=goal.at?goal.at+' words · Goal reached':goal.at+' words · Preview';button.title=goal.name+' — '+Math.min(state.words.length,goal.at)+'/'+goal.at+' words. Preview a planned feature.';}}
+for(const button of document.querySelectorAll('[data-goal]'))button.onclick=()=>{
+const goal=discoveryGoals[button.dataset.goal];document.getElementById('crumbGoalTitle').textContent=goal.name;document.getElementById('crumbGoalDescription').textContent=goal.description;
+const progress=document.getElementById('crumbGoalProgress');progress.max=goal.at;progress.value=Math.min(state.words.length,goal.at);
+document.getElementById('crumbGoalCount').textContent=state.words.length>=goal.at?'Milestone reached! You’re ready for this feature when it arrives.':state.words.length+' / '+goal.at+' unique words discovered.';
+document.getElementById('crumbGoalDialog').showModal();
+};
+document.getElementById('crumbGoalClose').onclick=()=>document.getElementById('crumbGoalDialog').close();
+document.getElementById('crumbColorToggle').onclick=()=>{
+renderColors();document.getElementById('crumbColorDialog').showModal();if(state.words.length>=250){state.colorSeen=true;persist();updateRewardGlow();}
+};
+document.getElementById('crumbColorClose').onclick=()=>document.getElementById('crumbColorDialog').close();
+function renderColors(){
+const toggle=document.getElementById('crumbColorToggle');toggle.querySelector('small').textContent=window.crumbProgress()>=250?'Choose Crumb’s color':'Unlocked at 250 words!';
+const box=document.getElementById('crumbColorReward'),unlocked=window.crumbProgress()>=250;box.replaceChildren();
+const heading=document.createElement('h3');heading.textContent=unlocked?'Choose a coat color':'Unlocks at 250 words';box.appendChild(heading);
+const help=document.createElement('p');help.textContent=unlocked?'Unlocked! Choose Crumb’s coat color.':'Keep discovering: '+state.words.length+'/250 unique words to unlock every color.';box.appendChild(help);
+const swatches=document.createElement('div');swatches.className='crumbSwatches';
+for(const [id,color] of Object.entries(crumbColors)){
+const button=document.createElement('button');button.type='button';button.textContent=color.name;button.style.setProperty('--coat',color.colors[0]);button.disabled=!unlocked;button.setAttribute('aria-pressed',String(crumbColor===id));button.title=unlocked?'Change Crumb’s coat to '+color.name:'Unlock coat colors at 250 unique words';
+button.onclick=()=>{if(window.crumbProgress()<250)return;state.color=id;crumbColor=id;persist();renderColors();};swatches.appendChild(button);
+}box.appendChild(swatches);window.crumbBonus?.colorPreview();
+}
 function renderTrophies(){
 const box=document.getElementById('sandboxTrophies');box.replaceChildren();
 const owned=catalog.filter(x=>x.achievement&&state.chosen.includes(x.id));
 if(!owned.length){const empty=document.createElement('div');empty.className='trophy-empty';empty.textContent='Earn word or language trophies, then tap one to place it in Crumb’s room.';box.appendChild(empty);return;}
 for(const trophy of owned){
 const placed=state.placed.includes(trophy.id),btn=document.createElement('button');btn.type='button';btn.className='trophy-card'+(placed?' active':'');btn.textContent=trophy.emoji+' '+trophy.name+(placed?' · In the room':' · Place trophy');
-btn.setAttribute('aria-pressed',String(placed));btn.onclick=()=>{state.placed=placed?state.placed.filter(x=>x!==trophy.id):[...state.placed,trophy.id];persist();renderPanel();say(trophy.name+(placed?' put away.':' placed in Crumb’s room.'));};box.appendChild(btn);
+if(trophy.language)languageCaption(btn,trophy.language,trophy.emoji+' '+trophy.name+(placed?' · In the room':' · Place trophy'));
+btn.title=trophyInfo(trophy.id);btn.setAttribute('aria-description',btn.title);btn.setAttribute('aria-pressed',String(placed));btn.onclick=()=>{state.placed=placed?state.placed.filter(x=>x!==trophy.id):[...state.placed,trophy.id];persist();renderPanel();say(trophy.name+(placed?' put away.':' placed in Crumb’s room.'));};box.appendChild(btn);
 }
 }
 function renderAchievements(){
@@ -248,6 +417,7 @@ const counts=getAchievementCounts();
 const tracks=[
 {key:'food',emoji:'🍎',title:'Food words',unit:'unique food words'},
 {key:'play',emoji:'🧸',title:'Play words',unit:'unique play words'},
+{key:'social',emoji:'🎉',title:'Social words',unit:'unique social words'},
 {key:'nest',emoji:'🪺',title:'Nest words',unit:'unique nest words'},
 {key:'en',emoji:'🇬🇧',title:'English words',unit:'English words'},
 {key:'de',emoji:'🇩🇪',title:'German words',unit:'German words'},
@@ -255,12 +425,13 @@ const tracks=[
 {key:'es',emoji:'🇪🇸',title:'Spanish words',unit:'Spanish words'},
 {key:'multi',emoji:'🌍',title:'Multilinguist',unit:'languages'}
 ];
-function valueFor(a){return a.category?counts.categoryCounts[a.category]:a.language?counts.languageCounts[a.language]:a.perLanguage===5?counts.multi5:counts.multi15;}
+function valueFor(a){return a.category?counts.categoryCounts[a.category]:a.language?counts.languageCounts[a.language]:achievementValue(a,counts);}
 for(const track of tracks){
 const stages=achievementDefs.filter(a=>a.track===track.key),current=stages.find(a=>valueFor(a)<a.target)||stages[stages.length-1],value=valueFor(current),complete=stages.every(a=>valueFor(a)>=a.target);
 const el=document.createElement('div');el.className='achievement'+(complete?' earned':'');
 const progress=complete?'Max level · '+current.target+'/'+current.target+' '+track.unit:current.name+' · '+Math.min(value,current.target)+'/'+current.target+' '+track.unit;
-el.textContent=track.emoji+' '+track.title+' · '+progress;
+if(['en','de','fr','es'].includes(track.key))languageCaption(el,track.key,track.title+' · '+progress);else el.textContent=track.emoji+' '+track.title+' · '+progress;
+el.title=trophyInfo('trophy-'+current.id);
 if(complete)el.setAttribute('aria-label',track.title+' complete at '+current.target+' '+track.unit);
 box.appendChild(el);
 }
@@ -269,17 +440,18 @@ document.getElementById('sandboxConfirmChoice').onclick=()=>{
 const item=catalog.find(x=>x.id===pendingChoice);if(!item)return;
 state.chosen.push(item.id);state.rewardPicks.push(item.id);
 if(item.type==='wear')state.wear=item.id;else state.placed.push(item.id);
-pendingChoice=null;persist();renderPanel();say(item.name+' is yours permanently. '+(item.type==='wear'?'Crumb can wear it.':'It belongs in Crumb’s world.'));
+pendingChoice=null;persist();renderPanel();window.crumbAudio?.event('reward');say(item.name+' is yours permanently. '+(item.type==='wear'?'Crumb can wear it.':'It belongs in Crumb’s world.'));
 };
 document.getElementById('sandboxCancelChoice').onclick=()=>{pendingChoice=null;renderPanel();say('No reward chosen. The milestone is still available.');};
 const originalGive=giveWord;
 giveWord=function(word,reactNow=false){
+if(phase==='idleAntic')interrupt();
 const accepted=originalGive(word,reactNow);
 if(accepted&&!reactNow){
 const raw=String(word).trim().slice(0,80),normalized=rewardKey(raw),before=state.words.length,entriesBefore=state.entries.length,ownedBefore=state.chosen.length;
 if(knownRewardWord(normalized)){if(!state.words.includes(normalized))state.words.push(normalized);addEntry(raw);syncMysteryRewards();syncAchievementAwards();
 if(state.words.length!==before||state.entries.length!==entriesBefore||state.chosen.length!==ownedBefore){persist();renderPanel();}
-if(tiers.includes(state.words.length)&&state.words.length!==before)setTimeout(()=>say('🎁 New reward tier unlocked! Choose one visible item; the mystery reward is yours too.'),300);else if(state.chosen.length>ownedBefore)setTimeout(()=>say('🏆 New achievement trophy earned! Find it in Rewards and place it in Crumb’s room.'),300);
+if(tiers.includes(state.words.length)&&state.words.length!==before)setTimeout(()=>{window.crumbAudio?.event('reward');say('🎁 New reward tier unlocked! Choose one visible item; the mystery reward is yours too.');},300);else if(state.chosen.length>ownedBefore)setTimeout(()=>{window.crumbAudio?.event('achievement');say('🏆 New achievement trophy earned! Find it in Rewards and place it in Crumb’s room.');},300);
 }}
 return accepted;
 };
@@ -287,7 +459,7 @@ const objectPositions={};let toyDrag=null,ballMotion={vx:0,vy:0},ballPlay=0,keyb
 function keyboardTargets(){const words=treasures.map(t=>({type:'word',ref:t,label:t.text}));const ids=state.placed.filter(id=>catalog.some(item=>item.id===id&&item.type==='world'));return words.concat(ids.map(id=>({type:'toy',id,label:catalog.find(item=>item.id===id).name})));}
 function selectedTargetIndex(list){return list.findIndex(x=>keyboardSelection&&(keyboardSelection.type==='word'?x.type==='word'&&x.ref===keyboardSelection.ref:x.type==='toy'&&x.id===keyboardSelection.id));}
 function focusKeyboardTarget(target){keyboardSelection=target;keyboardGrabbed=false;say('Selected '+target.label+'. Press Enter or Space to pick it up, then use the arrow keys to move it.');}
-canvas.addEventListener('keydown',e=>{const keys=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter',' ','Escape'];if(!keys.includes(e.key))return;e.preventDefault();const list=keyboardTargets();if(e.key==='Escape'){keyboardGrabbed=false;keyboardSelection=null;save();persist();say('Item released.');return;}if(e.key==='Enter'||e.key===' '){if(!keyboardSelection){if(list.length)focusKeyboardTarget(list[0]);else say('There are no cards or toys to move yet.');}else{keyboardGrabbed=!keyboardGrabbed;if(keyboardSelection.type==='word'&&keyboardSelection.ref.settled)keyboardSelection.ref.displaced=true;say(keyboardGrabbed?'Picked up '+keyboardSelection.label+'. Use the arrow keys to move it; press Enter or Space to drop.':'Dropped '+keyboardSelection.label+'.');if(!keyboardGrabbed){save();persist();}}return;}if(!list.length){say('There are no cards or toys to move yet.');return;}if(!keyboardGrabbed){const direction=e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:1;const index=selectedTargetIndex(list);focusKeyboardTarget(list[(index<0?(direction>0?0:list.length-1):(index+direction+list.length)%list.length)]);return;}const step=e.shiftKey?32:12,dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0,dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;if(keyboardSelection.type==='word'){const t=keyboardSelection.ref;t.x=Math.max(width(t.text)/2,Math.min(W-width(t.text)/2,t.x+dx));t.y=Math.max(H*.25,Math.min(H-195,t.y+dy));if(t.settled)t.displaced=true;}else{const ids=state.placed.filter(id=>catalog.some(item=>item.id===id&&item.type==='world')),i=ids.indexOf(keyboardSelection.id),o=objectPositions[keyboardSelection.id]||(objectPositions[keyboardSelection.id]=worldPosition(keyboardSelection.id,i));o.x=Math.max(35,Math.min(W-35,o.x+dx));o.y=Math.max(H*.43,Math.min(H*.82,o.y+dy));}});
+canvas.addEventListener('keydown',e=>{const keys=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter',' ','Escape'];if(!keys.includes(e.key))return;e.preventDefault();const list=keyboardTargets();if(e.key==='Escape'){keyboardGrabbed=false;keyboardSelection=null;save();persist();say('Item released.');return;}if(e.key==='Enter'||e.key===' '){if(!keyboardSelection){if(list.length)focusKeyboardTarget(list[0]);else say('There are no cards or toys to move yet.');}else{keyboardGrabbed=!keyboardGrabbed;if(keyboardSelection.type==='word'&&keyboardSelection.ref.settled)keyboardSelection.ref.displaced=true;say(keyboardGrabbed?'Picked up '+keyboardSelection.label+'. Use the arrow keys to move it; press Enter or Space to drop.':'Dropped '+keyboardSelection.label+'.');if(!keyboardGrabbed){if(keyboardSelection.type==='word'&&keyboardSelection.ref.settled)reactToNestMess();save();persist();}}return;}if(!list.length){say('There are no cards or toys to move yet.');return;}if(!keyboardGrabbed){const direction=e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:1;const index=selectedTargetIndex(list);focusKeyboardTarget(list[(index<0?(direction>0?0:list.length-1):(index+direction+list.length)%list.length)]);return;}const step=e.shiftKey?32:12,dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0,dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;if(keyboardSelection.type==='word'){const t=keyboardSelection.ref;t.x=Math.max(width(t.text)/2,Math.min(W-width(t.text)/2,t.x+dx));t.y=Math.max(H*.25,Math.min(H-195,t.y+dy));if(t.settled)t.displaced=true;}else{const ids=state.placed.filter(id=>catalog.some(item=>item.id===id&&item.type==='world')),i=ids.indexOf(keyboardSelection.id),o=objectPositions[keyboardSelection.id]||(objectPositions[keyboardSelection.id]=worldPosition(keyboardSelection.id,i));o.x=Math.max(35,Math.min(W-35,o.x+dx));o.y=Math.max(H*.43,Math.min(H*.82,o.y+dy));}});
 
 function worldPosition(id,i){const columns=5,rows=Math.max(1,Math.ceil(state.placed.length/columns)),row=Math.floor(i/columns),spread=Math.min(.20,(rows-1)*.04),gap=rows>1?spread/(rows-1):0;return objectPositions[id]||{x:W*(.12+(i%columns)*.18),y:H*(rows>1?.62+row*gap:.72)};}
 canvas.addEventListener('pointerdown',e=>{
@@ -303,6 +475,7 @@ break;
 }}
 });
 canvas.addEventListener('pointermove',e=>{
+const hover=pos(e),hovered=state.placed.map((id,i)=>({item:catalog.find(x=>x.id===id),p:worldPosition(id,i)})).find(v=>v.item?.achievement&&Math.hypot(v.p.x-hover.x,v.p.y-hover.y)<38);canvas.title=hovered?trophyInfo(hovered.item.id):'';
 if(!toyDrag)return;
 const p=pos(e),o=objectPositions[toyDrag.id];
 o.x=Math.max(35,Math.min(W-35,p.x));o.y=Math.max(H*.43,Math.min(H*.82,p.y));
@@ -316,7 +489,7 @@ const bob=active?-Math.abs(Math.sin(timer*5+seed))*(item.achievement?5:9):Math.s
 const pulse=active?1+Math.sin(timer*7+seed)*.07:1+Math.sin(clock*2+seed)*.018;
 ctx.save();ctx.translate(x,y+bob);ctx.rotate(wobble);ctx.scale(pulse,pulse);ctx.textAlign='center';ctx.textBaseline='middle';
 const base=Math.max(30,Math.min(55,W*.055)),scale=item.id==='gift'?1.75:item.id==='bear'?1.5:item.achievement?1.14:1;ctx.font=(base*scale)+'px system-ui';
-ctx.fillText(item.emoji,0,0);
+if(item.language){ctx.save();ctx.translate(0,-base*.18);ctx.scale(base/44,base/44);drawLanguageFlag(item.language);ctx.restore();ctx.font=(base*.42)+'px system-ui';ctx.fillText(item.emoji,0,base*.4);}else ctx.fillText(item.emoji,0,0);
 if(item.achievement&&active&&Math.floor(timer*3)!==Math.floor((timer-.04)*3)){ctx.fillStyle='#d0a956';ctx.font='15px system-ui';ctx.fillText('✦',-23,-24);ctx.fillText('✦',23,-18);}
 ctx.restore();
 }
@@ -331,7 +504,7 @@ drawObject(item,x,y);
 const wear=catalog.find(x=>x.id===state.wear);
 if(wear){
 const bob=Math.sin(creature.walk)*2;
-ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
+ctx.save();const gearScale=window.crumbGod?.appearance(creature)?.scale||1;ctx.translate(creature.x,creature.y);const gearPose=window.crumbBonus?.pose();if(gearPose){ctx.translate(0,gearPose.hop||0);ctx.scale(1,gearPose.squash||1);ctx.rotate(gearPose.tilt||0);ctx.globalAlpha*=gearPose.opacity??1;}ctx.scale(gearScale,gearScale);ctx.translate(-creature.x,-creature.y);ctx.textAlign='center';ctx.textBaseline='middle';
 ctx.font='32px system-ui';
 const headwear=['hat','cap','crown','bow','flower','ribbon','mask','glasses','monocle','star','mystery-star','mystery-crown'];
 const feetwear=['shoes','boots','mystery-boots'];
@@ -371,10 +544,42 @@ ctx.restore();
 }
 if(keyboardSelection){ctx.save();ctx.strokeStyle=keyboardGrabbed?'#56754d':'#9a7650';ctx.lineWidth=2;ctx.setLineDash([5,4]);if(keyboardSelection.type==='word'){const t=keyboardSelection.ref;ctx.translate(t.x,t.y);ctx.rotate(t.angle);ctx.strokeRect(-width(t.text)/2-5,-20,width(t.text)+10,40);}else{const ids=state.placed.filter(id=>catalog.some(item=>item.id===id&&item.type==='world')),i=ids.indexOf(keyboardSelection.id),o=worldPosition(keyboardSelection.id,i);ctx.beginPath();ctx.arc(o.x,o.y,36,0,Math.PI*2);ctx.stroke();}ctx.restore();}
 };
+let idleClock=0,quietClock=0,nextIdle=16+Math.random()*14,lastIdle='',waveShown=false,idlePlan=null;
+function finishIdle(){idlePlan=null;phase='idle';command=null;timer=0;wander=null;wanderPause=1.5;idleClock=0;nextIdle=18+Math.random()*16;}
+function beginIdle(kind){
+if(phase!=='idle'||target||drag||carry||toyDrag||keyboardGrabbed||document.hidden||document.querySelector('dialog[open]')||!panel.hidden)return false;
+if(kind==='tidy'&&!state.placed.length)return false;
+wander=null;idleWalking=false;phase='idleAntic';command=kind;timer=0;idleClock=0;lastIdle=kind;
+idlePlan={index:0,arrived:false,points:[{x:W*.82,y:H*.51},{x:W*.18,y:H*.65},{x:W*.72,y:H*.70},{x:W*.24,y:H*.49}]};
+if(kind==='tidy')idlePlan.items=state.placed.slice(0,3).map((id,i)=>({id,x:W*(.2+i*.22),y:H*.70}));
+if(kind==='wave')waveShown=true;
+say(kind==='wave'?'Still there? Crumb gives you a little wave.':kind==='dance'?'A tiny dance, entirely for its own amusement.':kind==='zoomies'?'An urgent appointment. Everywhere. Immediately.':'These treasures could be a little more orderly.');
+window.crumbAudio?.event(kind==='tidy'?'rustle':kind==='wave'?'idleWave':kind==='dance'?'idleDance':'zoomies');return true;
+}
+window.crumbIdle={start:beginIdle,cancel(){idlePlan=null;idleClock=0;nextIdle=16+Math.random()*14;},step(dt){
+if(!idlePlan){finishIdle();return;}
+if(command==='zoomies'){
+const p=idlePlan.points[idlePlan.index%idlePlan.points.length];if(moveTo(p.x,p.y,330,dt))idlePlan.index++;
+if(timer>6.5)finishIdle();
+}else if(command==='tidy'){
+const item=idlePlan.items[idlePlan.index];if(!item||timer>14){finishIdle();return;}
+if(!state.placed.includes(item.id)){idlePlan.index++;idlePlan.arrived=false;return;}
+const current=objectPositions[item.id]||(objectPositions[item.id]={...worldPosition(item.id,state.placed.indexOf(item.id))});
+if(!idlePlan.arrived)idlePlan.arrived=moveTo(Math.max(40,current.x-38),current.y+10,120,dt);
+else{const dx=item.x-current.x,dy=item.y-current.y,d=Math.hypot(dx,dy),step=Math.min(d,65*dt);
+if(d>1){current.x+=dx/d*step;current.y+=dy/d*step;moveTo(Math.max(40,current.x-38),current.y+10,120,dt);}
+else{window.crumbAudio?.event('rustle');idlePlan.index++;idlePlan.arrived=false;}}
+}else if(timer>(command==='wave'?2.5:3.8))finishIdle();
+}};
+function playerActivity(){quietClock=0;waveShown=false;idleClock=0;if(phase==='idleAntic')interrupt();}
+for(const event of ['pointerdown','keydown','input'])document.addEventListener(event,playerActivity,{passive:true});
+// Moving the pointer counts as presence, without cancelling a performance.
+document.addEventListener('pointermove',()=>{quietClock=0;waveShown=false;},{passive:true});
 let playClock=0,toyVisit=null;
 const baseUpdate=update;
 update=function(dt){
-if(phase==='toyApproach'&&toyVisit){timer+=dt;const i=state.placed.indexOf(toyVisit),o=worldPosition(toyVisit,i),side=creature.x>o.x?1:-1;if(moveTo(o.x+side*(toyVisit==='gift'?64:54),o.y+13,76,dt)){phase='toyPlay';timer=0;const activeToy=catalog.find(item=>item.id===toyVisit);say(activeToy?.achievement?'Crumb admires its trophy.':toyVisit==='bear'?'Crumb gives the teddy a careful little cuddle.':toyVisit==='gift'?'Crumb peeks into the dollhouse. Who lives here?':toyVisit==='ball'?'Crumb gives the ball a little nudge.':'Crumb investigates its toy.');}return;}
+if(!document.hidden){quietClock+=dt;idleClock+=dt;}
+if(phase==='toyApproach'&&toyVisit){timer+=dt;const i=state.placed.indexOf(toyVisit),o=worldPosition(toyVisit,i),side=creature.x>o.x?1:-1;if(moveTo(o.x+side*(toyVisit==='gift'?64:54),o.y+13,76,dt)){phase='toyPlay';timer=0;const activeToy=catalog.find(item=>item.id===toyVisit);window.crumbAudio?.event(toyVisit==='bear'?'cuddle':'rustle');say(activeToy?.achievement?'Crumb admires its trophy.':toyVisit==='bear'?'Crumb gives the teddy a careful little cuddle.':toyVisit==='gift'?'Crumb peeks into the dollhouse. Who lives here?':toyVisit==='ball'?'Crumb gives the ball a little nudge.':'Crumb investigates its toy.');}return;}
 if(phase==='toyPlay'&&toyVisit){timer+=dt;const i=state.placed.indexOf(toyVisit),o=worldPosition(toyVisit,i);if(toyVisit==='bear'){creature.y=o.y+13+Math.sin(timer*4)*2;if(Math.floor(timer*2)!==Math.floor((timer-dt)*2))burst('♥',1);}else if(catalog.find(item=>item.id===toyVisit)?.achievement){creature.y=o.y+13+Math.sin(timer*3)*2;if(Math.floor(timer*2)!==Math.floor((timer-dt)*2))burst('✦',1);}else if(toyVisit==='gift'){const a=timer*2.2;moveTo(o.x+Math.cos(a)*54,o.y+Math.sin(a)*17+15,52,dt);if(Math.floor(timer*1.5)!==Math.floor((timer-dt)*1.5))burst('✦',1);}else if(Math.floor(timer*1.5)!==Math.floor((timer-dt)*1.5))burst('♥',1);if(timer>3.6){const id=toyVisit;toyVisit=null;phase='idle';timer=0;playClock=0;const item=catalog.find(x=>x.id===id);say(item?.achievement?'Crumb has a new trophy to admire.':id==='bear'?'The teddy is apparently an excellent friend.':id==='gift'?'A complete tour. Crumb approves of the tiny kitchen.':id==='ball'?'The ball gets a cheerful little kick.':'Crumb has inspected this treasure thoroughly.');}return;}
 baseUpdate(dt);
 if(keyboardSelection&&(keyboardSelection.type==='word'?!treasures.includes(keyboardSelection.ref):!state.placed.includes(keyboardSelection.id))){keyboardSelection=null;keyboardGrabbed=false;}
@@ -390,8 +595,13 @@ if(phase==='idle'&&!target&&!drag&&!carry){
 ballPlay+=dt;
 if(ballPlay>7&&Math.hypot(creature.x-b.x,creature.y-b.y)<135){
 ballPlay=0;const dx=b.x-creature.x,dy=b.y-creature.y,d=Math.max(1,Math.hypot(dx,dy));
-ballMotion.vx=dx/d*155;ballMotion.vy=dy/d*95;say('Crumb kicks the soccer ball!');
+ballMotion.vx=dx/d*155;ballMotion.vy=dy/d*95;window.crumbAudio?.event('kick');say('Crumb kicks the soccer ball!');
 }}
+}
+if(phase==='idle'&&!target&&!drag&&!carry&&idleClock>=nextIdle){
+const choices=['dance','zoomies',...(state.placed.length?['tidy']:[])].filter(kind=>kind!==lastIdle);
+const kind=quietClock>45&&!waveShown?'wave':choices[Math.floor(Math.random()*choices.length)];
+if(beginIdle(kind)){playClock=0;return;}
 }
 if(phase!=='idle'||target||drag||carry||!state.placed.length){playClock=0;return;}
 playClock+=dt;
@@ -408,84 +618,7 @@ renderPanel();
 @media(max-width:600px){#crumbSound{top:136px;padding:7px 9px;font-size:11px}}
 </style>
 <button id="crumbSound" type="button" aria-label="Toggle Crumb sounds">🔇 Sound off</button>
-<script>
-(function(){
-'use strict';
-const key='crumb.audio.v1',button=document.getElementById('crumbSound');
-let enabled=false,ac=null,lastVoice=0,lastPhase='',lastCommand='',ambient=0,previousStep=0,previousTime=performance.now(),lastStatus='';
-try{enabled=localStorage.getItem(key)==='on';}catch(e){}
-function label(){button.textContent=enabled?'🔊 Sound on':'🔇 Sound off';button.setAttribute('aria-pressed',String(enabled));}
-function context(){
-if(!enabled)return null;
-if(!ac){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{ac=new C();}catch(e){return null;}}
-if(ac.state==='suspended')ac.resume().catch(()=>{});
-return ac;
-}
-// Layered pitched chirps with a soft breathy overtone; consistent timbre across emotions.
-function syllable(f0,f1,length,delay=0,volume=.055,rough=0){
-const c=context();if(!c)return;const t=c.currentTime+delay;
-const gain=c.createGain(),filter=c.createBiquadFilter();filter.type='lowpass';filter.frequency.value=rough?1350:2200;
-gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(Math.min(.16,Math.max(.0002,volume*2.4)),t+.025);
-gain.gain.exponentialRampToValueAtTime(.0001,t+length);
-filter.connect(gain);gain.connect(c.destination);
-for(const [ratio,level,wave] of [[1,1,'triangle'],[2,.18,'sine'],[.5,rough?.19:.07,'sawtooth']]){
-const o=c.createOscillator(),g=c.createGain();o.type=wave;
-o.frequency.setValueAtTime(Math.max(35,f0*ratio),t);
-o.frequency.exponentialRampToValueAtTime(Math.max(35,f1*ratio),t+length);
-g.gain.value=level;o.connect(g);g.connect(filter);o.start(t);o.stop(t+length+.025);
-}
-}
-function voice(kind,force=false){
-if(!enabled)return;const now=performance.now();if(!force&&now-lastVoice<340)return;lastVoice=now;
-switch(kind){
-case 'curious':syllable(330,520,.15);syllable(450,660,.14,.17,.035);break;
-case 'happy':syllable(460,690,.13);syllable(570,900,.13,.14);syllable(680,960,.18,.29,.042);break;
-case 'sad':syllable(400,255,.4,0,.045);syllable(290,175,.36,.35,.025);break;
-case 'angry':syllable(285,160,.13,0,.06,1);syllable(240,105,.16,.16,.05,1);syllable(190,85,.24,.36,.042,1);break;
-case 'offended':syllable(680,390,.12,0,.05,1);syllable(240,160,.28,.19,.032,1);break;
-case 'nervous':syllable(620,870,.09);syllable(770,510,.11,.12,.035);break;
-case 'dance':for(let i=0;i<4;i++)syllable([440,550,480,670][i],[570,710,620,850][i],.12,i*.17,.035);break;
-case 'sleep':syllable(140,100,.43,0,.018);break;
-case 'ball':syllable(220,110,.10,0,.045);syllable(420,550,.1,.10,.02);break;
-case 'reward':syllable(400,570,.14);syllable(550,760,.14,.16);syllable(690,990,.23,.32);break;
-default:syllable(350,470,.13);
-}
-}
-button.addEventListener('click',()=>{enabled=!enabled;try{localStorage.setItem(key,enabled?'on':'off');}catch(e){}label();if(enabled){context();voice('curious',true);}});
-label();
-// React to the creature's real animation state, not just status captions.
-const oldUpdate=update;
-update=function(dt){
-oldUpdate(dt);
-if(!enabled)return;
-const p=phase,c=command||'';
-if(p!==lastPhase||c!==lastCommand){
-const initial=lastPhase==='';lastPhase=p;lastCommand=c;
-if(!initial){
-if(p==='special')voice(({comeback:'sad',fury:'angry',nervous:'nervous',disco:'dance',celebrate:'happy',rain:'offended',mitosis:'curious'})[c]||'curious');
-else if(p==='personal')voice(c==='fury'?'angry':'happy');
-else if(p==='fright'||p==='sneeze')voice('offended');
-else if(p==='eat'||p==='play')voice('happy');
-else if(p==='command'&&(c==='dance'||c==='spin'))voice('dance');
-else if(p==='command'&&c==='sleep')voice('sleep');
-}
-}
-if(p==='special'&&c==='disco'&&timer>1&&Math.floor(timer*1.2)!==Math.floor((timer-dt)*1.2))voice('dance');
-if(p==='personal'&&c==='fury'&&timer>1&&Math.floor(timer*1.6)!==Math.floor((timer-dt)*1.6))voice('angry');
-if(p==='command'&&c==='sleep'&&Math.floor(timer/3)!==Math.floor((timer-dt)/3))voice('sleep');
-ambient+=dt;
-if(ambient>16&&p==='idle'&&!target&&!drag&&!carry){ambient=0;if(Math.random()<.42)voice('curious');}
-};
-const status=document.getElementById('message')||message;
-if(status)new MutationObserver(()=>{
-const txt=status.textContent||'';if(txt===lastStatus)return;lastStatus=txt;
-const m=txt.toLowerCase();
-if(m.includes('kicks the soccer ball'))voice('ball');
-else if(m.includes('reward')&&(/unlocked|yours|choose|earned/.test(m)))voice('reward');
-else if(m.includes('ruined')||m.includes('architectural emergency'))voice('angry');
-}).observe(status,{childList:true,characterData:true,subtree:true});
-})();
-</script>
+<script src="audio.js?v=20261015-playtest1"></script>
 
 <style>
 #crumbSettingsButton{position:absolute;right:5%;top:30px;z-index:4;background:#f8f3e8;color:#465448;border:1px solid #b7aa91}
@@ -514,10 +647,10 @@ else if(m.includes('ruined')||m.includes('architectural emergency'))voice('angry
 </dialog>
 <dialog id="crumbSettings" aria-labelledby="crumbSettingsTitle">
 <button class="crumbClose" id="crumbSettingsClose" type="button">Close ×</button>
-<h2 id="crumbSettingsTitle">Settings</h2>
+<h2 id="crumbSettingsTitle">Settings</h2><p>Playtesting Crumb? <a href="https://github.com/Lab137-dev/Lab137-dev.github.io/issues/new?title=Crumb%20playtest%20feedback&amp;body=Device%20and%20browser%3A%0A%0AWhat%20I%20tried%3A%0A%0AWhat%20happened%3A%0A%0AWhat%20I%20liked%20or%20would%20change%3A%0A" target="_blank" rel="noopener noreferrer">Leave feedback on GitHub</a> (GitHub account required).</p>
 <label><span id="crumbLanguageLabel">Language</span><span id="crumbCurrentFlag"></span><select id="crumbLanguageSelect"></select></label>
 <label><span id="crumbSoundLabel">Crumb sounds</span><button id="crumbSoundSetting" type="button">🔇 Sound off</button></label>
-<label><input id="crumbKeyboardToggle" type="checkbox" checked><span id="crumbKeyboardLabel">Show keyboard controls</span></label>
+
 <p id="crumbKeyboardHelp">Focus the room, use Left/Right to select, Enter or Space to pick up or drop, arrow keys to move, and Escape to release.</p>
 <div class="crumbSettingsActions"><button class="danger" id="crumbReset" type="button">Reset all progress</button><button class="secondary" id="crumbSettingsDone" type="button">Done</button></div>
 <p id="crumbResetHelp">Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.</p>
@@ -641,14 +774,12 @@ function applyLanguage(){
  byId('crumbLanguageLabel').textContent=tr('Language');
  byId('crumbCurrentFlag').innerHTML=flagSvg(lang||'en');
  byId('crumbSoundLabel').textContent=tr('Crumb sounds');
- byId('crumbKeyboardLabel').textContent=tr('Show keyboard controls');
  byId('crumbKeyboardHelp').textContent=tr('Focus the room, use Left/Right to select, Enter or Space to pick up or drop, arrow keys to move, and Escape to release.');
  byId('crumbReset').textContent=tr('Reset all progress');
  byId('crumbSettingsDone').textContent=tr('Done');
  byId('crumbResetHelp').textContent=tr('Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.');
  byId('crumbSettingsButton').textContent='⚙️ '+tr('Settings');
  const sound=byId('crumbSound');if(sound)byId('crumbSoundSetting').textContent=tr(sound.textContent);
- const hint=byId('controlHint');if(hint)hint.hidden=!byId('crumbKeyboardToggle').checked;
  translateTree(byId('journal'));translateTree(byId('sandboxPanel'));
 }
 function flagSvg(code){
@@ -674,9 +805,7 @@ byId('crumbSettingsButton').onclick=()=>{byId('crumbLanguageSelect').value=lang|
 byId('crumbSettingsClose').onclick=byId('crumbSettingsDone').onclick=()=>byId('crumbSettings').close();
 byId('crumbLanguageSelect').onchange=e=>choose(e.target.value);
 byId('crumbSoundSetting').onclick=()=>{byId('crumbSound').click();applyLanguage();};
-byId('crumbKeyboardToggle').onchange=()=>{const hint=byId('controlHint');if(hint)hint.hidden=!byId('crumbKeyboardToggle').checked;try{localStorage.setItem('crumb.keyboardhint.v1',byId('crumbKeyboardToggle').checked?'on':'off');}catch{}};
-try{byId('crumbKeyboardToggle').checked=localStorage.getItem('crumb.keyboardhint.v1')!=='off';}catch{}
-byId('crumbReset').onclick=()=>{if(!confirm(tr('Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.')+'\n\n'+tr('Reset all progress')+'?'))return;for(const k of ['crumb.language.v1','crumb.nest.v1','crumb.discoveries.v1','crumb.sandbox.v1','crumb.audio.v1','crumb.keyboardhint.v1'])try{localStorage.removeItem(k);}catch{}location.reload();};
+byId('crumbReset').onclick=()=>{if(window.crumbGod?.testing){alert('End Godmode before resetting earned progress.');return;}if(!confirm(tr('Reset removes Crumb’s saved discoveries, rewards, toys, and sound preference from this browser.')+'\n\n'+tr('Reset all progress')+'?'))return;for(const k of ['crumb.language.v1','crumb.nest.v1','crumb.nest.undo.v1','crumb.bonus.v1','crumb.bonus.v1.backup','crumb.discoveries.v1','crumb.sandbox.v1','crumb.sandbox.v1.backup','crumb.audio.v1','crumb.keyboardhint.v1'])try{localStorage.removeItem(k);}catch{}location.reload();};
 const observeIds=['message','journalCount','discoveries','storageNote','sandboxStatus','sandboxConfirmText','sandboxItems'];
 const mo=new MutationObserver(records=>{for(const r of records){const el=r.target.nodeType===1?r.target:r.target.parentElement;if(el&&!el.closest('#crumbLocaleChoices'))translateTree(el);}});
 for(const id of observeIds){const el=byId(id);if(el)mo.observe(el,{subtree:true,childList:true,characterData:true});}
@@ -688,6 +817,7 @@ if(lang){byId('crumbLanguageSelect').value=lang;applyLanguage();}else gate.showM
 </script>
 
 <style>
+#nestUndo{position:absolute;right:5%;bottom:190px;z-index:3;background:#f8f3e8;color:#465448;border:1px solid #b7aa91;padding:9px 12px}
 /* Keep the upper-right controls in a clear vertical stack. */
 #crumbSettingsButton{top:30px;right:5%}
 #journalToggle{top:78px;right:5%}
@@ -720,6 +850,7 @@ footer{font-size:13px}
 #sandboxAchievements{grid-template-columns:1fr;gap:7px}
 #sandboxAchievements .achievement{font-size:13px;padding:9px}
 #sandboxTrophies{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:0 0 12px}
+.rewardFlag{display:inline-block;width:27px;height:18px;vertical-align:middle;margin-right:3px;border-radius:2px}
 #sandboxTrophies .trophy-card{background:#e5dbc8;color:#4b493e;border:1px solid #c4b79f;padding:9px 7px;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
 #sandboxTrophies .trophy-card.active{outline:2px solid #71825f;background:#e3eadc}
 #sandboxTrophies .trophy-empty{grid-column:1/-1;color:#7b725f;font-size:13px;line-height:1.5;padding:9px;background:#eee7d9;border-radius:9px}
@@ -737,4 +868,9 @@ footer{font-size:12px}
 #lab137Brand{top:7px;font-size:8px;letter-spacing:1.8px}
 }
 </style>
+<style>@media(max-width:600px){#nestUndo{bottom:290px}}</style>
+<script src="bonus.js?v=20261015-playtest1"></script>
+<script src="village.js?v=20261015-playtest1"></script>
+<script src="share.js?v=20261015-playtest1"></script>
+<script src="godmode.js?v=20261015-playtest1"></script>
 </body></html>

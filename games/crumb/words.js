@@ -6,9 +6,10 @@ const groups={
  scary:['boo','thunder','fire','vacuum','hawk','owl','snake','monster','bang','storm','lightning','roar','danger','spider','shadow','darkness','dark','ghost','zombie','dragon','dinosaur','tornado','earthquake','flood','siren','alarm','predator','cat','dog','coyote','fox','eagle','bat','crow'],
  distasteful:['soap','onion','garlic','pickle','pickles','lemon','vinegar','pepper','mustard','broccoli','bleach','bitter','sour','mold','rotten','spoiled','stink','stinky','dirty','slime','goo','sludge','dust','ashes','burnt','soggy','bitter melon','medicine'],
  playful:['ball','marble','bell','bubble','bubbles','button','dice','sparkle','jingle','toy','bounce','peekaboo','kite','swing','slide','hop','skip','jump','tickle','giggle','laugh','song','music','whistle','drum','tambourine','puzzle','blocks','teddy','teddy bear','doll','truck','train','car','spinning top'],
+ social:['party','game','fest','festival','picnic','gathering','reunion','celebration','birthday','carnival','parade','hangout','playdate','sleepover','feast','fiesta','soiree','barbecue','cookout','get together'],
  command:['sit','sleep','nap','wake','wake up','come','come here','dance','spin','stay','fetch','home','go home','hello','hi','hey','look','listen','wait','stop','follow','turn around','play','rest','goodnight','good night']
 };
-const labels={food:'Something to eat',nesting:'Building materials',scary:'Things to hide from',distasteful:'Absolutely not',playful:'Playthings',command:'Words it understands',unknown:'Still a mystery'};
+const labels={food:'Something to eat',nesting:'Building materials',scary:'Things to hide from',distasteful:'Absolutely not',playful:'Playthings',command:'Words it understands',social:'Social occasions',unknown:'Still a mystery'};
 const aliases={nap:'sleep','wake up':'wake','come here':'come','go home':'home'};
 function normalize(text){return String(text).normalize('NFKC').toLowerCase().trim().replace(/^[\s.!?,;:]+|[\s.!?,;:]+$/g,'').replace(/\s+/g,' ');}
 const tantrum=['war','hate','hatred','violence','cruelty','bullying','bully','abuse','neglect','greed','pollution','litter','trash','garbage','smoke','smog','fireworks','loud noise','chainsaw','leaf blower','vacuum cleaner','pesticide','poison','oil spill','deforestation','destroy','destruction','chaos','mean','unkind','injustice','betrayal','lies','fighting','bomb','bombs','gunfire','process'];
@@ -38,6 +39,9 @@ for(const [kind,word,de,fr,es] of addedVocabulary){
  if(!groups[kind].includes(word))groups[kind].push(word);
  for(const [language,alias] of Object.entries({de,fr,es}))if(alias)localized[language]+=';'+alias+':'+word;
 }
+localized.de+=';Feier:party;Spiel:game;Festival:festival;Picknick:picnic;Treffen:gathering;Geburtstag:birthday';
+localized.fr+=';fête:party;jeu:game;festival:festival;pique-nique:picnic;réunion:reunion;anniversaire:birthday';
+localized.es+=';fiesta:party;juego:game;festival:festival;reunión:reunion;cumpleaños:birthday';
 const localizedAliases={};
 for(const [language,list] of Object.entries(localized)){
  for(const entry of list.split(';')){
@@ -58,6 +62,6 @@ function classify(text){
  for(const [kind,words]of Object.entries(groups))if(words.includes(word))return{kind,word,action:aliases[word]||word,language};
  return{kind:'unknown',word,action:null,language:null};
 }
-function categoryOf(text){const word=canonicalize(normalize(text));for(const kind of ['food','playful','nesting'])if(groups[kind].includes(word))return kind;return null;}
+function categoryOf(text){const word=canonicalize(normalize(text));for(const kind of ['food','playful','nesting','social'])if(groups[kind].includes(word))return kind;return null;}
 root.CrumbWords={classify,categoryOf,normalize,discoveryKey,labels,total:Object.values(groups).reduce((a,v)=>a+v.length,0)+Object.keys(personal).length};
 })(globalThis);

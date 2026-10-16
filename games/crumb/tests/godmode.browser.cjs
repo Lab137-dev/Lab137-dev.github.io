@@ -1,0 +1,41 @@
+const {chromium}=require(process.env.CRUMB_PLAYWRIGHT||'playwright');
+const path=require('node:path'),assert=require('node:assert/strict'),{pathToFileURL}=require('node:url');const root=path.join(__dirname,'..');
+(async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CRUMB_BROWSER||'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+ try{for(const viewport of [{width:1100,height:850},{width:390,height:844},{width:820,height:1180}]){
+  const page=await browser.newPage({viewport,hasTouch:viewport.width<1000}),errors=[],failed=[];page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failed.push(r.url()));page.on('dialog',d=>d.accept());
+  await page.addInitScript(()=>{requestAnimationFrame=()=>{};});
+  await page.goto(pathToFileURL(process.env.CRUMB_GAME_FILE||path.join(root,'index.html')).href);await page.evaluate(()=>{localStorage.clear();localStorage.setItem('crumb.language.v1','en');localStorage.setItem('crumb.sandbox.v1',JSON.stringify({words:['cookie','apple','bread','cheese','rice'],chosen:['bow'],placed:[],rewardPicks:['bow'],entries:[]}));});await page.reload();await page.waitForTimeout(100);
+  await page.evaluate(()=>{giveWord('godmode');});assert.equal(await page.evaluate(()=>crumbGod.stage),'none','trigger is case sensitive');
+  await page.locator('#fresh').click();await page.evaluate(()=>{giveWord('moss');for(let i=0;i<1000&&!treasures.some(t=>t.settled);i++)update(.02);});
+  const baseline=await page.evaluate(()=>({count:crumbProgress(),nest:treasures.map(t=>t.text),tools:crumbBonus.inspect(),keys:Object.fromEntries(['crumb.discoveries.v1','crumb.nest.v1','crumb.nest.undo.v1','crumb.sandbox.v1','crumb.sandbox.v1.backup','crumb.bonus.v1','crumb.bonus.v1.backup'].map(k=>[k,localStorage.getItem(k)]))}));
+  async function offer(text){await page.locator('#word').fill(text);await page.locator('#word').press('Enter');}
+  async function advance(stage){await page.evaluate(stage=>{for(let i=0;i<2000&&crumbGod.stage!==stage;i++)update(.02);draw();if(crumbGod.stage!==stage)throw Error('Stage not reached: '+stage);},stage);}
+  await offer('GODMODE');await advance('password');await page.waitForTimeout(150);await page.evaluate(()=>draw());
+  assert.equal(await page.locator('#word').getAttribute('type'),'password');assert.match(await page.locator('#message').innerText(),/Password/);
+  if(viewport.width===1100)await page.screenshot({path:path.join(root,'..','..','..','outputs','crumb-godmode-door.png')});
+  await offer('flipflopsodapop');assert.equal(await page.evaluate(()=>crumbGod.stage),'password');assert.equal(await page.evaluate(()=>crumbGod.enabled),false);
+  await offer('Flipflopsodapop');await advance('beam');await page.evaluate(()=>{for(let i=0;i<85;i++)update(.02);draw();});
+  assert.ok(await page.evaluate(()=>crumbGod.appearance(creature).scale>1));
+  if(viewport.width===1100)await page.screenshot({path:path.join(root,'..','..','..','outputs','crumb-godmode-beam.png')});
+  await advance('flex');assert.ok(await page.evaluate(()=>crumbGod.enabled));assert.equal(await page.evaluate(()=>crumbProgress()),400);
+  await page.evaluate(()=>{for(let i=0;i<35;i++)update(.02);draw();});
+  if(viewport.width===1100)await page.screenshot({path:path.join(root,'..','..','..','outputs','crumb-godmode-flex.png')});
+  await advance('none');assert.ok(await page.locator('#godmodeEnd').isVisible());assert.equal(await page.evaluate(()=>crumbGod.appearance(creature).scale),1.7);
+  await page.locator('#crumbColorToggle').click();await page.locator('.crumbSwatches button').filter({hasText:'Rose'}).click();await page.locator('#crumbColorClose').click();
+  await page.locator('#sandboxToggle').click();const selectable=await page.locator('#sandboxItems button').evaluateAll(es=>es.every(e=>!e.disabled));assert.ok(selectable,'all reward choices are usable');
+  await page.locator('#sandboxItems button').filter({hasText:'Teddy bear'}).click();await page.locator('#sandboxToggle').click();
+  await page.locator('#crumbVillageGoal').click();assert.equal(await page.evaluate(()=>crumbVillage.inspect().residents.length),3);await page.getByRole('button',{name:'Back to room',exact:true}).click();
+  await page.locator('#crumbWorkshopGoal').click();await page.getByRole('button',{name:'Add one piece',exact:true}).click();await page.locator('#crumbGoalClose').click();
+  await page.locator('#crumbSettingsButton').click();await page.locator('#crumbReset').click();assert.ok(await page.evaluate(()=>crumbGod.enabled),'reset cannot erase earned progress during testing');await page.locator('#crumbSettingsDone').click();
+  await page.evaluate(()=>giveWord('banana'));
+  await page.locator('#fresh').click();
+  const keysDuring=await page.evaluate(keys=>Object.fromEntries(Object.keys(keys).map(k=>[k,localStorage.getItem(k)])),baseline.keys);assert.deepEqual(keysDuring,baseline.keys,'testing never writes earned progress, undo, or tool saves');
+  await page.locator('#godmodeEnd').click();assert.equal(await page.evaluate(()=>crumbGod.enabled),false);assert.equal(await page.evaluate(()=>crumbGod.appearance(creature)),null);
+  assert.equal(await page.evaluate(()=>crumbProgress()),baseline.count);assert.deepEqual(await page.evaluate(()=>treasures.map(t=>t.text)),baseline.nest);assert.deepEqual(await page.evaluate(()=>crumbBonus.inspect()),baseline.tools);
+  assert.deepEqual(await page.evaluate(keys=>Object.fromEntries(Object.keys(keys).map(k=>[k,localStorage.getItem(k)])),baseline.keys),baseline.keys,'ending restores original saves unchanged');
+  assert.equal(await page.locator('#word').getAttribute('type'),null);assert.ok(await page.locator('#godmodeEnd').isHidden());
+  await offer('GODMODE');await page.locator('#godmodeEnd').click();assert.equal(await page.evaluate(()=>crumbGod.stage),'none','entrance can be cancelled');
+  await offer('GODMODE');await advance('password');await offer('Flipflopsodapop');await advance('none');assert.ok(await page.evaluate(()=>crumbGod.enabled));
+  await page.reload();assert.equal(await page.evaluate(()=>crumbGod.enabled),false,'reload ends session-only test unlocks');assert.equal(await page.evaluate(()=>crumbProgress()),baseline.count);
+  assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);console.log(`PASS ${viewport.width}: exact trigger/password, denied entry, door/beam/flex/return, all unlocks, temporary edits, unchanged saves, end/cancel, reload exit`);await page.close();
+ }}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

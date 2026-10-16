@@ -1,0 +1,67 @@
+const {chromium}=require(process.env.CRUMB_PLAYWRIGHT || 'playwright');
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const {pathToFileURL}=require('node:url');
+const root=path.join(__dirname,'..');
+const dictionary=vm.createContext({});
+vm.runInContext(fs.readFileSync(path.join(root,'words.js'),'utf8').replace('root.CrumbWords={','root.testGroups=groups;root.CrumbWords={'),dictionary);
+const words=[...new Set(Object.values(dictionary.testGroups).flat().map(w=>dictionary.CrumbWords.discoveryKey(w)))].filter(w=>dictionary.CrumbWords.classify(w).kind!=='unknown');
+assert.ok(words.length>=250);
+(async()=>{
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CRUMB_BROWSER || 'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+ try{
+  for(const viewport of [{width:1100,height:850},{width:390,height:844},{width:820,height:1180}]){
+   const page=await browser.newPage({viewport,hasTouch:viewport.width<1000});const errors=[];
+   page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.accept());
+   await page.addInitScript(()=>{window.requestAnimationFrame=()=>{};window.testAudio={oscillators:0,context:null};const Native=window.AudioContext;window.AudioContext=class extends Native{constructor(...a){super(...a);testAudio.context=this;}createOscillator(){testAudio.oscillators++;return super.createOscillator();}};});
+   await page.goto(pathToFileURL(path.join(root,'index.html')).href);
+   await page.evaluate(()=>{localStorage.clear();localStorage.setItem('crumb.language.v1','en');});await page.reload();await page.waitForTimeout(100);
+   await page.locator('#crumbSound').click();await page.waitForFunction(()=>testAudio.context?.state==='running');await page.waitForTimeout(1400);
+   await page.evaluate(()=>{giveWord('cookie');for(let i=0;i<1000&&phase!=='sniff';i++)update(.02);});
+   await page.waitForTimeout(1350);const beforeNums=await page.evaluate(()=>testAudio.oscillators);
+   await page.evaluate(()=>{for(let i=0;i<1000&&phase!=='eat';i++)update(.02);});
+   assert.equal(await page.evaluate(()=>testAudio.oscillators)-beforeNums,6,'eating schedules six num syllables');
+   await page.evaluate(()=>{for(let i=0;i<200;i++)update(.02);});
+   await page.evaluate(()=>{giveWord('moss');for(let i=0;i<1500;i++)update(.02);giveWord('party');for(let i=0;i<1000&&phase!=='social';i++)update(.02);});
+   assert.equal(await page.evaluate(()=>phase),'social');
+   assert.equal(await page.evaluate(()=>visitors.length),4);
+   assert.equal(await page.evaluate(()=>new Set(visitors.map(v=>v.colors[0])).size),4);
+   assert.equal(await page.evaluate(()=>new Set(visitors.map(v=>v.wear)).size),4);
+   assert.equal(await page.evaluate(()=>discoveries.party),'social');
+   await page.evaluate(()=>{for(let i=0;i<150;i++)update(.02);draw();});
+   assert.ok(await page.evaluate(()=>visitors.every(v=>v.x>0&&v.x<W)),'guests enter room');
+   assert.ok(await page.evaluate(()=>visitors.every(v=>v.arrived)),'guests reach Crumb before departing');
+   if(viewport.width===1100)await page.screenshot({path:path.join(root,'..','..','..','outputs','crumb-social-visit.png')});
+   await page.evaluate(()=>{for(let i=0;i<700;i++)update(.02);});
+   assert.equal(await page.evaluate(()=>visitors.length),0,'guests scurry away');
+   assert.ok(await page.evaluate(()=>treasures.some(t=>t.text==='moss'&&t.settled)),'nest preserved');
+   await page.evaluate(()=>{giveWord('game');for(let i=0;i<1000&&phase!=='social';i++)update(.02);giveWord('sleep');for(let i=0;i<500;i++)update(.02);});
+   assert.equal(await page.evaluate(()=>visitors.length),0,'interrupted visit clears');
+   assert.equal(await page.evaluate(()=>command),'sleep');
+   await page.reload();assert.equal(await page.evaluate(()=>discoveries.party),'social','social notes survive reopening');
+   await page.evaluate(words=>{localStorage.setItem('crumb.discoveries.v1','{}');localStorage.setItem('crumb.nest.v1','[]');localStorage.setItem('crumb.sandbox.v1',JSON.stringify({words:words.slice(0,249),chosen:[],placed:[],rewardPicks:[],entries:[],color:'rose'}));},words);
+   await page.reload();await page.locator('#sandboxToggle').click();await page.locator('#crumbColorToggle').click();
+   assert.equal(await page.evaluate(()=>crumbColor),'soot','249 words cannot select color');
+   assert.ok(await page.locator('.crumbSwatches button').first().isDisabled());
+   assert.match(await page.locator('#crumbColorReward').innerText(),/249\/250/);
+   assert.equal(await page.locator('#crumbColorToggle').evaluate(e=>getComputedStyle(e).animationName),'crumbRainbow');
+   await page.evaluate(word=>{giveWord(word);update(.02);},words[249]);
+   assert.ok(await page.locator('.crumbSwatches button').first().isEnabled(),'250th word unlocks colors immediately');
+   await page.locator('.crumbSwatches button').filter({hasText:'Lavender'}).click();
+   assert.equal(await page.evaluate(()=>crumbColor),'lavender');
+   const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('crumb.sandbox.v1')));
+   await page.reload();assert.equal(await page.evaluate(()=>crumbColor),'lavender','coat color persists');
+   await page.locator('#sandboxToggle').click();await page.locator('#crumbColorToggle').click();
+   const titles=await page.locator('#sandboxTrophies button').evaluateAll(es=>es.map(e=>e.title));
+   assert.ok(titles.some(t=>t.includes('unique English words')));
+   assert.ok(titles.every(t=>t.includes('Discover')&&t.includes('Progress:')));
+   assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('crumb.sandbox.v1')).rewardPicks),before.rewardPicks);
+   await page.emulateMedia({reducedMotion:'reduce'});
+   assert.equal(await page.locator('#crumbColorToggle').evaluate(e=>getComputedStyle(e).animationName),'none');
+   await page.waitForTimeout(100);await page.evaluate(()=>draw());
+   if(viewport.width===1100)await page.screenshot({path:path.join(root,'..','..','..','outputs','crumb-color-studio.png')});
+   assert.deepEqual(errors,[]);
+   console.log(`PASS ${viewport.width}x${viewport.height}: social discovery, visitors, exit/interruption, save, 249/250 color unlock, coat persistence, trophy descriptions, reduced motion`);
+   await page.close();
+  }
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});
